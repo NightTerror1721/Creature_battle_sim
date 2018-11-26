@@ -1,0 +1,38 @@
+"feats": {
+    "hp": {
+        "base": 1,
+        "genetic": 0,
+        "ability": 0,
+        "current": 0
+    },
+    "attack": {
+        "base": 1,
+        "genetic": 0,
+        "ability": 0
+    },
+    "defense": {
+        "base": 1,
+        "genetic": 0,
+        "ability": 0
+    },
+    "specialAttack": {
+        "base": 1,
+        "genetic": 0,
+        "ability": 0
+    },
+    "specialDefense": {
+        "base": 1,
+        "genetic": 0,
+        "ability": 0
+    },
+    "speed": {
+        "base": 1,
+        "genetic": 0,
+        "ability": 0
+    }
+},
+"exp": {
+    "growth": "NORMAL",
+    "level": 100,
+    "experience": 1000000
+}
