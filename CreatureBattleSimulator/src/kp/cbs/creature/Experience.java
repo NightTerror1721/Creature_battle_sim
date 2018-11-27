@@ -8,12 +8,14 @@ package kp.cbs.creature;
 import java.util.Objects;
 import kp.cbs.utils.Formula;
 import kp.cbs.utils.Utils;
+import kp.udl.autowired.InjectOptions;
 import kp.udl.autowired.Property;
 
 /**
  *
  * @author Asus
  */
+@InjectOptions(afterBuild = "afterInject")
 public final class Experience
 {
     @Property
@@ -67,6 +69,13 @@ public final class Experience
     public final void addExperience(int points)
     {
         this.exp += Math.max(1, points);
+        checkExp();
+    }
+    
+    private void afterInject()
+    {
+        this.level = Utils.range(1, 100, level);
+        this.maxExp = this.level > 99 ? 0 : Formula.expToLevel(growth, this.level + 1);
         checkExp();
     }
 }

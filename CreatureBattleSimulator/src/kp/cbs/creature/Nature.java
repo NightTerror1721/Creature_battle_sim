@@ -7,6 +7,7 @@ package kp.cbs.creature;
 
 import kp.cbs.creature.feat.StatId;
 import static kp.cbs.creature.feat.StatId.*;
+import kp.cbs.utils.RNG;
 
 /**
  *
@@ -56,5 +57,12 @@ public enum Nature
     public final float getStatModificator(StatId stat)
     {
         return stat == up ? 1.1f : stat == down ? 0.9f : 1f;
+    }
+    
+    private static final Nature[] VALUES = values();
+    
+    public static final Nature random(RNG rng)
+    {
+        return VALUES[rng.d(VALUES.length)];
     }
 }

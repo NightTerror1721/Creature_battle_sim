@@ -16,7 +16,7 @@ import kp.udl.autowired.Property;
  */
 public final class HealthPoints extends Stat
 {
-    @Property
+    @Property(set = "setCurrentHealthPoints")
     private int current;
     
     public final void setCurrentHealthPoints(int points) { this.current = Utils.range(0, getValue(), points); }

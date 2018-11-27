@@ -6,12 +6,14 @@
 package kp.cbs.creature.feat;
 
 import kp.cbs.creature.Nature;
+import kp.udl.autowired.InjectOptions;
 import kp.udl.autowired.Property;
 
 /**
  *
  * @author Asus
  */
+@InjectOptions(builder = "injector", afterBuild = "clearAllAlterations")
 public final class FeatureManager
 {
     @Property private HealthPoints hp;
@@ -24,17 +26,23 @@ public final class FeatureManager
     private PercentageFeature accuracy;
     private PercentageFeature evasion;
     
-    public final void init()
+    private FeatureManager() {}
+    
+    public static final FeatureManager create()
     {
-        this.hp = new HealthPoints();
-        this.attack = new NormalStat.Attack();
-        this.defense = new NormalStat.Defense();
-        this.specialAttack = new NormalStat.SpecialAttack();
-        this.specialDefense = new NormalStat.SpecialDefense();
-        this.speed = new NormalStat.Speed();
+        FeatureManager fm = new FeatureManager();
         
-        this.accuracy = new PercentageFeature();
-        this.evasion = new PercentageFeature();
+        fm.hp = new HealthPoints();
+        fm.attack = new NormalStat.Attack();
+        fm.defense = new NormalStat.Defense();
+        fm.specialAttack = new NormalStat.SpecialAttack();
+        fm.specialDefense = new NormalStat.SpecialDefense();
+        fm.speed = new NormalStat.Speed();
+        
+        fm.accuracy = new PercentageFeature();
+        fm.evasion = new PercentageFeature();
+        
+        return fm;
     }
     
     public final HealthPoints getHealthPoints() { return hp; }
@@ -92,5 +100,16 @@ public final class FeatureManager
     {
         int sum = getStatSum();
         return (int) (sum * (0.2f + (sum / 3250f)));
+    }
+    
+    
+    private static FeatureManager injector()
+    {
+        FeatureManager fm = new FeatureManager();
+        
+        fm.accuracy = new PercentageFeature();
+        fm.evasion = new PercentageFeature();
+        
+        return fm;
     }
 }

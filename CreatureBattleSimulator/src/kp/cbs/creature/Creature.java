@@ -5,30 +5,55 @@
  */
 package kp.cbs.creature;
 
+import java.util.Objects;
 import kp.cbs.creature.feat.FeatureManager;
+import kp.cbs.creature.race.Race;
+import kp.cbs.creature.race.RaceReference;
+import kp.udl.autowired.InjectOptions;
 import kp.udl.autowired.Property;
 
 /**
  *
  * @author Asus
  */
+@InjectOptions(builder = "injector")
 public final class Creature
 {
+    @Property
+    private String name = "";
+    
+    @Property
+    private RaceReference race;
+    
     @Property
     private FeatureManager feats;
     
     @Property
     private Experience exp;
     
-    public static final Creature create(Growth growth, int level)
+    private Nature nature;
+    
+    private Creature() {}
+    
+    public static final Creature create(Race race, int level)
     {
         Creature c = new Creature();
-        c.feats = new FeatureManager();
+        c.race = new RaceReference(race);
+        c.feats = FeatureManager.create();
         c.exp = new Experience();
         
-        c.feats.init();
-        c.exp.init(Growth.NORMAL, level);
+        c.exp.init(race.getGrowth(), level);
         
         return c;
+    }
+    public static final Creature create(String race, int level) { return create(Race.getRace(race), level); }
+    
+    public final void setName(String name) { this.name = Objects.requireNonNull(name); }
+    public final String getName() { return name; }
+    
+    
+    private static Creature injector()
+    {
+        return new Creature();
     }
 }

@@ -1,143 +1,115 @@
-"elements": [
-	{
-		"id": 0,
-		"name": "Normal",
-		"weak": 	 [1],
-		"resistant": [],
-		"immune": 	 [4]
-	},
-	{
-		"id": 1,
-		"name": "Lucha",
-		"weak": 	 [2, 3, 12],
-		"resistant": [5, 10, 11],
-		"immune": 	 []
-	},
-	{
-		"id": 2,
-		"name": "Psíquico",
-		"weak": 	 [4, 5, 11],
-		"resistant": [1, 2, 3],
-		"immune": 	 []
-	},
-	{
-		"id": 3,
-		"name": "Mágico",
-		"weak": 	 [3, 15, 18],
-		"resistant": [2, 4],
-		"immune": 	 [16]
-	},
-	{
-		"id": 4,
-		"name": "Fantasma",
-		"weak": 	 [4, 5, 17],
-		"resistant": [11, 15],
-		"immune": 	 [0, 1]
-	},
-	{
-		"id": 5,
-		"name": "Siniestro",
-		"weak": 	 [1, 3, 17, 18],
-		"resistant": [4, 5],
-		"immune": 	 [2]
-	},
-	{
-		"id": 6,
-		"name": "Fuego",
-		"weak": 	 [8, 9, 10, 12, 17],
-		"resistant": [6, 7, 11],
-		"immune": 	 []
-	},
-	{
-		"id": 7,
-		"name": "Hielo",
-		"weak": 	 [6, 10, 14],
-		"resistant": [7, 11],
-		"immune": 	 []
-	},
-	{
-		"id": 8,
-		"name": "Agua",
-		"weak": 	 [11, 13, 18],
-		"resistant": [7, 8, 14],
-		"immune": 	 []
-	},
-	{
-		"id": 9,
-		"name": "Tierra",
-		"weak": 	 [8, 11, 12],
-		"resistant": [10],
-		"immune": 	 [13, 15]
-	},
-	{
-		"id": 10,
-		"name": "Roca",
-		"weak": 	 [7, 8, 9, 11, 14],
-		"resistant": [6, 10, 12],
-		"immune": 	 []
-	},
-	{
-		"id": 11,
-		"name": "Naturaleza",
-		"weak": 	 [6, 7, 11, 15],
-		"resistant": [8, 9, 12, 13],
-		"immune": 	 []
-	},
-	{
-		"id": 12,
-		"name": "Viento",
-		"weak": 	 [7, 13],
-		"resistant": [1, 12],
-		"immune": 	 [0]
-	},
-	{
-		"id": 13,
-		"name": "Eléctrico",
-		"weak": 	 [9],
-		"resistant": [13],
-		"immune": 	 []
-	},
-	{
-		"id": 14,
-		"name": "Acero",
-		"weak": 	 [1, 6, 9],
-		"resistant": [0, 3, 7, 8, 10, 11, 12, 14, 16],
-		"immune": 	 [15]
-	},
-	{
-		"id": 15,
-		"name": "Veneno",
-		"weak": 	 [2, 9],
-		"resistant": [1, 3, 11, 15],
-		"immune": 	 []
-	},
-	{
-		"id": 16,
-		"name": "Dragón",
-		"weak": 	 [3, 7, 16],
-		"resistant": [6, 8, 11, 12, 13, 17, 18],
-		"immune": 	 []
-	},
-	{
-		"id": 17,
-		"name": "Demónio",
-		"weak": 	 [18],
-		"resistant": [3, 9, 11, 12],
-		"immune": 	 [6, 17]
-	},
-	{
-		"id": 18,
-		"name": "Divino",
-		"weak": 	 [17],
-		"resistant": [3, 9, 11, 12],
-		"immune": 	 [8, 18]
-	}
-]
-
-
-
-
-
-
-
+0: {
+	"name": "Normal",
+	"weak": 	 [1],
+	"resistant": [],
+	"immune": 	 [4]
+},
+1: {
+	"name": "Lucha",
+	"weak": 	 [2, 3, 12],
+	"resistant": [5, 10, 11],
+	"immune": 	 []
+},
+2: {
+	"name": "Psíquico",
+	"weak": 	 [4, 5, 11],
+	"resistant": [1, 2, 3],
+	"immune": 	 []
+},
+3: {
+	"name": "Mágico",
+	"weak": 	 [3, 15, 18],
+	"resistant": [2, 4],
+	"immune": 	 [16]
+},
+4: {
+	"name": "Fantasma",
+	"weak": 	 [4, 5, 17],
+	"resistant": [11, 15],
+	"immune": 	 [0, 1]
+},
+5: {
+	"name": "Siniestro",
+	"weak": 	 [1, 3, 17, 18],
+	"resistant": [4, 5],
+	"immune": 	 [2]
+},
+6: {
+	"name": "Fuego",
+	"weak": 	 [8, 9, 10, 12, 17],
+	"resistant": [6, 7, 11],
+	"immune": 	 []
+},
+7: {
+	"name": "Hielo",
+	"weak": 	 [6, 10, 14],
+	"resistant": [7, 11],
+	"immune": 	 []
+},
+8: {
+	"name": "Agua",
+	"weak": 	 [11, 13, 18],
+	"resistant": [7, 8, 14],
+	"immune": 	 []
+},
+9: {
+	"name": "Tierra",
+	"weak": 	 [8, 11, 12],
+	"resistant": [10],
+	"immune": 	 [13, 15]
+},
+10: {
+	"name": "Roca",
+	"weak": 	 [7, 8, 9, 11, 14],
+	"resistant": [6, 10, 12],
+	"immune": 	 []
+},
+11: {
+	"name": "Naturaleza",
+	"weak": 	 [6, 7, 11, 15],
+	"resistant": [8, 9, 12, 13],
+	"immune": 	 []
+},
+12: {
+	"name": "Viento",
+	"weak": 	 [7, 13],
+	"resistant": [1, 12],
+	"immune": 	 [0]
+},
+13: {
+	"name": "Eléctrico",
+	"weak": 	 [9],
+	"resistant": [13],
+	"immune": 	 []
+},
+14: {
+	"name": "Acero",
+	"weak": 	 [1, 6, 9],
+	"resistant": [0, 3, 7, 8, 10, 11, 12, 14, 16],
+	"immune": 	 [15]
+},
+15: {
+	"name": "Veneno",
+	"weak": 	 [2, 9],
+	"resistant": [1, 3, 11, 15],
+	"immune": 	 []
+},
+16: {
+	"name": "Dragón",
+	"weak": 	 [3, 7, 16],
+	"resistant": [6, 8, 11, 12, 13, 17, 18],
+	"immune": 	 []
+},
+17: {
+	"name": "Demónio",
+	"weak": 	 [18],
+	"resistant": [3, 9, 11, 12],
+	"immune": 	 [6, 17]
+},
+18: {
+	"name": "Divino",
+	"weak": 	 [17],
+	"resistant": [3, 9, 11, 12],
+	"immune": 	 [8, 18]
+}
 

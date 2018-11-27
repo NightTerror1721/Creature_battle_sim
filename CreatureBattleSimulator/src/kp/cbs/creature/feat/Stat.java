@@ -6,6 +6,7 @@
 package kp.cbs.creature.feat;
 
 import kp.cbs.creature.Nature;
+import kp.cbs.utils.RNG;
 import kp.cbs.utils.Utils;
 import kp.udl.autowired.Property;
 
@@ -15,13 +16,13 @@ import kp.udl.autowired.Property;
  */
 public abstract class Stat extends BaseFeature
 {
-    @Property
+    @Property(set = "setBasePoints")
     protected int base = 1;
     
-    @Property(name = "genetic")
+    @Property(name = "genetic", set = "setGeneticPoints")
     protected int gen;
     
-    @Property(name = "ability")
+    @Property(name = "ability", set = "setAbilityPoints")
     protected int ab;
     
     private int value;
@@ -42,5 +43,10 @@ public abstract class Stat extends BaseFeature
     
     final void setValue(int value) { this.value = Math.max(0, value); }
     public final int getValue() { return value; }
+    
+    final void fillRandom(RNG rng)
+    {
+        
+    }
     
 }

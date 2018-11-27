@@ -1,3 +1,5 @@
+"name": "",
+"race": "Humano Joven",
 "feats": {
     "hp": {
         "base": 1,
@@ -32,7 +34,7 @@
     }
 },
 "exp": {
-    "growth": "NORMAL",
+    "growth": "PARABOLIC",
     "level": 100,
-    "experience": 1000000
+    "experience": 1059860
 }
