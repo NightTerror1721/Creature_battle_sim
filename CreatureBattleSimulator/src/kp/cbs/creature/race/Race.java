@@ -51,7 +51,7 @@ public final class Race
     ElementalType type2;
     
     
-    @Property(set = "__setGrowth")
+    @Property(set = "__setGrowth", invalidEnumValue = "NORMAL")
     Growth growth;
     
     

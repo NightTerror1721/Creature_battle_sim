@@ -1,6 +1,6 @@
 "name": "",
 "race": "Humano Joven",
-"feats": {
+"features": {
     "hp": {
         "base": 1,
         "genetic": 0,
@@ -34,7 +34,8 @@
     }
 },
 "exp": {
-    "growth": "PARABOLIC",
+    "growth": 3,
     "level": 100,
     "experience": 1059860
-}
+},
+"nature": 0

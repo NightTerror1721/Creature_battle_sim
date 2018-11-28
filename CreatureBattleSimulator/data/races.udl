@@ -9,6 +9,6 @@
 		"speed_base": 45,
 		"primary_type": 0,
 		"secondary_type": 1,
-		"growth": "PARABOLIC"
+		"growth": 3
 	}
 ]

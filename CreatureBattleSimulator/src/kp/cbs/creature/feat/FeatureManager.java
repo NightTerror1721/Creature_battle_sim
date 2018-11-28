@@ -23,9 +23,6 @@ public final class FeatureManager
     @Property private NormalStat.SpecialDefense specialDefense;
     @Property private NormalStat.Speed speed;
     
-    private PercentageFeature accuracy;
-    private PercentageFeature evasion;
-    
     private FeatureManager() {}
     
     public static final FeatureManager create()
@@ -39,9 +36,6 @@ public final class FeatureManager
         fm.specialDefense = new NormalStat.SpecialDefense();
         fm.speed = new NormalStat.Speed();
         
-        fm.accuracy = new PercentageFeature();
-        fm.evasion = new PercentageFeature();
-        
         return fm;
     }
     
@@ -51,9 +45,6 @@ public final class FeatureManager
     public final NormalStat getSpecialAttack() { return specialAttack; }
     public final NormalStat getSpecialDefense() { return specialDefense; }
     public final NormalStat getSpeed() { return speed; }
-    
-    public final PercentageFeature getAccuracy() { return accuracy; }
-    public final PercentageFeature getEvasion() { return evasion; }
     
     public final Stat getStat(StatId statId)
     {
@@ -76,9 +67,6 @@ public final class FeatureManager
         specialAttack.clearAlterations();
         specialDefense.clearAlterations();
         speed.clearAlterations();
-        
-        accuracy.clearAlterations();
-        evasion.clearAlterations();
     }
     
     public final void update(int level, Nature nature)
@@ -106,9 +94,6 @@ public final class FeatureManager
     private static FeatureManager injector()
     {
         FeatureManager fm = new FeatureManager();
-        
-        fm.accuracy = new PercentageFeature();
-        fm.evasion = new PercentageFeature();
         
         return fm;
     }
