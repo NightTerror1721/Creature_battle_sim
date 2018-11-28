@@ -8,6 +8,7 @@ package kp.cbs.battle;
 import java.util.Objects;
 import kp.cbs.battle.cmd.BattleCommandManager;
 import kp.cbs.creature.Creature;
+import kp.cbs.utils.RNG;
 
 /**
  *
@@ -17,15 +18,17 @@ public final class FighterTurnState
 {
     public final Creature self, enemy;
     public final BattleCommandManager bcm;
-    private final int turn;
-    private final boolean turnEnd;
+    public final RNG rng;
+    private int turn;
+    private boolean turnEnd;
     private boolean canAttack;
     
-    public FighterTurnState(Creature self, Creature enemy, BattleCommandManager bcm, int turn, boolean turnEnd)
+    public FighterTurnState(Creature self, Creature enemy, BattleCommandManager bcm, RNG rng, int turn, boolean turnEnd)
     {
         this.self = Objects.requireNonNull(self);
         this.enemy = Objects.requireNonNull(enemy);
         this.bcm = Objects.requireNonNull(bcm);
+        this.rng = Objects.requireNonNull(rng);
         this.turn = turn;
         this.turnEnd = turnEnd;
         this.canAttack = true;
@@ -36,4 +39,11 @@ public final class FighterTurnState
     public final boolean canAttack() { return canAttack; }
     
     public final void dissableAttack() { this.canAttack = false; }
+    
+    final void forward()
+    {
+        if(turnEnd)
+            turn++;
+        turnEnd = !turnEnd;
+    }
 }

@@ -100,6 +100,12 @@ public final class BattleCommandManager implements Iterable<BattleCommand>
     }
     
     
+    public final BattleCommandManager playSound(String sound)
+    {
+        return addCommand(BattleCommandType.PLAY_SOUND, sound);
+    }
+    
+    
     public final BattleCommandManager waitTime(long millis)
     {
         return addCommand(BattleCommandType.WAIT, millis);

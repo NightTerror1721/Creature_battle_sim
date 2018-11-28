@@ -7,6 +7,7 @@ package kp.cbs.utils;
 
 import kp.cbs.creature.Growth;
 import kp.cbs.creature.Nature;
+import kp.cbs.creature.elements.Effectivity;
 import kp.cbs.creature.feat.StatId;
 
 /**
@@ -101,5 +102,60 @@ public final class Formula
         int cb = (int) Math.pow(killedLevel + userLevel + 10, 5 / 2);
         return (int) ((fix * ca / cb + 1) * bonus);
         //return (int) (base * killedLevel * bonus / 7);
+    }
+    
+    
+    public static final int baseDamage(
+            RNG rng,
+            int level,
+            int power,
+            int attack,
+            int defense,
+            int criticalHit,
+            boolean burned,
+            boolean stab,
+            Effectivity eftype1,
+            Effectivity eftype2)
+    {
+        level = Utils.range(1, 100, level);
+        power = Utils.range(1, 255, power);
+        attack = Utils.range(1, 9999, attack);
+        defense = Utils.range(1, 9999, defense);
+        criticalHit = Utils.range(0, 5, criticalHit);
+        
+        // base
+        int dam = ((level * 2 / 5) + 2) * power * attack / 5 / defense * 2;
+        
+        // burned
+        dam = (burned ? dam / 2 : dam) + 20;
+        
+        // criticalHit
+        if(isCriticalHit(rng, criticalHit))
+            dam = dam * 3 / 2;
+        
+        // stab
+        if(stab)
+            dam = dam * 3 / 2;
+        
+        // types
+        dam *= Effectivity.combinedMultiplier(eftype1, eftype2);
+        
+        if(dam < 1)
+            dam = 1;
+        
+        return dam;
+    }
+    
+    private static boolean isCriticalHit(RNG rng, int ratio)
+    {
+        switch(ratio)
+        {
+            default: return false;
+            case 1: return rng.d16(1);
+            case 2: return rng.d8(1);
+            case 3: return rng.d4(1);
+            case 4: return rng.d2(1);
+            case 5: return true;
+        }
     }
 }

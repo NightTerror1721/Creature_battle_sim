@@ -19,23 +19,18 @@ import kp.udl.exception.UDLException;
  */
 public final class ElementalType
 {
-    private static final Float EF_WEAK = 2f;
-    private static final float EF_NORMAL = 1f;
-    private static final Float EF_RESISTANT = 0.5f;
-    private static final Float EF_IMMUNE = 0f;
-    
     private final int id;
     private final String name;
-    private final HashMap<Integer, Float> effectivity = new HashMap<>();
+    private final HashMap<Integer, Effectivity> effectivity = new HashMap<>();
     
     private ElementalType(int id, UDLValue base)
     {
         this.id = id;
         this.name = base.getString("name");
         
-        initEffectivities(base, "weak", EF_WEAK);
-        initEffectivities(base, "resistant", EF_RESISTANT);
-        initEffectivities(base, "immune", EF_IMMUNE);
+        initEffectivities(base, "weak", Effectivity.VERY_EFFECTIVE);
+        initEffectivities(base, "resistant", Effectivity.NOT_VERY_EFFECTIVE);
+        initEffectivities(base, "immune", Effectivity.NOT_EFFECTIVE);
     }
     private ElementalType() 
     {
@@ -43,7 +38,7 @@ public final class ElementalType
         this.name = "Desconocido";
     }
     
-    private void initEffectivities(UDLValue base, String name, Float effectivity)
+    private void initEffectivities(UDLValue base, String name, Effectivity effectivity)
     {
         for(UDLValue value : base.getList(name))
             this.effectivity.put(value.getInt(), effectivity);
@@ -53,9 +48,9 @@ public final class ElementalType
     
     public final String getName() { return name; }
     
-    public final float getEffectivity(ElementalType attackType)
+    public final Effectivity getEffectivity(ElementalType attackType)
     {
-        return effectivity.getOrDefault(attackType.id, EF_NORMAL);
+        return effectivity.getOrDefault(attackType.id, Effectivity.NORMAL_EFFECTIVE);
     }
     
     public final boolean equals(ElementalType et) { return id == et.id; }

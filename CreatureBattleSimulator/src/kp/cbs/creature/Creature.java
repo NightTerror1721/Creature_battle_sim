@@ -6,6 +6,10 @@
 package kp.cbs.creature;
 
 import java.util.Objects;
+import kp.cbs.battle.FighterTurnState;
+import kp.cbs.creature.altered.AlteredState;
+import kp.cbs.creature.altered.AlteredStateId;
+import kp.cbs.creature.altered.AlteredStateManager;
 import kp.cbs.creature.feat.FeatureManager;
 import kp.cbs.creature.feat.HealthPoints;
 import kp.cbs.creature.feat.NormalStat;
@@ -42,6 +46,8 @@ public final class Creature
     
     private final StateManager state = new StateManager();
     
+    private final AlteredStateManager altered = new AlteredStateManager();
+    
     private int fighterId;
     
     private Creature() {}
@@ -77,6 +83,12 @@ public final class Creature
     public final NormalStat getSpecialDefense() { return feats.getSpecialDefense(); }
     public final NormalStat getSpeed() { return feats.getSpeed(); }
     
+    public final int getMaxHealthPoints() { return feats.getHealthPoints().getMaxHealthPoints(); }
+    public final int getCurrentHealthPoints() { return feats.getHealthPoints().getCurrentHealthPoints(); }
+    
+    public final int getPercentageMaxHealthPoints(float percentage) { return (int) (getMaxHealthPoints() * Math.abs(percentage)); }
+    public final int getPercentageCurrentHealthPoints(float percentage) { return (int) (getCurrentHealthPoints() * Math.abs(percentage)); }
+    
     public final Stat getStat(StatId statId) { return feats.getStat(statId); }
     
     public final ExperienceManager getExperienceManager() { return exp; }
@@ -97,6 +109,12 @@ public final class Creature
     
     public final void setIntimidated(boolean flag) { state.setIntimidated(flag); }
     public final boolean isIntimidated() { return state.isIntimidated(); }
+    
+    public final AlteredStateManager getAlterationManager() { return altered; }
+    
+    public final boolean isAlterationEnabled(AlteredStateId state) { return altered.isAlteredStateEnabled(state); }
+    public final void addAlteration(FighterTurnState state, AlteredState alteredState) { altered.addAlteredState(state, alteredState); }
+    public final void removeAlteration(FighterTurnState state, AlteredStateId alteredState) { altered.removeAlteredState(state, alteredState); }
     
     
     public final void setFighterId(int id) { this.fighterId = id; }

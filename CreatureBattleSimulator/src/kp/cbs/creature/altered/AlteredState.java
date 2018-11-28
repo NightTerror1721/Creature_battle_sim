@@ -5,15 +5,19 @@
  */
 package kp.cbs.creature.altered;
 
-import kp.cbs.battle.BattleUpdater;
+import kp.cbs.battle.FighterTurnState;
 
 /**
  *
  * @author Asus
  */
-public abstract class AlteredState implements BattleUpdater
+public abstract class AlteredState
 {
     public abstract AlteredStateId getId();
     
     public abstract boolean isEnabled();
+    
+    public abstract void start(FighterTurnState state);
+    public abstract void update(FighterTurnState state);
+    public abstract void end(FighterTurnState state);
 }

@@ -21,4 +21,8 @@ public enum AlteredStateId
     FREEZING,
     CURSE,
     NIGHTMARE;
+    
+    private static final AlteredStateId[] VALUES = values();
+    
+    public static final int count() { return VALUES.length; }
 }

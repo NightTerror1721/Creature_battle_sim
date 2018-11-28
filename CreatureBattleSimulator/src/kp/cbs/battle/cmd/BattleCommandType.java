@@ -18,5 +18,6 @@ public enum BattleCommandType
     STATE_MODIFICATION,
     ALTERATION,
     WEATHER_CHANGE,
+    PLAY_SOUND,
     WAIT,
 }
