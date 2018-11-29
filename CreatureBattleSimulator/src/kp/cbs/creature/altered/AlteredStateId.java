@@ -11,18 +11,28 @@ package kp.cbs.creature.altered;
  */
 public enum AlteredStateId
 {
-    CONFUSION,
-    PARALYSIS,
-    BURN,
-    POISONING,
-    INTOXICATION,
-    SLEEP,
-    SLEEPINESS,
-    FREEZING,
-    CURSE,
-    NIGHTMARE;
+    CONFUSION("Confusión"),
+    PARALYSIS("Parálisis"),
+    BURN("Quemadura"),
+    POISONING("Envenenamiento"),
+    INTOXICATION("Intoxicamiento"),
+    SLEEP("Sueño"),
+    SLEEPINESS("Somnolencia"),
+    FREEZING("Congelación"),
+    CURSE("Maldición"),
+    NIGHTMARE("Pesadillas");
+    
+    public final String name;
+    
+    private AlteredStateId(String name) { this.name = name; }
+    
+    public final String getName() { return name; }
     
     private static final AlteredStateId[] VALUES = values();
     
     public static final int count() { return VALUES.length; }
+    public static final AlteredStateId decode(int index)
+    {
+        return index < 0 || index >= VALUES.length ? CONFUSION : VALUES[index];
+    }
 }

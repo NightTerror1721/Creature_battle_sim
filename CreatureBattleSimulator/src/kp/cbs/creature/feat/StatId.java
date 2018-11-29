@@ -30,4 +30,18 @@ public enum StatId
     }
     
     public final String getName() { return name; }
+    
+    public static final StatId decode(int index)
+    {
+        switch(index)
+        {
+            default:
+            case 0: return HEALTH_POINTS;
+            case 1: return ATTACK;
+            case 2: return DEFENSE;
+            case 3: return SPECIAL_ATTACK;
+            case 4: return SPECIAL_DEFENSE;
+            case 5: return SPEED;
+        }
+    }
 }

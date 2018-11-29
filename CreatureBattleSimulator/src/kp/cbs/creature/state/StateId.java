@@ -11,9 +11,15 @@ package kp.cbs.creature.state;
  */
 public enum StateId
 {
-    ACCURACY,
-    EVASION,
-    CRITICAL_HIT,
-    INTIMIDATED,
-    RESTING;
+    ACCURACY("Precisión"),
+    EVASION("Evasión"),
+    CRITICAL_HIT("Golpe Crítico"),
+    INTIMIDATED("Amedrentado"),
+    RESTING("Descansando");
+    
+    public final String name;
+    
+    private StateId(String name) { this.name = name; }
+    
+    public final String getName() { return name; }
 }

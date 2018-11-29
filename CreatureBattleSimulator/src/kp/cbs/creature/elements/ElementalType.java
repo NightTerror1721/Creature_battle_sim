@@ -90,6 +90,8 @@ public final class ElementalType
         return id < 0 || id >= ALL.length ? UNKNOWN : ALL[id];
     }
     
+    public static final int getElementalTypeCount() { return ALL.length; }
+    
     
     
     
