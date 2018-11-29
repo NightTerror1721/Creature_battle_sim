@@ -114,8 +114,7 @@ public final class Formula
             int criticalHit,
             boolean burned,
             boolean stab,
-            Effectivity eftype1,
-            Effectivity eftype2)
+            Effectivity eftype)
     {
         level = Utils.range(1, 100, level);
         power = Utils.range(1, 255, power);
@@ -138,7 +137,7 @@ public final class Formula
             dam = dam * 3 / 2;
         
         // types
-        dam *= Effectivity.combinedMultiplier(eftype1, eftype2);
+        dam *= eftype.multiplier();
         
         if(dam < 1)
             dam = 1;

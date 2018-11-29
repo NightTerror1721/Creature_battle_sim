@@ -11,12 +11,12 @@ import kp.cbs.battle.FighterTurnState;
  *
  * @author Asus
  */
-public final class Burn extends AlteredState
+public final class Nightmare extends AlteredState
 {
     private boolean enabled;
     
     @Override
-    public final AlteredStateId getId() { return AlteredStateId.BURN; }
+    public final AlteredStateId getId() { return AlteredStateId.NIGHTMARE; }
 
     @Override
     public final boolean isEnabled() { return enabled; }
@@ -24,10 +24,12 @@ public final class Burn extends AlteredState
     @Override
     public final void start(FighterTurnState state)
     {
-        enabled = true;
-        state.bcm.message(state.self.getName() + " se ha quemado.")
-                .waitTime(1000).playSound("effect_flamewheel2").waitTime(500);
-        state.self.removeAlteration(state, AlteredStateId.FREEZING);
+        if(state.self.isSleeping())
+        {
+            enabled = true;
+            state.bcm.message(state.self.getName() + " ha empezado a sufrir pesadillas.")
+                    .waitTime(1000).playSound("effect_curse").waitTime(500);
+        }
     }
 
     @Override
@@ -35,8 +37,8 @@ public final class Burn extends AlteredState
     {
         if(state.isTurnEnd() && enabled)
         {
-            state.bcm.message(state.self.getName() + " sufre daño por quedamuras...")
-                    .waitTime(1000).playSound("effect_flamewheel1").damage(state.self, state.self.getPercentageMaxHealthPoints(0.0625f));
+            state.bcm.message(state.self.getName() + " sufre pesadillas...")
+                    .waitTime(1000).playSound("effect_curse").damage(state.self, state.self.getPercentageMaxHealthPoints(0.25f));
         }
     }
 
@@ -44,8 +46,7 @@ public final class Burn extends AlteredState
     public final void end(FighterTurnState state)
     {
         enabled = false;
-        state.bcm.message(state.self.getName() + " ya no está quemado.")
+        state.bcm.message(state.self.getName() + " dejó de sufrir pesadillas.")
                 .waitTime(1000);
     }
-    
 }

@@ -35,7 +35,7 @@ public final class Intoxication extends AlteredState
         if(state.isTurnEnd() && severity > 0)
         {
             state.bcm.message(state.self.getName() + " se resiente por el veneno...")
-                    .waitTime(1000).damage(state.self, state.self.getPercentageMaxHealthPoints(severity / 16f));
+                    .waitTime(1000).playSound("poison").damage(state.self, state.self.getPercentageMaxHealthPoints(severity / 16f));
             severity++;
         }
     }

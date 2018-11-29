@@ -19,9 +19,7 @@ public final class Paralysis extends AlteredState
     public final AlteredStateId getId() { return AlteredStateId.PARALYSIS; }
 
     @Override
-    public final boolean isEnabled() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    public final boolean isEnabled() { return enabled; }
 
     @Override
     public final void start(FighterTurnState state)

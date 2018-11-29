@@ -11,5 +11,10 @@ package kp.cbs.battle.weather;
  */
 public enum WeatherId
 {
-    NORMAL;
+    RAIN,
+    INTENSE_SUN,
+    SANDSTORM,
+    HAIL,
+    FOG,
+    ELECTRIC_STORM;
 }

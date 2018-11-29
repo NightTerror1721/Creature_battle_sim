@@ -5,11 +5,14 @@
  */
 package kp.cbs.creature;
 
+import java.util.List;
 import java.util.Objects;
 import kp.cbs.battle.FighterTurnState;
 import kp.cbs.creature.altered.AlteredState;
 import kp.cbs.creature.altered.AlteredStateId;
 import kp.cbs.creature.altered.AlteredStateManager;
+import kp.cbs.creature.elements.ElementalManager;
+import kp.cbs.creature.elements.ElementalType;
 import kp.cbs.creature.feat.FeatureManager;
 import kp.cbs.creature.feat.HealthPoints;
 import kp.cbs.creature.feat.NormalStat;
@@ -43,6 +46,8 @@ public final class Creature
     
     @Property(set = "setNature", invalidEnumValue = "HARDY")
     private Nature nature = Nature.HARDY;
+    
+    private final ElementalManager types = new ElementalManager();
     
     private final StateManager state = new StateManager();
     
@@ -116,6 +121,27 @@ public final class Creature
     public final void addAlteration(FighterTurnState state, AlteredState alteredState) { altered.addAlteredState(state, alteredState); }
     public final void removeAlteration(FighterTurnState state, AlteredStateId alteredState) { altered.removeAlteredState(state, alteredState); }
     
+    public final boolean isConfused() { return altered.isAlteredStateEnabled(AlteredStateId.CONFUSION); }
+    public final boolean isParalyzed() { return altered.isAlteredStateEnabled(AlteredStateId.PARALYSIS); }
+    public final boolean isBurned() { return altered.isAlteredStateEnabled(AlteredStateId.BURN); }
+    public final boolean isPoisoned() { return altered.isAlteredStateEnabled(AlteredStateId.POISONING); }
+    public final boolean isIntoxicated() { return altered.isAlteredStateEnabled(AlteredStateId.INTOXICATION); }
+    public final boolean isSleeping() { return altered.isAlteredStateEnabled(AlteredStateId.SLEEP); }
+    public final boolean isSleepiness() { return altered.isAlteredStateEnabled(AlteredStateId.SLEEPINESS); }
+    public final boolean isFrozen() { return altered.isAlteredStateEnabled(AlteredStateId.FREEZING); }
+    public final boolean isCursed() { return altered.isAlteredStateEnabled(AlteredStateId.CURSE); }
+    public final boolean isWithNightmares() { return altered.isAlteredStateEnabled(AlteredStateId.NIGHTMARE); }
+    
+    
+    public final ElementalManager getElementalTypeManager() { return types; }
+    public final ElementalType getPrimaryType() { return types.getPrimaryType(); }
+    public final ElementalType getSecondaryType() { return types.getSecondaryType(); }
+    public final List<ElementalType> getAllTypes() { return types.getAllTypes(); }
+    public final void replaceAllTypesBy(ElementalType type) { types.replaceTypesBy(type); }
+    public final void addTemporaryType(ElementalType type) { types.addTemporaryType(type); }
+    public final boolean hasType(ElementalType type) { return types.has(type); }
+    public final boolean hasAnyType(ElementalType... types) { return this.types.has(types); }
+    
     
     public final void setFighterId(int id) { this.fighterId = id; }
     public final int getFighterId() { return fighterId; }
@@ -129,7 +155,9 @@ public final class Creature
     
     public final void clearAll()
     {
-        
+        feats.clearAllAlterations();
+        state.clearAllStates();
+        altered.clearAllAlterations();
     }
     
     

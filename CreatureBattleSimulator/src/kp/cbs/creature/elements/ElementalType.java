@@ -28,7 +28,7 @@ public final class ElementalType
         this.id = id;
         this.name = base.getString("name");
         
-        initEffectivities(base, "weak", Effectivity.VERY_EFFECTIVE);
+        initEffectivities(base, "weak", Effectivity.SUPER_EFFECTIVE);
         initEffectivities(base, "resistant", Effectivity.NOT_VERY_EFFECTIVE);
         initEffectivities(base, "immune", Effectivity.NOT_EFFECTIVE);
     }

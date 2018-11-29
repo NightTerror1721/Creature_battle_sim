@@ -56,6 +56,7 @@ public final class Sleep extends AlteredState
         turns = 0;
         state.bcm.message(state.self.getName() + " despertó.")
                 .waitTime(1000);
+        state.self.getAlterationManager().removeAlteredState(state, AlteredStateId.NIGHTMARE);
     }
     
 }

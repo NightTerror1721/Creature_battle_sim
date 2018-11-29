@@ -7,6 +7,7 @@ package kp.cbs.battle;
 
 import java.util.Objects;
 import kp.cbs.battle.cmd.BattleCommandManager;
+import kp.cbs.battle.weather.WeatherId;
 import kp.cbs.creature.Creature;
 import kp.cbs.utils.RNG;
 
@@ -22,8 +23,9 @@ public final class FighterTurnState
     private int turn;
     private boolean turnEnd;
     private boolean canAttack;
+    private WeatherId weather;
     
-    public FighterTurnState(Creature self, Creature enemy, BattleCommandManager bcm, RNG rng, int turn, boolean turnEnd)
+    public FighterTurnState(Creature self, Creature enemy, BattleCommandManager bcm, RNG rng, int turn, boolean turnEnd, WeatherId weather)
     {
         this.self = Objects.requireNonNull(self);
         this.enemy = Objects.requireNonNull(enemy);
@@ -32,11 +34,14 @@ public final class FighterTurnState
         this.turn = turn;
         this.turnEnd = turnEnd;
         this.canAttack = true;
+        this.weather = weather;
     }
     
     public final int getTurn() { return turn; }
     public final boolean isTurnEnd() { return turnEnd; }
     public final boolean canAttack() { return canAttack; }
+    public final WeatherId getWeather() { return weather; }
+    public final void setWeather(WeatherId weather) { this.weather = weather; }
     
     public final void dissableAttack() { this.canAttack = false; }
     

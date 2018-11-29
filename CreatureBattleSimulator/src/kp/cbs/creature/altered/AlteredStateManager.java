@@ -39,6 +39,12 @@ public final class AlteredStateManager implements BattleUpdater
         int id = alteredState.ordinal();
         return states[id] != null && states[id].isEnabled();
     }
+    
+    public final void clearAllAlterations()
+    {
+        for(int i=0;i<states.length;i++)
+            states[i] = null;
+    }
 
     @Override
     public final void battleUpdate(FighterTurnState state)

@@ -9,12 +9,12 @@ package kp.cbs.creature.elements;
  *
  * @author Asus
  */
-public enum Effectivity
+public final class Effectivity
 {
-    NOT_EFFECTIVE(0f),
-    NOT_VERY_EFFECTIVE(0.5f),
-    NORMAL_EFFECTIVE(1f),
-    VERY_EFFECTIVE(2f);
+    public static final Effectivity NOT_EFFECTIVE = new Effectivity(0f);
+    public static final Effectivity NOT_VERY_EFFECTIVE = new Effectivity(0.5f);
+    public static final Effectivity NORMAL_EFFECTIVE = new Effectivity(1f);
+    public static final Effectivity SUPER_EFFECTIVE = new Effectivity(2f);
     
     private final float multiplier;
     
@@ -25,12 +25,17 @@ public enum Effectivity
     
     public final float multiplier() { return multiplier; }
     
-    public static final float combinedMultiplier(Effectivity e1, Effectivity e2)
+    public final Effectivity combine(Effectivity e)
     {
-        return e1.multiplier * e2.multiplier;
+        return new Effectivity(multiplier * e.multiplier);
     }
     
-    public static final Effectivity compute(float multiplier)
+    public final boolean isNotEffective() { return multiplier <= 0f; }
+    public final boolean isNotVeryEffective() { return multiplier > 0f && multiplier < 1f; }
+    public final boolean isNormalEffective() { return multiplier == 1f; }
+    public final boolean isSuperEffective() { return multiplier > 1f; }
+    
+    /*public static final Effectivity compute(float multiplier)
     {
         if(multiplier <= 0f)
             return NOT_EFFECTIVE;
@@ -39,5 +44,5 @@ public enum Effectivity
         else if(multiplier > 1f)
             return VERY_EFFECTIVE;
         return NORMAL_EFFECTIVE;
-    }
+    }*/
 }

@@ -35,7 +35,7 @@ public final class Poisoning extends AlteredState
         if(state.isTurnEnd() && enabled)
         {
             state.bcm.message(state.self.getName() + " se resiente por el veneno...")
-                    .waitTime(1000).damage(state.self, state.self.getPercentageMaxHealthPoints(0.125f));
+                    .waitTime(1000).playSound("poison").damage(state.self, state.self.getPercentageMaxHealthPoints(0.125f));
         }
     }
 

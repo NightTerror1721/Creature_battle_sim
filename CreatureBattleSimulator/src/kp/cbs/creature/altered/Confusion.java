@@ -53,9 +53,8 @@ public final class Confusion extends AlteredState
                                     state.self.getAttack().getValue(),
                                     state.self.getDefense().getValue(),
                                     0, //critical hit
-                                    state.self.isAlterationEnabled(AlteredStateId.BURN), //is burn
+                                    state.self.isBurned(), //is burn
                                     false, //stab
-                                    Effectivity.NORMAL_EFFECTIVE,
                                     Effectivity.NORMAL_EFFECTIVE));
                 }
             }
