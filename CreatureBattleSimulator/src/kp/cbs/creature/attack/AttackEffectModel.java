@@ -5,14 +5,20 @@
  */
 package kp.cbs.creature.attack;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import kp.cbs.creature.attack.flag.Flag;
 import kp.cbs.creature.attack.flag.FlagModel;
+import kp.cbs.utils.Serializer;
+import kp.cbs.utils.Utils;
 import kp.udl.autowired.InjectOptions;
 import kp.udl.autowired.Property;
+import kp.udl.data.UDLValue;
+import kp.udl.exception.UDLException;
 
 /**
  *
@@ -35,6 +41,7 @@ public class AttackEffectModel
     
     private final LinkedList<DescNode> desc = new LinkedList<>();
     
+    private AttackEffectModel() {}
     
     public final int getId() { return id; }
     public final String getName() { return name; }
@@ -138,5 +145,38 @@ public class AttackEffectModel
                 return "";
             return effect.getFlag(flagId).toString();
         }
+    }
+    
+    
+    
+    
+    private static final HashMap<Integer, AttackEffectModel> MODELS;
+    private static final AttackEffectModel INVALID;
+    
+    public static final AttackEffectModel getModel(int id)
+    {
+        return MODELS.getOrDefault(id, INVALID);
+    }
+    
+    static {
+        MODELS = new HashMap<>();
+        try
+        {
+            UDLValue source = Serializer.read(Utils.getInnerInputStream("/kp/cbs/config/AttackEffects.udl"));
+            source.getList("effects").stream()
+                    .map((base) -> Serializer.inject(AttackEffectModel.class, base))
+                    .forEachOrdered((model) -> MODELS.put(model.id, model));
+        }
+        catch(IOException | UDLException ex)
+        {
+            ex.printStackTrace(System.err);
+            System.exit(1);
+        }
+        
+        INVALID = new AttackEffectModel();
+        INVALID.id = -1;
+        INVALID.name = "Invalid";
+        INVALID.flags = new FlagModel[0];
+        INVALID.rawDescription = "";
     }
 }

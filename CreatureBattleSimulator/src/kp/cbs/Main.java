@@ -8,6 +8,7 @@ package kp.cbs;
 import java.io.File;
 import java.io.IOException;
 import kp.cbs.creature.Creature;
+import kp.cbs.creature.attack.AttackEffectModel;
 import kp.cbs.creature.elements.ElementalType;
 import kp.cbs.creature.race.Race;
 import kp.cbs.utils.Serializer;
@@ -32,5 +33,7 @@ public final class Main
             System.out.println(e);
         
         Race.getAllRaces();
+        
+        AttackEffectModel.getModel(0);
     }
 }

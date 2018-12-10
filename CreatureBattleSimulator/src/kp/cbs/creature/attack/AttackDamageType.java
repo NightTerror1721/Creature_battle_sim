@@ -3,21 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package kp.cbs.creature.attack.flag;
+package kp.cbs.creature.attack;
 
 /**
  *
  * @author Asus
  */
-public enum FlagType
+public enum AttackDamageType
 {
-    DEC_PERCENT,
-    BYTE_PERCENT,
-    POWER,
-    TARGET,
-    DAMAGE_TYPE,
-    ELEMENT,
-    STAT,
-    PRECISION,
-    ALTERED;
+    PHYSIC,
+    SPECIAL;
 }

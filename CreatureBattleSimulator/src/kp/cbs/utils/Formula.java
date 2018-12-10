@@ -118,12 +118,12 @@ public final class Formula
     {
         level = Utils.range(1, 100, level);
         power = Utils.range(1, 255, power);
-        attack = Utils.range(1, 9999, attack);
-        defense = Utils.range(1, 9999, defense);
+        attack = Utils.range(5, 9999, attack);
+        defense = Utils.range(5, 9999, defense);
         criticalHit = Utils.range(0, 5, criticalHit);
         
         // base
-        int dam = ((level * 2 / 5) + 2) * power * attack / 5 / defense * 2;
+        int dam = ((level * 4 / 5) + 4) * power * attack / 5 / defense;
         
         // burned
         dam = (burned ? dam / 2 : dam) + 20;

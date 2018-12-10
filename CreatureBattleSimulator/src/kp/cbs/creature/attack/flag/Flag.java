@@ -7,6 +7,7 @@ package kp.cbs.creature.attack.flag;
 
 import java.util.Objects;
 import kp.cbs.creature.altered.AlteredStateId;
+import kp.cbs.creature.attack.AttackDamageType;
 import kp.cbs.creature.elements.ElementalType;
 import kp.cbs.creature.feat.StatId;
 import kp.cbs.creature.state.StateId;
@@ -40,6 +41,7 @@ public final class Flag
             case BYTE_PERCENT: return Utils.range(-1, 256, value);
             case POWER: return Utils.range(1, 255, value);
             case TARGET: return Utils.range(0, 1, value);
+            case DAMAGE_TYPE: return Utils.range(0, 1, value);
             case ELEMENT: return Utils.range(0, ElementalType.getElementalTypeCount() - 1, value);
             case STAT: return Utils.range(1, 5, value);
             case PRECISION: return Utils.range(0, 1, value);
@@ -56,6 +58,7 @@ public final class Flag
             case BYTE_PERCENT: return value;
             case POWER: return value;
             case TARGET: return value == 0;
+            case DAMAGE_TYPE: return value == 0 ? AttackDamageType.PHYSIC : AttackDamageType.SPECIAL;
             case ELEMENT: return ElementalType.getElementalType(value);
             case STAT: return StatId.decode(value);
             case PRECISION: return value == 0 ? StateId.ACCURACY : StateId.EVASION;
@@ -85,6 +88,7 @@ public final class Flag
             }
             case POWER: return value().toString();
             case TARGET: return getValue() ? "Objetivo" : "Usuario";
+            case DAMAGE_TYPE: return this.<AttackDamageType>getValue() == AttackDamageType.PHYSIC ? "Fiísico" : "Especial";
             case ELEMENT: return this.<ElementalType>getValue().getName();
             case STAT: return this.<StatId>getValue().getName();
             case PRECISION: this.<StateId>getValue().getName();
