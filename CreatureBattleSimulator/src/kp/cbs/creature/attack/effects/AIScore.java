@@ -5,6 +5,7 @@
  */
 package kp.cbs.creature.attack.effects;
 
+import kp.cbs.utils.RNG;
 import kp.cbs.utils.Utils;
 
 /**
@@ -27,6 +28,12 @@ public final class AIScore implements Comparable<AIScore>
     public final AIScore subtract(int value) { this.score = Math.max(I_MIN_SCORE, score - (value < 0 ? 0 : value)); return this; }
     public final AIScore multiply(float value) { this.score = Utils.range(I_MIN_SCORE, I_MAX_SCORE, (int) (score * (value < 0 ? -value : value))); return this; }
     public final AIScore divide(float value) { this.score = Utils.range(I_MIN_SCORE, I_MAX_SCORE, (int) (score / (value < 0 ? -value : value))); return this; }
+    
+    public final AIScore invert() { this.score = Utils.range(I_MIN_SCORE, I_MAX_SCORE, -score); return this; }
+    
+    public final AIScore maximize() { this.score = I_MAX_SCORE; return this; }
+    public final AIScore nullify() { this.score = 0; return this; }
+    public final AIScore minimize() { this.score = I_MIN_SCORE; return this; }
     
     public final boolean equals(AIScore score) { return this.score == score.score; }
     
@@ -100,4 +107,11 @@ public final class AIScore implements Comparable<AIScore>
     public static final AIScore third(boolean negative) { return new AIScore((negative ? -I_MAX_SCORE : I_MAX_SCORE) / 3); }
     public static final AIScore fourth(boolean negative) { return new AIScore((negative ? -I_MAX_SCORE : I_MAX_SCORE) / 4); }
     public static final AIScore eighth(boolean negative) { return new AIScore((negative ? -I_MAX_SCORE : I_MAX_SCORE) / 8); }
+    
+    public static final AIScore random(RNG rng, boolean negative)
+    {
+        int value = rng.d(I_MAX_SCORE + 1);
+        return new AIScore(negative ? -value : value);
+    }
+    public static final AIScore random(RNG rng) { return new AIScore(rng.d((I_MAX_SCORE + 1) * 2) - I_MAX_SCORE); }
 }

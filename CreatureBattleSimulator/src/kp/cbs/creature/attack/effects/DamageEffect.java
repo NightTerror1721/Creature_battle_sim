@@ -12,8 +12,26 @@ package kp.cbs.creature.attack.effects;
 public abstract class DamageEffect implements Effect
 {
     public static final DamageEffect NO_DAMAGE = NoDamageEffect.INSTANCE;
+    public static final DamageEffect LEVEL_DAMAGE = LevelDamageEffect.INSTANCE;
     
     public abstract DamageEffectType getType();
     
-    public enum DamageEffectType { NO_DAMAGE, PHYSICAL, SPECIAL, LEVEL, FIXED; }
+    public abstract DamageType getDamageType();
+    
+    public enum DamageEffectType
+    {
+        NO_DAMAGE,
+        NORMAL,
+        LEVEL,
+        FIXED,
+        HEAL;
+    }
+    
+    public enum DamageType
+    {
+        NO_DAMAGE,
+        PHYSICAL,
+        SPECIAL,
+        INDIRECT;
+    }
 }

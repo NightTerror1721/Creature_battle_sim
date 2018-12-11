@@ -7,6 +7,7 @@ package kp.cbs.creature.attack.effects;
 
 import kp.cbs.battle.FighterTurnState;
 import kp.cbs.creature.attack.AttackModel;
+import kp.cbs.creature.attack.AttackModel.AttackTurn;
 
 /**
  *
@@ -14,18 +15,21 @@ import kp.cbs.creature.attack.AttackModel;
  */
 public final class NoDamageEffect extends DamageEffect
 {
-    public static final NoDamageEffect INSTANCE = new NoDamageEffect();
+    static final NoDamageEffect INSTANCE = new NoDamageEffect();
     
     private NoDamageEffect() {}
     
     @Override
     public final DamageEffectType getType() { return DamageEffectType.NO_DAMAGE; }
+    
+    @Override
+    public final DamageType getDamageType() { return DamageType.NO_DAMAGE; }
 
     @Override
     public void apply(AttackModel attack, FighterTurnState state) {}
 
     @Override
-    public final AIScore computeAIScore(AttackModel attack, FighterTurnState state) { return AIScore.zero(); }
+    public final AIScore computeAIScore(AttackModel attack, AttackTurn turn, FighterTurnState state, AIIntelligence intel) { return AIScore.zero(); }
 
     @Override
     public final String generateDescription(AttackModel attack) { return ""; }

@@ -26,7 +26,8 @@ public final class Formula
     
     private static int statAbilityPoints(int level, int ab)
     {
-        return ab * level / 400;
+        //return ab * level / 400;
+        return ab * level * 160 / ((128 + ab) * 100);
     }
     
     private static int natureModification(StatId stat, Nature nature, int points)
@@ -64,12 +65,13 @@ public final class Formula
     
     private static int hpAbilityPoints(int level, int ab)
     {
-        return ab * level / 20;
+        //return ab * level / 20;
+        return ab * level * 160 / ((128 + ab) * 5);
     }
     
     public static final int hpValue(int level, int base, int gen, int ab)
     {
-        return 100 + hpBase(level, base, gen) + hpAbilityPoints(level, ab) + (level * 20);
+        return 200 + hpBase(level, base, gen) + hpAbilityPoints(level, ab) + (level * 20);
     }
     
     
@@ -111,25 +113,27 @@ public final class Formula
             int power,
             int attack,
             int defense,
-            int criticalHit,
+            boolean criticalHit,
             boolean burned,
             boolean stab,
             Effectivity eftype)
     {
+        if(eftype.isNotEffective())
+            return 0;
+        
         level = Utils.range(1, 100, level);
         power = Utils.range(1, 255, power);
         attack = Utils.range(5, 9999, attack);
         defense = Utils.range(5, 9999, defense);
-        criticalHit = Utils.range(0, 5, criticalHit);
         
         // base
         int dam = ((level * 4 / 5) + 4) * power * attack / 5 / defense;
         
         // burned
-        dam = (burned ? dam / 2 : dam) + 20;
+        dam = (burned ? dam / 2 : dam) + 40;
         
         // criticalHit
-        if(isCriticalHit(rng, criticalHit))
+        if(criticalHit)
             dam = dam * 3 / 2;
         
         // stab
@@ -145,9 +149,9 @@ public final class Formula
         return dam;
     }
     
-    private static boolean isCriticalHit(RNG rng, int ratio)
+    public static final boolean tryCriticalHit(RNG rng, int ratio)
     {
-        switch(ratio)
+        switch(Utils.range(0, 5, ratio))
         {
             default: return false;
             case 1: return rng.d16(1);

@@ -6,12 +6,18 @@
 package kp.cbs.creature.attack;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Pattern;
 import kp.cbs.battle.FighterTurnState;
+import kp.cbs.creature.attack.effects.AIIntelligence;
 import kp.cbs.creature.attack.effects.AIScore;
 import kp.cbs.creature.attack.effects.DamageEffect;
 import kp.cbs.creature.attack.effects.SecondaryEffect;
+import kp.cbs.creature.elements.ElementalType;
 import kp.cbs.utils.Utils;
 
 /**
@@ -29,6 +35,10 @@ public class AttackModel
     
     private int precision;
     
+    private int priority;
+    
+    private ElementalType type;
+    
     private AttackTurn[] turns = {};
     
     
@@ -44,8 +54,15 @@ public class AttackModel
     public final int getMaxPP() { return maxPP; }
     public final void setMaxPP(int pp) { this.maxPP = Utils.range(1, 40, pp); }
     
+    public final boolean isInfallible() { return precision < 1 || precision > 100; }
     public final int getPrecision() { return precision; }
     public final void setPrecision(int precision) { this.precision = Utils.range(0, 100, precision); }
+    
+    public final void setPriority(int priority) { this.priority = Utils.range(-7, 7, priority); }
+    public final int getPriority() { return priority; }
+    
+    public final ElementalType getElementalType() { return type == null ? ElementalType.UNKNOWN : type; }
+    public final void setElementalType(ElementalType type) { this.type = type == null ? ElementalType.UNKNOWN : type; }
     
     public final void setTurns(int turns)
     {
@@ -53,14 +70,14 @@ public class AttackModel
         {
             this.turns = new AttackTurn[Math.max(0, turns)];
             for(int i=0;i<this.turns.length;i++)
-                this.turns[i] = new AttackTurn();
+                this.turns[i] = new AttackTurn(i);
         }
         else
         {
             AttackTurn[] old = this.turns;
             this.turns = new AttackTurn[Math.max(0, turns)];
             for(int i = 0; i < this.turns.length; i++)
-                this.turns[i] = i < old.length ? old[i] : new AttackTurn();
+                this.turns[i] = i < old.length ? old[i] : new AttackTurn(i);
         }
     }
     public final int getTurnCount() { return turns.length; }
@@ -68,16 +85,29 @@ public class AttackModel
     public final AttackTurn[] getAllTurns() { return Arrays.copyOf(turns, turns.length); }
     
     
-    public final AIScore computeAIScore(FighterTurnState state)
+    public final AIScore computeAIScore(FighterTurnState state, AIIntelligence intel)
     {
         if(turns.length < 1)
             return AIScore.zero();
         
         AIScore[] scores = new AIScore[turns.length];
         for(int i=0;i<turns.length;i++)
-            scores[i] = turns[i].computeAIScore(state);
+            scores[i] = turns[i].computeAIScore(state, intel);
         
-        return AIScore.combine(scores);
+        AIScore score = AIScore.combine(scores);
+        if(intel.isNormalOrGreater())
+        {
+            if(isInfallible())
+                score.multiply(9f / 8f);
+            else score.multiply((100f + precision * 2f) / 300f);
+            
+            if(priority > 0)
+                score.multiply((71f + priority) / 64f);
+            else if(priority < 0)
+                score.multiply((63f + priority) / 64f);
+        }
+        
+        return score;
     }
     
     public final String generateDescription()
@@ -100,11 +130,43 @@ public class AttackModel
     
     public final class AttackTurn
     {
+        private final int id;
+        
         private String message = "";
+        
+        private int minHits = 1;
+        private int maxHits = 1;
         
         private DamageEffect dam = DamageEffect.NO_DAMAGE;
         
         private final LinkedList<SecondaryEffect> seffects = new LinkedList<>();
+        
+        private AttackTurn(int id) { this.id = id; }
+        
+        
+        public final int getTurnId() { return id; }
+        
+        public final String getMessage() { return message; }
+        public final void setMessage(String message) { this.message = message == null ? "" : message; }
+        
+        public final void setMaxHits(int hits) { this.maxHits = Utils.range(minHits, 16, hits); }
+        public final int getMaxHits() { return maxHits; }
+        
+        public final void setMinHits(int hits) { this.minHits = Utils.range(1, maxHits, hits); }
+        public final int getMinHits() { return minHits; }
+        
+        public final DamageEffect getDamageEffect() { return dam == null ? DamageEffect.NO_DAMAGE : dam; }
+        public final void setDamageEffect(DamageEffect dam) { this.dam = dam == null ? DamageEffect.NO_DAMAGE : dam; }
+        
+        public final int getSecondaryEffectCount() { return seffects.size(); }
+        public final SecondaryEffect getSecondaryEffect(int index) { return seffects.get(index); }
+        public final List<SecondaryEffect> getAllSecondaryEffects() { return Collections.unmodifiableList(seffects); }
+        public final Iterator<SecondaryEffect> getSecondaryEffectIterator() { return getAllSecondaryEffects().iterator(); }
+        public final Iterable<SecondaryEffect> getSecondaryEffectIterable() { return this::getSecondaryEffectIterator; }
+        public final void setSecondaryEffects(Collection<SecondaryEffect> seffects) { this.seffects.clear(); this.seffects.addAll(seffects); }
+        public final void addSecondaryEffect(SecondaryEffect effect) { this.seffects.add(effect); }
+        public final void clearSecondaryEffects() { this.seffects.clear(); }
+        
         
         public final void apply(FighterTurnState state)
         {
@@ -119,11 +181,11 @@ public class AttackModel
                     .forEachOrdered(se -> se.apply(AttackModel.this, state));
         }
         
-        private AIScore computeAIScore(FighterTurnState state)
+        private AIScore computeAIScore(FighterTurnState state, AIIntelligence intel)
         {
-            AIScore score = dam != null ? dam.computeAIScore(AttackModel.this, state) : AIScore.zero();
+            AIScore score = dam != null ? dam.computeAIScore(AttackModel.this, AttackTurn.this, state, intel) : AIScore.zero();
             for(SecondaryEffect se : seffects)
-                score = AIScore.concat(score, se.computeAIScore(AttackModel.this, state));
+                score = AIScore.concat(score, se.computeAIScore(AttackModel.this, AttackTurn.this, state, intel));
             return score;
         }
         

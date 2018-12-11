@@ -7,6 +7,7 @@ package kp.cbs.creature.attack.effects;
 
 import kp.cbs.battle.FighterTurnState;
 import kp.cbs.creature.attack.AttackModel;
+import kp.cbs.creature.attack.AttackModel.AttackTurn;
 
 /**
  *
@@ -16,7 +17,7 @@ public interface Effect
 {
     void apply(AttackModel attack, FighterTurnState state);
     
-    AIScore computeAIScore(AttackModel attack, FighterTurnState state);
+    AIScore computeAIScore(AttackModel attack, AttackTurn turn, FighterTurnState state, AIIntelligence intel);
     
     String generateDescription(AttackModel attack);
 }

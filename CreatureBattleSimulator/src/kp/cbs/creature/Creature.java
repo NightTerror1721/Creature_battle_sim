@@ -11,6 +11,7 @@ import kp.cbs.battle.FighterTurnState;
 import kp.cbs.creature.altered.AlteredState;
 import kp.cbs.creature.altered.AlteredStateId;
 import kp.cbs.creature.altered.AlteredStateManager;
+import kp.cbs.creature.elements.Effectivity;
 import kp.cbs.creature.elements.ElementalManager;
 import kp.cbs.creature.elements.ElementalType;
 import kp.cbs.creature.feat.FeatureManager;
@@ -94,6 +95,8 @@ public final class Creature
     public final int getPercentageMaxHealthPoints(float percentage) { return (int) (getMaxHealthPoints() * Math.abs(percentage)); }
     public final int getPercentageCurrentHealthPoints(float percentage) { return (int) (getCurrentHealthPoints() * Math.abs(percentage)); }
     
+    public final float getCurrentHealthPointsPercentage() { return (float) getCurrentHealthPoints() / getMaxHealthPoints(); }
+    
     public final Stat getStat(StatId statId) { return feats.getStat(statId); }
     
     public final ExperienceManager getExperienceManager() { return exp; }
@@ -141,6 +144,7 @@ public final class Creature
     public final void addTemporaryType(ElementalType type) { types.addTemporaryType(type); }
     public final boolean hasType(ElementalType type) { return types.has(type); }
     public final boolean hasAnyType(ElementalType... types) { return this.types.has(types); }
+    public final Effectivity effectivity(ElementalType type) { return types.effectivity(type); }
     
     
     public final void setFighterId(int id) { this.fighterId = id; }
