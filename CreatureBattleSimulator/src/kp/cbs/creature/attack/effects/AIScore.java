@@ -14,7 +14,7 @@ import kp.cbs.utils.Utils;
  */
 public final class AIScore implements Comparable<AIScore>
 {
-    private static final int I_MAX_SCORE = 65535;
+    private static final int I_MAX_SCORE = 65536;
     private static final int I_MIN_SCORE = -I_MAX_SCORE;
     
     private int score;
@@ -34,6 +34,38 @@ public final class AIScore implements Comparable<AIScore>
     public final AIScore maximize() { this.score = I_MAX_SCORE; return this; }
     public final AIScore nullify() { this.score = 0; return this; }
     public final AIScore minimize() { this.score = I_MIN_SCORE; return this; }
+    
+    public final AIScore addRandomPart(RNG rng, int value, boolean includeNegative)
+    {
+        int randValue = includeNegative
+                ? rng.d(Math.abs(value * 2)) - value
+                : rng.d(Math.abs(value));
+        return randValue >= 0 ? add(value) : subtract(-value);
+    }
+    
+    public final AIScore addIntelligenceRandomVariation(RNG rng, AIIntelligence intel)
+    {
+        if(intel.isGifted() || intel.isDummy())
+            return this;
+        
+        int max;
+        if(intel.isNormal())
+            max = 1536;
+        else if(intel.isHight())
+            max = 1024;
+        else if(intel.isVeryHight())
+            max = 512;
+        else max = 2048;
+        
+        int dummyRatio = AIIntelligence.GIFTED_RATIO - intel.getRatio();
+        int base = dummyRatio * max / AIIntelligence.GIFTED_RATIO;
+        float ratio = rng.d(base) / 8192;
+        
+        if(ratio > 0)
+            addRandomPart(rng, (int) (score * ratio), true);
+        
+        return this;
+    }
     
     public final boolean equals(AIScore score) { return this.score == score.score; }
     

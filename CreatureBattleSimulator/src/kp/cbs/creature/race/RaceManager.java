@@ -5,7 +5,6 @@
  */
 package kp.cbs.creature.race;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedList;
 import kp.cbs.utils.Serializer;
@@ -44,7 +43,7 @@ public final class RaceManager
         RaceManager manager;
         try
         {
-            manager = Serializer.inject(RaceManager.class, Serializer.read(new File("data/races.udl")));
+            manager = Serializer.inject(Serializer.read("data", "races.udl"), RaceManager.class);
         }
         catch(Throwable ex)
         {

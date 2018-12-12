@@ -9,8 +9,7 @@ package kp.cbs.creature.attack;
  *
  * @author Asus
  */
-public enum AttackDamageType
+public final class AttackManager
 {
-    PHYSIC,
-    SPECIAL;
+    
 }

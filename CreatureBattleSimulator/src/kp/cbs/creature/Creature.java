@@ -97,6 +97,9 @@ public final class Creature
     
     public final float getCurrentHealthPointsPercentage() { return (float) getCurrentHealthPoints() / getMaxHealthPoints(); }
     
+    public final boolean isAlive() { return getCurrentHealthPoints() > 0; }
+    public final boolean isFullHealth() { return getCurrentHealthPoints() >= getMaxHealthPoints(); }
+    
     public final Stat getStat(StatId statId) { return feats.getStat(statId); }
     
     public final ExperienceManager getExperienceManager() { return exp; }

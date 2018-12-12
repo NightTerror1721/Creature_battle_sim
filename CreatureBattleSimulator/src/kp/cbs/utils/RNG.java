@@ -69,6 +69,7 @@ public final class RNG
     public final int d512() { return rand.nextInt(512); }
     public final int d1000() { return rand.nextInt(1000); }
     public final int d1024() { return rand.nextInt(1024); }
+    public final int d2048() { return rand.nextInt(2048); }
     public final int d65536() { return rand.nextInt(65536); }
     public final int d(int sides) { return rand.nextInt(sides); }
     
@@ -96,6 +97,7 @@ public final class RNG
     public final boolean d512(int prob) { return d512() < prob; }
     public final boolean d1000(int prob) { return d1000() < prob; }
     public final boolean d1024(int prob) { return d1024() < prob; }
+    public final boolean d2048(int prob) { return d2048() < prob; }
     public final boolean d65536(int prob) { return d65536() < prob; }
     public final boolean d(int sides, int prob) { return d(sides) < prob; }
     
@@ -122,7 +124,7 @@ public final class RNG
     public final boolean d500(float prob) { return d500() < prob * 500; }
     public final boolean d512(float prob) { return d512() < prob * 512; }
     public final boolean d1000(float prob) { return d1000() < prob * 1000; }
-    public final boolean d1024(float prob) { return d1024() < prob * 1024; }
+    public final boolean d2048(float prob) { return d2048() < prob * 2048; }
     public final boolean d65536(float prob) { return d65536() < prob * 65536; }
     public final boolean d(int sides, float prob) { return d(sides) < prob * sides; }
 }

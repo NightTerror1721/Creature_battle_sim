@@ -200,6 +200,7 @@ public final class NormalDamageEffect extends DamageEffect
                     float percentage = getBackwardDamageOrAbsordb() / 256f;
                     dam *= percentage;
                     state.bcm.waitTime(1000)
+                            .playSound("heal")
                             .heal(self(state), dam)
                             .waitTime(500)
                             .message(self(state).getName() + " ha absorbido energia.");

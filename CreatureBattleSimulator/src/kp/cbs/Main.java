@@ -5,10 +5,8 @@
  */
 package kp.cbs;
 
-import java.io.File;
 import java.io.IOException;
 import kp.cbs.creature.Creature;
-import kp.cbs.creature.attack.AttackEffectModel;
 import kp.cbs.creature.elements.ElementalType;
 import kp.cbs.creature.race.Race;
 import kp.cbs.utils.Serializer;
@@ -25,15 +23,15 @@ public final class Main
             System.out.println("Experience gained in level " + i + ": " + Formula.experienceGained(i, i, 210, 1.5f));*/
         
         Creature c = Creature.create("Humano Joven", 100);
-        Serializer.write(new File("testCreature.udl"), Serializer.extract(c));
+        Serializer.write(Serializer.extract(c), "testCreature.udl");
         
-        Serializer.inject(Creature.class, Serializer.read(new File("testCreature.udl")));
+        Serializer.inject(Serializer.read("testCreature.udl"), Creature.class);
         
         for(ElementalType e : ElementalType.allIterable())
             System.out.println(e);
         
         Race.getAllRaces();
         
-        AttackEffectModel.getModel(0);
+        
     }
 }

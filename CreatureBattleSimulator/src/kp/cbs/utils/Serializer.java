@@ -5,12 +5,15 @@
  */
 package kp.cbs.utils;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import kp.cbs.creature.attack.Attack;
+import kp.cbs.creature.attack.effects.HealDamageEffect;
 import kp.cbs.creature.elements.ElementalTypeSerializer;
 import kp.cbs.creature.race.RaceSerializer;
 import kp.udl.UDLManager;
@@ -34,23 +37,29 @@ public final class Serializer
         
         Serializer.registerSerializer(new ElementalTypeSerializer());
         Serializer.registerSerializer(new RaceSerializer());
+        Serializer.registerSerializer(Attack.SERIALIZER);
+        Serializer.registerSerializer(HealDamageEffect.SERIALIZER);
     }
     
     /* Read ops */
     public static final UDLValue read(Reader reader) throws UDLException, IOException { return UDL.read(reader); }
     public static final UDLValue read(InputStream is) throws UDLException, IOException { return UDL.read(is); }
-    public static final UDLValue read(File file) throws UDLException, IOException { return UDL.read(file); }
+    public static final UDLValue read(Path file) throws UDLException, IOException { return UDL.read(file); }
+    public static final UDLValue read(String path, String... more) throws UDLException, IOException { return UDL.read(Paths.get(path, more)); }
+    public static final UDLValue read(String path) throws UDLException, IOException { return UDL.read(Paths.get(path)); }
     public static final UDLValue decode(String text) throws UDLException, IOException { return UDL.decode(text); }
     
     /* Write ops */
-    public static final void write(Writer writer, UDLValue value) throws UDLException, IOException { UDL.write(writer, value); }
-    public static final void write(OutputStream os, UDLValue value) throws UDLException, IOException { UDL.write(os, value); }
-    public static final void write(File file, UDLValue value) throws UDLException, IOException { UDL.write(file, value); }
+    public static final void write(UDLValue value, Writer writer) throws UDLException, IOException { UDL.write(writer, value); }
+    public static final void write(UDLValue value, OutputStream os) throws UDLException, IOException { UDL.write(os, value); }
+    public static final void write(UDLValue value, Path file) throws UDLException, IOException { UDL.write(file, value); }
+    public static final void write(UDLValue value, String path) throws UDLException, IOException { UDL.write(Paths.get(path), value); }
+    public static final void write(UDLValue value, String path, String... more) throws UDLException, IOException { UDL.write(Paths.get(path, more), value); }
     public static final String encode(UDLValue value, boolean wrapped) throws UDLException, IOException { return UDL.encode(value, wrapped); }
     
     /* Autowired ops */
     public static final UDLValue extract(Object obj) { return UDL.extract(obj); }
-    public static final <T> T inject(Class<T> jclass, UDLValue value) { return UDL.inject(jclass, value); }
+    public static final <T> T inject(UDLValue value, Class<T> jclass) { return UDL.inject(jclass, value); }
     
     
     /* Other ops */

@@ -18,20 +18,26 @@ import kp.cbs.creature.attack.effects.AIScore;
 import kp.cbs.creature.attack.effects.DamageEffect;
 import kp.cbs.creature.attack.effects.SecondaryEffect;
 import kp.cbs.creature.elements.ElementalType;
+import kp.cbs.utils.Serializer;
 import kp.cbs.utils.Utils;
+import kp.udl.autowired.AutowiredSerializer;
+import kp.udl.data.UDLArray;
+import kp.udl.data.UDLObject;
+import kp.udl.data.UDLValue;
 
 /**
  *
  * @author Asus
  */
-public class AttackModel
+public final class AttackModel
 {
     private int id;
-    private String name;
+    
+    private String name = "";
     
     private int power;
     
-    private int maxPP;
+    private int maxPP = 1;
     
     private int precision;
     
@@ -45,7 +51,7 @@ public class AttackModel
     public final int getId() { return id; }
     public final void setId(int id) { this.id = Math.max(0, id); }
     
-    public final String getName() { return name; }
+    public final String getName() { return name == null ? "" : name; }
     public final void setName(String name) { this.name = name == null ? "" : name; }
     
     public final int getPower() { return power; }
@@ -83,6 +89,13 @@ public class AttackModel
     public final int getTurnCount() { return turns.length; }
     public final AttackTurn getTurn(int index) { return turns[index]; }
     public final AttackTurn[] getAllTurns() { return Arrays.copyOf(turns, turns.length); }
+    
+    private void unserializeTurns(List<UDLValue> lturns)
+    {
+        if(lturns.isEmpty())
+            turns = new AttackTurn[] {};
+        else turns = lturns.stream().map(AttackTurn::new).toArray(AttackTurn[]::new);
+    }
     
     
     public final AIScore computeAIScore(FighterTurnState state, AIIntelligence intel)
@@ -143,6 +156,18 @@ public class AttackModel
         
         private AttackTurn(int id) { this.id = id; }
         
+        private AttackTurn(UDLValue value)
+        {
+            this.id = value.getInt("id");
+            setMessage(value.getString("message"));
+            setMaxHits(value.getInt("max_hits"));
+            setMinHits(value.getInt("min_hits"));
+            setDamageEffect(DamageEffect.unserialize(value.get("damage_effect")));
+            value.getList("secondary_effects").stream()
+                    .map(SecondaryEffect::unserialize)
+                    .forEach(this.seffects::add);
+        }
+        
         
         public final int getTurnId() { return id; }
         
@@ -177,7 +202,7 @@ public class AttackModel
                 dam.apply(AttackModel.this, state);
             
             seffects.stream()
-                    .filter(se -> se.getProbability() < 1 || state.rng.d100(se.getProbability()))
+                    .filter(se -> se.getProbability() >= 100 || state.rng.d100(se.getProbability()))
                     .forEachOrdered(se -> se.apply(AttackModel.this, state));
         }
         
@@ -186,7 +211,7 @@ public class AttackModel
             AIScore score = dam != null ? dam.computeAIScore(AttackModel.this, AttackTurn.this, state, intel) : AIScore.zero();
             for(SecondaryEffect se : seffects)
                 score = AIScore.concat(score, se.computeAIScore(AttackModel.this, AttackTurn.this, state, intel));
-            return score;
+            return score.addIntelligenceRandomVariation(state.rng, intel);
         }
         
         private String generateDescription()
@@ -209,6 +234,19 @@ public class AttackModel
                 return "Preparación del ataque.";
             return sb.toString();
         }
+        
+        private UDLValue serialize()
+        {
+            return new UDLObject()
+                    .setInt("id", getId())
+                    .setString("name", getName())
+                    .setInt("max_hits", getMaxHits())
+                    .setInt("min_hits", getMinHits())
+                    .set("damage_effect", DamageEffect.serialize(getDamageEffect()))
+                    .set("secondary_effects", seffects.stream()
+                            .map(SecondaryEffect::serialize)
+                            .reduce(new UDLArray(), UDLValue::add));
+        }
     }
     
     
@@ -220,4 +258,38 @@ public class AttackModel
         return ENEMY_PATTERN.matcher(SELF_PATTERN.matcher(message).replaceAll(state.self.getName()))
                 .replaceAll(state.enemy.getName());
     }
+    
+    public static final AutowiredSerializer<AttackModel> SERIALIZER = new AutowiredSerializer<AttackModel>(AttackModel.class)
+    {
+        @Override
+        public final UDLValue serialize(AttackModel value)
+        {
+            return new UDLObject()
+                    .setInt("id", value.getId())
+                    .setString("name", value.getName())
+                    .setInt("power", value.getPower())
+                    .setInt("pp", value.getMaxPP())
+                    .setInt("precision", value.getPrecision())
+                    .setInt("priority", value.getPriority())
+                    .set("type", Serializer.extract(value.getElementalType()))
+                    .set("turns", UDLValue.valueOf(Arrays.stream(value.turns)
+                            .map(AttackTurn::serialize)
+                            .toArray(UDLValue[]::new)));
+        }
+        
+        @Override
+        public final AttackModel unserialize(UDLValue value)
+        {
+            AttackModel model = new AttackModel();
+            model.setId(value.getInt("id"));
+            model.setName(value.getString("name"));
+            model.setPower(value.getInt("power"));
+            model.setMaxPP(value.getInt("pp"));
+            model.setPrecision(value.getInt("precision"));
+            model.setPriority(value.getInt("priority"));
+            model.setElementalType(Serializer.inject(value.get("type"), ElementalType.class));
+            model.unserializeTurns(value.getList("turns"));
+            return model;
+        }
+    };
 }
