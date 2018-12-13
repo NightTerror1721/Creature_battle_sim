@@ -18,7 +18,7 @@ import kp.udl.data.UDLValue;
  *
  * @author Asus
  */
-public final class Attack
+public final class Attack implements Comparable<Attack>
 {
     private AttackModel model;
     private String description;
@@ -70,6 +70,26 @@ public final class Attack
     {
         return description == null ? description = model.generateDescription() : description;
     }
+    
+    public final boolean equals(Attack o) { return model.equals(o.model); }
+    
+    @Override
+    public final boolean equals(Object o)
+    {
+        return o instanceof Attack &&
+                model.equals(((Attack) o).model);
+    }
+
+    @Override
+    public final int hashCode()
+    {
+        int hash = 7;
+        hash = 59 * hash + Objects.hashCode(this.model);
+        return hash;
+    }
+    
+    @Override
+    public final int compareTo(Attack o) { return model.compareTo(o.model); }
     
     
     public static final AutowiredSerializer<Attack> SERIALIZER = new AutowiredSerializer<Attack>(Attack.class)

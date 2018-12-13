@@ -1,5 +1,5 @@
 "name": "",
-"race": "Humano Joven",
+"race": 0,
 "features": {
     "hp": {
         "base": 1,

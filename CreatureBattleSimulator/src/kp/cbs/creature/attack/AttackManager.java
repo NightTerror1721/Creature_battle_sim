@@ -5,11 +5,23 @@
  */
 package kp.cbs.creature.attack;
 
+import kp.udl.autowired.Property;
+
 /**
  *
  * @author Asus
  */
 public final class AttackManager
 {
+    @Property
+    private Attack att1;
     
+    @Property
+    private Attack att2;
+    
+    @Property
+    private Attack att3;
+    
+    @Property
+    private Attack att4;
 }

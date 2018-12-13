@@ -11,12 +11,13 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import kp.cbs.creature.attack.Attack;
+import kp.cbs.creature.attack.AttackModel;
 import kp.cbs.creature.attack.effects.HealDamageEffect;
 import kp.cbs.creature.elements.ElementalTypeSerializer;
-import kp.cbs.creature.race.RaceSerializer;
+import kp.cbs.creature.race.Race;
 import kp.udl.UDLManager;
+import kp.udl.autowired.Autowired;
 import kp.udl.autowired.AutowiredSerializer;
 import kp.udl.data.UDLValue;
 import kp.udl.exception.UDLException;
@@ -36,8 +37,9 @@ public final class Serializer
         UDL.enableDefaultUseCommand();
         
         Serializer.registerSerializer(new ElementalTypeSerializer());
-        Serializer.registerSerializer(new RaceSerializer());
+        Serializer.registerSerializer(Race.SERIALIZER);
         Serializer.registerSerializer(Attack.SERIALIZER);
+        Serializer.registerSerializer(AttackModel.SERIALIZER);
         Serializer.registerSerializer(HealDamageEffect.SERIALIZER);
     }
     
@@ -60,6 +62,9 @@ public final class Serializer
     /* Autowired ops */
     public static final UDLValue extract(Object obj) { return UDL.extract(obj); }
     public static final <T> T inject(UDLValue value, Class<T> jclass) { return UDL.inject(jclass, value); }
+    
+    public static final UDLValue rawExtract(Object obj) { return Autowired.extract(obj, UDL.getSerializerManager(), true); }
+    public static final <T> T rawInject(UDLValue value, Class<T> jclass) { return Autowired.inject(jclass, value, UDL.getSerializerManager(), true); }
     
     
     /* Other ops */

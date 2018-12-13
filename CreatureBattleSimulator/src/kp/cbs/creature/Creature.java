@@ -21,7 +21,7 @@ import kp.cbs.creature.feat.PercentageFeature;
 import kp.cbs.creature.feat.Stat;
 import kp.cbs.creature.feat.StatId;
 import kp.cbs.creature.race.Race;
-import kp.cbs.creature.race.RaceReference;
+import kp.cbs.creature.race.RacePool;
 import kp.cbs.creature.state.StateManager;
 import kp.udl.autowired.InjectOptions;
 import kp.udl.autowired.Property;
@@ -30,14 +30,14 @@ import kp.udl.autowired.Property;
  *
  * @author Asus
  */
-@InjectOptions(builder = "injector", afterBuild = "afterInject")
+@InjectOptions(builder = "injector", afterBuild = "clearAll")
 public final class Creature
 {
     @Property(set = "setName")
     private String name = "";
     
     @Property
-    private RaceReference race;
+    private Race race;
     
     @Property(name = "features")
     private FeatureManager feats;
@@ -61,15 +61,17 @@ public final class Creature
     public static final Creature create(Race race, int level)
     {
         Creature c = new Creature();
-        c.race = new RaceReference(race);
+        c.race = Objects.requireNonNull(race);
         c.feats = FeatureManager.create();
         c.exp = new ExperienceManager();
         
         c.exp.init(race.getGrowth(), level);
+        c.clearAll();
+        c.updateAll();
         
         return c;
     }
-    public static final Creature create(String race, int level) { return create(Race.getRace(race), level); }
+    public static final Creature create(int raceId, int level) { return create(RacePool.getRace(raceId), level); }
     
     public final void setName(String name) { this.name = Objects.requireNonNull(name); }
     public final String getName() { return name; }
@@ -77,8 +79,8 @@ public final class Creature
     public final void setNature(Nature nature) { this.nature = Objects.requireNonNull(nature); }
     public final Nature getNature() { return nature; }
     
-    public final void setRace(Race race) { this.race = new RaceReference(race); }
-    public final Race getRace() { return race.getRace(); }
+    public final void setRace(Race race) { this.race = Objects.requireNonNull(race); }
+    public final Race getRace() { return race; }
     
     public final FeatureManager getFeaturesManager() { return feats; }
     
@@ -165,6 +167,8 @@ public final class Creature
         feats.clearAllAlterations();
         state.clearAllStates();
         altered.clearAllAlterations();
+        types.restore(race);
+        updateAll();
     }
     
     
@@ -173,11 +177,5 @@ public final class Creature
     private static Creature injector()
     {
         return new Creature();
-    }
-    
-    private void afterInject()
-    {
-        clearAll();
-        updateAll();
     }
 }

@@ -8,7 +8,7 @@ package kp.cbs;
 import java.io.IOException;
 import kp.cbs.creature.Creature;
 import kp.cbs.creature.elements.ElementalType;
-import kp.cbs.creature.race.Race;
+import kp.cbs.creature.race.RacePool;
 import kp.cbs.utils.Serializer;
 
 /**
@@ -22,7 +22,7 @@ public final class Main
         /*for(int i=1;i<=100;i++)
             System.out.println("Experience gained in level " + i + ": " + Formula.experienceGained(i, i, 210, 1.5f));*/
         
-        Creature c = Creature.create("Humano Joven", 100);
+        Creature c = Creature.create(0, 100);
         Serializer.write(Serializer.extract(c), "testCreature.udl");
         
         Serializer.inject(Serializer.read("testCreature.udl"), Creature.class);
@@ -30,7 +30,7 @@ public final class Main
         for(ElementalType e : ElementalType.allIterable())
             System.out.println(e);
         
-        Race.getAllRaces();
+        RacePool.getAllRaces();
         
         
     }

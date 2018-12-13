@@ -5,74 +5,81 @@
  */
 package kp.cbs.creature.race;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 import kp.cbs.creature.Growth;
 import kp.cbs.creature.elements.ElementalType;
 import kp.cbs.creature.feat.StatId;
-import kp.udl.autowired.InjectOptions;
+import kp.cbs.utils.IdentifierObject;
+import kp.cbs.utils.IdentifierSerializer;
+import kp.udl.autowired.AutowiredSerializer;
 import kp.udl.autowired.Property;
+import kp.udl.data.UDLValue;
 
 /**
  *
  * @author Asus
  */
-@InjectOptions(builder = "injector", afterBuild = "afterInject")
-public final class Race
+public final class Race implements IdentifierObject
 {
-    @Property(set = "__setName")
+    @Property(set = "setId")
+    int id;
+    
+    @Property(set = "setName")
     String name;
     
     
-    @Property(name = "hp_base", set = "__setHpBase")
+    @Property(name = "hp_base", set = "setHpBase")
     int hpBase;
     
-    @Property(name = "attack_base", set = "__setAttBase")
+    @Property(name = "attack_base", set = "setAttBase")
     int attBase;
     
-    @Property(name = "defense_base", set = "__setDefBase")
+    @Property(name = "defense_base", set = "setDefBase")
     int defBase;
     
-    @Property(name = "spAttack_base", set = "__setSpAttBase")
+    @Property(name = "spAttack_base", set = "setSpAttBase")
     int spAttBase;
     
-    @Property(name = "spDefense_base", set = "__setSpDefBase")
+    @Property(name = "spDefense_base", set = "setSpDefBase")
     int spDefBase;
     
-    @Property(name = "speed_base", set = "__setSpdBase")
+    @Property(name = "speed_base", set = "setSpdBase")
     int spdBase;
     
     
-    @Property(name = "primary_type", set = "__setType1")
+    @Property(name = "primary_type", set = "setPrimaryType")
     ElementalType type1;
     
-    @Property(name = "secondary_type", set = "__setType2")
+    @Property(name = "secondary_type", set = "setSecondaryType")
     ElementalType type2;
     
     
-    @Property(set = "__setGrowth", invalidEnumValue = "NORMAL")
+    @Property(set = "setGrowth", invalidEnumValue = "NORMAL")
     Growth growth;
     
     
-    Race() {}
+    @Override
+    public final void setId(int id) { this.id = Math.max(0, id); }
     
-    final void __setName(String name) { this.name = Objects.requireNonNull(name); }
+    public final void setName(String name) { this.name = Objects.requireNonNull(name); }
     
-    final void __setHpBase(int value) { this.hpBase = Math.max(1, value); }
-    final void __setAttBase(int value) { this.attBase = Math.max(1, value); }
-    final void __setDefBase(int value) { this.defBase = Math.max(1, value); }
-    final void __setSpAttBase(int value) { this.spAttBase = Math.max(1, value); }
-    final void __setSpDefBase(int value) { this.spDefBase = Math.max(1, value); }
-    final void __setSpdBase(int value) { this.spdBase = Math.max(1, value); }
+    public final void setHpBase(int value) { this.hpBase = Math.max(1, value); }
+    public final void setAttBase(int value) { this.attBase = Math.max(1, value); }
+    public final void setDefBase(int value) { this.defBase = Math.max(1, value); }
+    public final void setSpAttBase(int value) { this.spAttBase = Math.max(1, value); }
+    public final void setSpDefBase(int value) { this.spDefBase = Math.max(1, value); }
+    public final void setSpdBase(int value) { this.spdBase = Math.max(1, value); }
     
-    final void __setType1(ElementalType type) { this.type1 = Objects.requireNonNull(type); }
-    final void __setType2(ElementalType type) { this.type2 = Objects.requireNonNull(type); }
+    public final void setPrimaryType(ElementalType type) { this.type1 = Objects.requireNonNull(type); }
+    public final void setSecondaryType(ElementalType type) { this.type2 = Objects.requireNonNull(type); }
     
-    final void __setGrowth(Growth growth) { this.growth = Objects.requireNonNull(growth); }
+    public final void setGrowth(Growth growth) { this.growth = Objects.requireNonNull(growth); }
     
     
     
+    
+    @Override
+    public final int getId() { return id; }
     
     public final String getName() { return name; }
     
@@ -103,18 +110,13 @@ public final class Race
     public final Growth getGrowth() { return growth; }
     
     
-    private static Race injector() { return new Race(); }
     
-    private void afterInject()
+    public static final AutowiredSerializer<Race> SERIALIZER = new IdentifierSerializer<>(Race.class)
     {
-        
-    }
-    
-    
-    
-    
-    /* Static operations */
-    public static final List<Race> getAllRaces() { return Collections.unmodifiableList(RaceManager.RACES.list); }
-    
-    public static final Race getRace(String name) { return RaceManager.RACES.races.getOrDefault(name, null); }
+        @Override
+        public final Race unserialize(UDLValue value)
+        {
+            return RacePool.getRace(value.getInt());
+        }
+    };
 }

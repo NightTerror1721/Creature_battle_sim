@@ -18,6 +18,8 @@ import kp.cbs.creature.attack.effects.AIScore;
 import kp.cbs.creature.attack.effects.DamageEffect;
 import kp.cbs.creature.attack.effects.SecondaryEffect;
 import kp.cbs.creature.elements.ElementalType;
+import kp.cbs.utils.IdentifierObject;
+import kp.cbs.utils.IdentifierSerializer;
 import kp.cbs.utils.Serializer;
 import kp.cbs.utils.Utils;
 import kp.udl.autowired.AutowiredSerializer;
@@ -29,7 +31,7 @@ import kp.udl.data.UDLValue;
  *
  * @author Asus
  */
-public final class AttackModel
+public final class AttackModel implements IdentifierObject, Comparable<AttackModel>
 {
     private int id;
     
@@ -48,7 +50,10 @@ public final class AttackModel
     private AttackTurn[] turns = {};
     
     
+    @Override
     public final int getId() { return id; }
+    
+    @Override
     public final void setId(int id) { this.id = Math.max(0, id); }
     
     public final String getName() { return name == null ? "" : name; }
@@ -137,6 +142,32 @@ public final class AttackModel
                 return sb.toString();
             }
         }
+    }
+    
+    public final boolean equals(AttackModel model)
+    {
+        return id == model.id;
+    }
+    
+    @Override
+    public final boolean equals(Object o)
+    {
+        return o instanceof AttackModel &&
+                id == ((AttackModel) o).id;
+    }
+
+    @Override
+    public final int hashCode()
+    {
+        int hash = 3;
+        hash = 67 * hash + this.id;
+        return hash;
+    }
+
+    @Override
+    public final int compareTo(AttackModel o)
+    {
+        return Integer.compare(id, o.id);
     }
     
     
@@ -259,7 +290,7 @@ public final class AttackModel
                 .replaceAll(state.enemy.getName());
     }
     
-    public static final AutowiredSerializer<AttackModel> SERIALIZER = new AutowiredSerializer<AttackModel>(AttackModel.class)
+    static final AutowiredSerializer<AttackModel> LOADER = new AutowiredSerializer<AttackModel>(AttackModel.class)
     {
         @Override
         public final UDLValue serialize(AttackModel value)
@@ -290,6 +321,15 @@ public final class AttackModel
             model.setElementalType(Serializer.inject(value.get("type"), ElementalType.class));
             model.unserializeTurns(value.getList("turns"));
             return model;
+        }
+    };
+    
+    public static final AutowiredSerializer<AttackModel> SERIALIZER = new IdentifierSerializer<AttackModel>(AttackModel.class)
+    {
+        @Override
+        public final AttackModel unserialize(UDLValue value)
+        {
+            return AttackPool.getModel(value.getInt());
         }
     };
 }
