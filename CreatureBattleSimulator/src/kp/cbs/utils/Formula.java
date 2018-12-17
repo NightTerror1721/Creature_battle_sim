@@ -5,9 +5,12 @@
  */
 package kp.cbs.utils;
 
+import kp.cbs.battle.weather.WeatherId;
+import kp.cbs.creature.Creature;
 import kp.cbs.creature.Growth;
 import kp.cbs.creature.Nature;
 import kp.cbs.creature.elements.Effectivity;
+import kp.cbs.creature.elements.ElementalType;
 import kp.cbs.creature.feat.StatId;
 
 /**
@@ -160,5 +163,43 @@ public final class Formula
             case 4: return rng.d2(1);
             case 5: return true;
         }
+    }
+    
+    public static final int computeRealSpeed(Creature creature, WeatherId weather)
+    {
+        int value = creature.getSpeed().getValue();
+        if(weather != null)
+            switch(weather)
+            {
+                case SANDSTORM:
+                    if(creature.hasAnyType(ElementalType.ROCK, ElementalType.GROUND))
+                        value *= 1.5f;
+                    break;
+                case FOG:
+                    if(creature.hasType(ElementalType.DARK))
+                        value *= 1.5f;
+                    break;
+                case ELECTRIC_STORM:
+                    if(creature.hasType(ElementalType.ELECTRIC))
+                        value *= 1.5;
+                    break;
+            }
+        if(creature.isParalyzed())
+            value *= 0.25f;
+        return value;
+    }
+    
+    public static final float computePrecision(Creature user, Creature target, WeatherId weather)
+    {
+        float ratio = user.getAccuracy().getModification() * target.getEvasion().getModification();
+        if(weather == null)
+            return ratio;
+        switch(weather)
+        {
+            case FOG:
+                if(!user.hasAnyType(ElementalType.DARK, ElementalType.POISON))
+                    ratio *= 0.7f;
+        }
+        return ratio;
     }
 }

@@ -68,7 +68,7 @@ public final class RaceAttackPool
         var list = hidden ? hiddenList : normalList;
         return list.stream()
                 .map(RaceAttack::getAttackModel)
-                .collect(Collectors.toUnmodifiableList());
+                .collect(Collectors.toList());
     }
     
     public final List<AttackModel> getNormalAttacksInLevel(int level)
@@ -76,17 +76,42 @@ public final class RaceAttackPool
         return normalList.stream()
                 .filter(ra -> ra.level == level)
                 .map(RaceAttack::getAttackModel)
-                .collect(Collectors.toUnmodifiableList());
+                .collect(Collectors.toList());
     }
     
     public final Set<AttackModel> getAttacksUntilLevel(int level)
     {
-        var list = Stream.concat(normalList.stream(), hiddenList.stream())
-                .sorted(RaceAttack::compareTo)
+        var set = Stream.concat(normalList.stream(), hiddenList.stream())
                 .filter(ra -> ra.level <= level)
+                .sorted(RaceAttack::compareTo)
                 .map(RaceAttack::getAttackModel)
                 .collect(Collectors.toSet());
+        if(innate != null)
+            set.add(innate);
+        return set;
+    }
+    
+    public final AttackModel[] getDefaultLearnedInLevel(int level)
+    {
+        AttackModel[] array = normalList.stream()
+                .filter(ra -> ra.level <= level)
+                .sorted(RaceAttack::inverseCompareTo)
+                .map(RaceAttack::getAttackModel)
+                .limit(4)
+                .toArray(AttackModel[]::new);
         
+        if(array.length == 4)
+            return array;
+        
+        AttackModel[] result = new AttackModel[4];
+        if(innate != null)
+        {
+            result[0] = innate;
+            System.arraycopy(array, 0, result, 1, array.length > 3 ? 3 : array.length);
+        }
+        else System.arraycopy(array, 0, result, 0, array.length > 4 ? 4 : array.length);
+        
+        return result;
     }
     
     
@@ -128,6 +153,10 @@ public final class RaceAttackPool
         public final int compareTo(RaceAttack o)
         {
             return Integer.compare(level, o.level);
+        }
+        public final int inverseCompareTo(RaceAttack o)
+        {
+            return (level > o.level) ? -1 : ((level == o.level) ? 0 : 1);
         }
         
         @Override

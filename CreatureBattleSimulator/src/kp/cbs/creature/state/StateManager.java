@@ -15,8 +15,8 @@ import kp.cbs.creature.feat.PercentageFeature;
  */
 public final class StateManager implements BattleUpdater
 {
-    private final PercentageFeature accuracy = new PercentageFeature();
-    private final PercentageFeature evasion = new PercentageFeature();
+    private final PercentageFeature accuracy = new PercentageFeature(false);
+    private final PercentageFeature evasion = new PercentageFeature(true);
     private TwoTurnsEffect criticalHitBonus = TwoTurnsEffect.OFF;
     private TwoTurnsEffect resting = TwoTurnsEffect.OFF;
     private boolean intimidated;

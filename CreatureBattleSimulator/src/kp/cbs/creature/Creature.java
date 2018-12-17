@@ -11,6 +11,9 @@ import kp.cbs.battle.FighterTurnState;
 import kp.cbs.creature.altered.AlteredState;
 import kp.cbs.creature.altered.AlteredStateId;
 import kp.cbs.creature.altered.AlteredStateManager;
+import kp.cbs.creature.attack.Attack;
+import kp.cbs.creature.attack.AttackManager;
+import kp.cbs.creature.attack.effects.AIIntelligence;
 import kp.cbs.creature.elements.Effectivity;
 import kp.cbs.creature.elements.ElementalManager;
 import kp.cbs.creature.elements.ElementalType;
@@ -48,6 +51,9 @@ public final class Creature
     @Property(set = "setNature", invalidEnumValue = "HARDY")
     private Nature nature = Nature.HARDY;
     
+    @Property
+    private AttackManager attacks;
+    
     private final ElementalManager types = new ElementalManager();
     
     private final StateManager state = new StateManager();
@@ -64,6 +70,7 @@ public final class Creature
         c.race = Objects.requireNonNull(race);
         c.feats = FeatureManager.create();
         c.exp = new ExperienceManager();
+        c.attacks = new AttackManager();
         
         c.exp.init(race.getGrowth(), level);
         c.clearAll();
@@ -110,6 +117,10 @@ public final class Creature
     public final int getLevel() { return exp.getLevel(); }
     public final int getExperience() { return exp.getExperience(); }
     public final int getNextLevelExperience() { return exp.getNextLevelExperience(); }
+    
+    public final AttackManager getAttackManager() { return attacks; }
+    public final Attack getAttack(int index) { return attacks.getAttack(index); }
+    public final Attack selectAttackByAI(FighterTurnState state, AIIntelligence intel) { return attacks.selectAttackByAI(state, intel); }
     
     public final PercentageFeature getAccuracy() { return state.getAccuracy(); }
     public final PercentageFeature getEvasion() { return state.getEvasion(); }

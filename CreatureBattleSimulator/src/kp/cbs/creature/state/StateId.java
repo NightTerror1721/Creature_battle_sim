@@ -22,4 +22,7 @@ public enum StateId
     private StateId(String name) { this.name = name; }
     
     public final String getName() { return name; }
+    
+    @Override
+    public final String toString() { return name; }
 }

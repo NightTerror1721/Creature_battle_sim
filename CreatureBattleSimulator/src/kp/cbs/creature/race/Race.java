@@ -7,6 +7,7 @@ package kp.cbs.creature.race;
 
 import java.util.Objects;
 import kp.cbs.creature.Growth;
+import kp.cbs.creature.attack.RaceAttackPool;
 import kp.cbs.creature.elements.ElementalType;
 import kp.cbs.creature.feat.StatId;
 import kp.cbs.utils.IdentifierObject;
@@ -58,6 +59,10 @@ public final class Race implements IdentifierObject
     Growth growth;
     
     
+    @Property(name = "attack_pool", set = "setAttackPool")
+    RaceAttackPool attacks;
+    
+    
     @Override
     public final void setId(int id) { this.id = Math.max(0, id); }
     
@@ -74,6 +79,8 @@ public final class Race implements IdentifierObject
     public final void setSecondaryType(ElementalType type) { this.type2 = Objects.requireNonNull(type); }
     
     public final void setGrowth(Growth growth) { this.growth = Objects.requireNonNull(growth); }
+    
+    public final void setAttackPool(RaceAttackPool attacks) { this.attacks = Objects.requireNonNull(attacks); }
     
     
     
@@ -108,6 +115,8 @@ public final class Race implements IdentifierObject
     public final ElementalType getSecondaryType() { return type2; }
     
     public final Growth getGrowth() { return growth; }
+    
+    public final RaceAttackPool getAttackPool() { return attacks; }
     
     
     

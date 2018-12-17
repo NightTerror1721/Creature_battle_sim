@@ -28,6 +28,9 @@ public enum AlteredStateId
     
     public final String getName() { return name; }
     
+    @Override
+    public final String toString() { return name; }
+    
     private static final AlteredStateId[] VALUES = values();
     
     public static final int count() { return VALUES.length; }

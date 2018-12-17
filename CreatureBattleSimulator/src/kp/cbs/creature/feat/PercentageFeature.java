@@ -14,7 +14,10 @@ import kp.cbs.utils.Utils;
  */
 public final class PercentageFeature extends BaseFeature
 {
+    private final boolean inverse;
     private int modifLevel;
+    
+    public PercentageFeature(boolean isInverse) { this.inverse = isInverse; }
     
     public final boolean modifyStat(int levels)
     {
@@ -44,5 +47,7 @@ public final class PercentageFeature extends BaseFeature
         modifLevel = 0;
     }
     
-    public final float getModification() { return Formula.percentageFeatModif(modifLevel); }
+    public final int getAlterationLevels() { return modifLevel; }
+    
+    public final float getModification() { return Formula.percentageFeatModif(inverse && modifLevel != 0 ? -modifLevel : modifLevel); }
 }

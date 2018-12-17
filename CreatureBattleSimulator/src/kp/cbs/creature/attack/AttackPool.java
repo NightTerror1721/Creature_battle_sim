@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import kp.cbs.creature.Creature;
 import kp.cbs.utils.Paths;
 import kp.cbs.utils.Serializer;
 import kp.udl.exception.UDLException;
@@ -28,6 +29,11 @@ public final class AttackPool
     public static final Attack createAttack(int modelId)
     {
         return new Attack(getModel(modelId));
+    }
+    
+    public static final Attack createAttack(AttackModel model)
+    {
+        return new Attack(model);
     }
     
     public static final AttackModel getModel(int modelId)
@@ -54,6 +60,11 @@ public final class AttackPool
             ex.printStackTrace(System.err);
             return List.of();
         }
+    }
+    
+    public static final AttackModel createCombatAttackModel(Creature creature)
+    {
+        return CombatAttackModelGenerator.generate(creature.getLevel());
     }
     
     private static AttackModel loadModel(int modelId)

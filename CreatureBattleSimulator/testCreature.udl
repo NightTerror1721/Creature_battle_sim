@@ -38,4 +38,10 @@
     "level": 100,
     "experience": 1059860
 },
-"nature": 0
+"nature": 0,
+"attacks": {
+    "att1": null,
+    "att2": null,
+    "att3": null,
+    "att4": null
+}

@@ -5,10 +5,13 @@
  */
 package kp.cbs.creature.attack.effects;
 
+import java.util.StringJoiner;
 import kp.cbs.battle.FighterTurnState;
 import kp.cbs.creature.Creature;
 import kp.cbs.creature.attack.AttackModel;
 import kp.cbs.creature.attack.AttackModel.AttackTurn;
+import kp.cbs.creature.feat.NormalStat;
+import kp.cbs.creature.feat.PercentageFeature;
 import kp.cbs.creature.feat.StatId;
 import kp.cbs.utils.Utils;
 import kp.udl.autowired.Property;
@@ -127,8 +130,7 @@ public class StatAlterationSecondaryEffect extends SecondaryEffect
         
         switch(stat)
         {
-            case 0:
-                state.bcm.statModification(enemy(state), StatId.ATTACK, levels).message(msg(state, stat, levels)); return true;
+            case 0: state.bcm.statModification(enemy(state), StatId.ATTACK, levels).message(msg(state, stat, levels)); return true;
             case 1: state.bcm.statModification(enemy(state), StatId.DEFENSE, levels).message(msg(state, stat, levels)); return true;
             case 2: state.bcm.statModification(enemy(state), StatId.SPECIAL_ATTACK, levels).message(msg(state, stat, levels)); return true;
             case 3: state.bcm.statModification(enemy(state), StatId.SPECIAL_DEFENSE, levels).message(msg(state, stat, levels)); return true;
@@ -157,15 +159,104 @@ public class StatAlterationSecondaryEffect extends SecondaryEffect
             state.bcm.playSound("decrease").waitTime(1500);
     }
     
-    private int aiComputeScores(FighterTurnState state, AIIntelligence intel, int stat)
+    private float computeStatAIScore(FighterTurnState state, AIIntelligence intel, StatId modStat, StatId contraStat, int levels, float ratio)
     {
-        switch(stat)
+        if(levels == 0)
+            return 0f;
+        
+        float mod = computeMod(state, intel);
+        if(isSelfTargetEnabled())
         {
-            case 0: {
-                
+            NormalStat selfStat = (NormalStat) state.self.getStat(modStat);
+            NormalStat targetStat = (NormalStat) state.enemy.getStat(contraStat);
+            if(levels > 0)
+            {
+                if(intel.isNormalOrGreater() && selfStat.getAlterationLevels() >= 2)
+                    return 0f;
+                return targetStat.getValue() * mod / selfStat.getValue() * ratio;
             }
-            default: return 0;
+            else
+            {
+                if(intel.isLowOrLess())
+                    return -ratio;
+                return targetStat.getValue() * mod / selfStat.getValue() * -ratio;
+            }
         }
+        else
+        {
+            NormalStat selfStat = (NormalStat) state.self.getStat(contraStat);
+            NormalStat targetStat = (NormalStat) state.enemy.getStat(modStat);
+            if(levels > 0)
+            {
+                if(intel.isLowOrLess())
+                    return -ratio;
+                return targetStat.getValue() * mod / selfStat.getValue() * -ratio;
+            }
+            else
+            {
+                if(intel.isNormalOrGreater() && selfStat.getAlterationLevels() >= 2)
+                    return 0f;
+                return targetStat.getValue() * mod / selfStat.getValue() * ratio;
+            }
+        }
+    }
+     
+    private float computePrecisionAIScore(FighterTurnState state, AIIntelligence intel, boolean isAccuracy, float ratio)
+    {
+        int levels = isAccuracy ? accuracyLevels : evasionLevels;
+        if(levels == 0)
+            return 0f;
+        
+        float mod = computeMod(state, intel);
+        if(isSelfTargetEnabled())
+        {
+            PercentageFeature selfFeat = isAccuracy ? state.self.getAccuracy() : state.self.getEvasion();
+            PercentageFeature targetFeat = isAccuracy ? state.enemy.getEvasion() : state.enemy.getAccuracy();
+            if(levels > 0)
+            {
+                if(selfFeat.getAlterationLevels() - targetFeat.getAlterationLevels() < 0)
+                    return ratio;
+                return 0f;
+            }
+            else
+            {
+                int val = selfFeat.getAlterationLevels() - levels - targetFeat.getAlterationLevels();
+                return val < 0 ? -ratio : val == 0 ? -ratio / 2f : -ratio / 4f;
+            }
+        }
+        else
+        {
+            PercentageFeature selfFeat = isAccuracy ? state.self.getEvasion() : state.self.getAccuracy();
+            PercentageFeature targetFeat = isAccuracy ? state.enemy.getAccuracy() : state.enemy.getEvasion();
+            if(levels > 0)
+            {
+                int val = selfFeat.getAlterationLevels() - levels - targetFeat.getAlterationLevels();
+                return val < 0 ? -ratio : val == 0 ? -ratio / 2f : -ratio / 4f;
+            }
+            else
+            {
+                if(selfFeat.getAlterationLevels() - targetFeat.getAlterationLevels() < 0)
+                    return ratio;
+                return 0f;
+            }
+        }
+    }
+    
+    private float computeMod(FighterTurnState state, AIIntelligence intel)
+    {
+        if(intel.isGifted())
+            return 1f;
+        int base = intel.getRatio() * 2048 / AIIntelligence.GIFTED_RATIO;
+        return (state.rng.d(base) - (base / 2f)) / 4096f;
+    }
+    
+    private float createRatio(float base)
+    {
+        int prob = getProbability();
+        if(prob >= 100)
+            return base;
+        float mod = getProbability() / 100f * 0.55f + 0.25f;
+        return base * mod;
     }
 
     @Override
@@ -173,13 +264,65 @@ public class StatAlterationSecondaryEffect extends SecondaryEffect
     {
         if(intel.isDummy())
             return AIScore.random(state.rng, false);
-        return null;
+        
+        float normalRatio = createRatio(1f);
+        float speedRatio = createRatio(0.85f);
+        float precisionRatio = createRatio(0.7f);
+        float ratio = 0f;
+        
+        ratio += computeStatAIScore(state, intel, StatId.ATTACK, StatId.DEFENSE, attackLevels, normalRatio);
+        ratio += computeStatAIScore(state, intel, StatId.DEFENSE, StatId.ATTACK, defenseLevels, normalRatio);
+        ratio += computeStatAIScore(state, intel, StatId.SPECIAL_ATTACK, StatId.SPECIAL_DEFENSE, spAttackLevels, normalRatio);
+        ratio += computeStatAIScore(state, intel, StatId.SPECIAL_DEFENSE, StatId.SPECIAL_ATTACK, spDefenseLevels, normalRatio);
+        ratio += computeStatAIScore(state, intel, StatId.SPEED, StatId.SPEED, speedLevels, speedRatio);
+        ratio += computePrecisionAIScore(state, intel, true, precisionRatio);
+        ratio += computePrecisionAIScore(state, intel, false, precisionRatio);
+        ratio = Utils.range(-1f, 1.25f, ratio);
+        
+        return AIScore.third(false).multiply(ratio);
     }
 
     @Override
     public final String generateDescription(AttackModel attack)
     {
-        return null;
+        return new StringJoiner(". ", "", ".")
+                .add(msg(0, attackLevels))
+                .add(msg(1, defenseLevels))
+                .add(msg(2, spAttackLevels))
+                .add(msg(3, spDefenseLevels))
+                .add(msg(4, speedLevels))
+                .add(msg(5, accuracyLevels))
+                .add(msg(6, evasionLevels))
+                .toString();
     }
     
+    private String msg(int stat, int levels)
+    {
+        String base;
+        switch(stat)
+        {
+            case 0: base = "el ataque"; break;
+            case 1: base = "la defensa"; break;
+            case 2: base = "el ataque especial"; break;
+            case 3: base = "la defensa especial"; break;
+            case 4: base = "la velocidad"; break;
+            case 5: base = "la precisión"; break;
+            case 6: base = "la evasión"; break;
+            default: base = "<ERROR> "; break;
+        }
+        
+        String measure;
+        switch(levels)
+        {
+            case -6: case -5: case -4: case -3: measure = "Baja muchísimo "; break;
+            case -2: measure = "Baja mucho "; break;
+            case -1: measure = "Baja "; break;
+            default: measure = "<SUBIDA INVALIDA>"; break;
+            case 1: measure = "Sube "; break;
+            case 2: measure = "Sube mucho "; break;
+            case 3: case 4: case 5: case 6: measure = "Sube muchísimo "; break;
+        }
+        
+        return measure + base;
+    }
 }

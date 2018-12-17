@@ -54,6 +54,8 @@ public abstract class NormalStat extends Stat
         modifLevel = 0;
     }
     
+    public final int getAlterationLevels() { return modifLevel; }
+    
     
     public static final class Attack extends NormalStat
     {

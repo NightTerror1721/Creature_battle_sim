@@ -7,6 +7,7 @@ package kp.cbs.creature.attack.effects;
 
 import java.util.StringJoiner;
 import kp.cbs.battle.FighterTurnState;
+import kp.cbs.battle.weather.WeatherId;
 import kp.cbs.creature.Creature;
 import kp.cbs.creature.attack.AttackModel;
 import kp.cbs.creature.attack.AttackModel.AttackTurn;
@@ -82,11 +83,35 @@ public final class NormalDamageEffect extends DamageEffect
     private Creature self(FighterTurnState state) { return state.self; }
     private Creature enemy(FighterTurnState state) { return isSelfTargetEnabled() ? state.self : state.enemy; }
     
-    private int computePowerValue(AttackModel attack)
+    private int computePowerValue(AttackModel attack, FighterTurnState state)
     {
-        return isPowerValueCustom()
+        int pow = isPowerValueCustom()
                 ? powerValue
                 : attack.getPower();
+        WeatherId w = state.getWeather();
+        if(w != null)
+        {
+            ElementalType type = computeElementalType(attack, state);
+            switch(w)
+            {
+                case RAIN:
+                    if(type.equals(ElementalType.WATER))
+                        pow *= 1.5f;
+                    else if(type.equals(ElementalType.FIRE))
+                        pow *= 0.75f;
+                    break;
+                case INTENSE_SUN:
+                    if(type.equals(ElementalType.FIRE))
+                        pow *= 1.5f;
+                    else if(type.equals(ElementalType.WATER))
+                        pow *= 0.75f;
+                    break;
+                case ELECTRIC_STORM:
+                    if(type.equals(ElementalType.ELECTRIC))
+                        pow *= 1.5f;
+            }
+        }
+        return pow;
     }
     
     private int computeAttackValue(FighterTurnState state)
@@ -152,7 +177,7 @@ public final class NormalDamageEffect extends DamageEffect
         if(eftype.isNotEffective())
             return 0;
         
-        int power = computePowerValue(attackModel);
+        int power = computePowerValue(attackModel, state);
         int attack = computeAttackValue(state);
         int defense = computeDefenseValue(state);
         boolean burned = computeBurned(state);
@@ -229,7 +254,7 @@ public final class NormalDamageEffect extends DamageEffect
         //Base
         if(intel.isHightOrLess())
         {
-            score.multiply(computePowerValue(attack) / 160f);
+            score.multiply(computePowerValue(attack, state) / 160f);
             
             //Type effectivity
             if(intel.isGreaterOrEqualsThan(AIIntelligence.MIN_NORMAL_RATIO / 4))
