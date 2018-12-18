@@ -88,9 +88,8 @@ public final class AttackManager implements Iterable<Attack>
         }.toNext();
     }
     
-    public final Attack selectAttackByAI(FighterTurnState state, AIIntelligence intel)
+    private SelectedAttack selectByAI(FighterTurnState state, AIIntelligence intel, AttackModel combatModel)
     {
-        AttackModel combatModel = AttackPool.createCombatAttackModel(state.self);
         LinkedList<SelectedAttack> scores = new LinkedList<>();
         for(Attack a : this)
         {
@@ -100,12 +99,25 @@ public final class AttackManager implements Iterable<Attack>
         }
         
         if(scores.isEmpty())
-            return AttackPool.createAttack(combatModel);
+            return null;
         
         SelectedAttack combat = new SelectedAttack(AttackPool.createAttack(combatModel), combatModel.computeAIScore(state, intel));
         return scores.stream()
-                .reduce(combat, (s0, s1) -> s0.score.compareTo(s1.score) > 0 ? s0 : s1)
-                .attack;
+                .reduce(combat, (s0, s1) -> s0.score.compareTo(s1.score) > 0 ? s0 : s1);
+    }
+    
+    public final Attack selectAttackByAI(FighterTurnState state, AIIntelligence intel)
+    {
+        AttackModel combatModel = AttackPool.createCombatAttackModel(state.self);
+        SelectedAttack att = selectByAI(state, intel, combatModel);
+        return att == null ? AttackPool.createAttack(combatModel) : att.attack;
+    }
+    
+    public final AIScore selectScoreByAI(FighterTurnState state, AIIntelligence intel)
+    {
+        AttackModel combatModel = AttackPool.createCombatAttackModel(state.self);
+        SelectedAttack att = selectByAI(state, intel, combatModel);
+        return att == null ? combatModel.computeAIScore(state, intel) : att.score;
     }
     
     public final void setDefaultLearnedAttacksInLevel(Race race, int level)

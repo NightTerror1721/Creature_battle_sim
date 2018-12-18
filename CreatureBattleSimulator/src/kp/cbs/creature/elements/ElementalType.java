@@ -6,6 +6,7 @@
 package kp.cbs.creature.elements;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import kp.cbs.utils.Serializer;
@@ -91,6 +92,8 @@ public final class ElementalType
     }
     
     public static final int getElementalTypeCount() { return ALL.length; }
+    
+    public static final ElementalType[] getAllElementalTypes() { return Arrays.copyOf(ALL, ALL.length); }
     
     
     

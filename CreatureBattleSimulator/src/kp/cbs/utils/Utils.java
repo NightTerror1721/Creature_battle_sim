@@ -5,7 +5,14 @@
  */
 package kp.cbs.utils;
 
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.Toolkit;
+import java.awt.Window;
 import java.io.InputStream;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 
 /**
  *
@@ -84,5 +91,31 @@ public final class Utils
         if(((float) ((int) value)) == value)
             return Integer.toString((int) value);
         return Float.toString(value);
+    }
+    
+    public static void focus(Window frame)
+    {
+        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+        Dimension window = frame.getSize();
+        frame.setLocation((screen.width - window.width) / 2,
+                        (screen.height - window.height) / 2);
+    }
+    
+    public static void focus(JDialog dialog)
+    {
+        Container parent = dialog.getParent();
+        if(!(parent instanceof JDialog) && !(parent instanceof JFrame))
+        {
+            focus((Window) dialog);
+            return;
+        }
+        
+        Point p = parent.getLocation();
+        Dimension screen = parent.getSize();
+        Dimension window = dialog.getSize();
+        p.x += (screen.width - window.width) / 2;
+        p.y += (screen.height - window.height) / 2;
+        
+        dialog.setLocation(p);
     }
 }

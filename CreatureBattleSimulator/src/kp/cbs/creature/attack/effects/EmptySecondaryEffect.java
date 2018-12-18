@@ -36,5 +36,8 @@ public class EmptySecondaryEffect extends SecondaryEffect
     {
         return "";
     }
+
+    @Override
+    public final String toString() { return "Ninguno"; }
     
 }

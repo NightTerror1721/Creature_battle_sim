@@ -16,7 +16,7 @@ import kp.udl.autowired.Property;
 public final class FixedDamageEffect extends FixedLevelDamageEffect
 {
     @Property(set = "setFixedDamageValue")
-    private int fixedDamage;
+    private int fixedDamage = 1;
     
     public final void setFixedDamageValue(int value) { this.fixedDamage = Math.max(1, value); }
     public final int getFixedDamageValue() { return fixedDamage; }

@@ -161,11 +161,17 @@ public class StatAlterationSecondaryEffect extends SecondaryEffect
     
     private float computeStatAIScore(FighterTurnState state, AIIntelligence intel, StatId modStat, StatId contraStat, int levels, float ratio)
     {
+        return computeStatAIScore(this, state, intel, modStat, contraStat, levels, ratio, isSelfTargetEnabled());
+    }
+    
+    static final float computeStatAIScore(SecondaryEffect effect,
+            FighterTurnState state, AIIntelligence intel, StatId modStat, StatId contraStat, int levels, float ratio, boolean isSelfTarget)
+    {
         if(levels == 0)
             return 0f;
         
         float mod = computeMod(state, intel);
-        if(isSelfTargetEnabled())
+        if(isSelfTarget)
         {
             NormalStat selfStat = (NormalStat) state.self.getStat(modStat);
             NormalStat targetStat = (NormalStat) state.enemy.getStat(contraStat);
@@ -242,7 +248,7 @@ public class StatAlterationSecondaryEffect extends SecondaryEffect
         }
     }
     
-    private float computeMod(FighterTurnState state, AIIntelligence intel)
+    private static float computeMod(FighterTurnState state, AIIntelligence intel)
     {
         if(intel.isGifted())
             return 1f;
@@ -250,12 +256,12 @@ public class StatAlterationSecondaryEffect extends SecondaryEffect
         return (state.rng.d(base) - (base / 2f)) / 4096f;
     }
     
-    private float createRatio(float base)
+    static final float createRatio(SecondaryEffect effect, float base)
     {
-        int prob = getProbability();
+        int prob = effect.getProbability();
         if(prob >= 100)
             return base;
-        float mod = getProbability() / 100f * 0.55f + 0.25f;
+        float mod = prob / 100f * 0.55f + 0.25f;
         return base * mod;
     }
 
@@ -265,9 +271,9 @@ public class StatAlterationSecondaryEffect extends SecondaryEffect
         if(intel.isDummy())
             return AIScore.random(state.rng, false);
         
-        float normalRatio = createRatio(1f);
-        float speedRatio = createRatio(0.85f);
-        float precisionRatio = createRatio(0.7f);
+        float normalRatio = createRatio(this, 1f);
+        float speedRatio = createRatio(this, 0.85f);
+        float precisionRatio = createRatio(this, 0.7f);
         float ratio = 0f;
         
         ratio += computeStatAIScore(state, intel, StatId.ATTACK, StatId.DEFENSE, attackLevels, normalRatio);
@@ -285,19 +291,21 @@ public class StatAlterationSecondaryEffect extends SecondaryEffect
     @Override
     public final String generateDescription(AttackModel attack)
     {
-        return new StringJoiner(". ", "", ".")
-                .add(msg(0, attackLevels))
-                .add(msg(1, defenseLevels))
-                .add(msg(2, spAttackLevels))
-                .add(msg(3, spDefenseLevels))
-                .add(msg(4, speedLevels))
-                .add(msg(5, accuracyLevels))
-                .add(msg(6, evasionLevels))
-                .toString();
+        StringJoiner joiner = new StringJoiner(". ", "", ".");
+        msg(joiner, 0, attackLevels);
+        msg(joiner, 1, defenseLevels);
+        msg(joiner, 2, spAttackLevels);
+        msg(joiner, 3, spDefenseLevels);
+        msg(joiner, 4, speedLevels);
+        msg(joiner, 5, accuracyLevels);
+        msg(joiner, 6, evasionLevels);
+        return joiner.toString();
     }
     
-    private String msg(int stat, int levels)
+    private void msg(StringJoiner joiner, int stat, int levels)
     {
+        if(levels == 0)
+            return;
         String base;
         switch(stat)
         {
@@ -323,6 +331,6 @@ public class StatAlterationSecondaryEffect extends SecondaryEffect
             case 3: case 4: case 5: case 6: measure = "Sube muchísimo "; break;
         }
         
-        return measure + base;
+        joiner.add(measure + base);
     }
 }

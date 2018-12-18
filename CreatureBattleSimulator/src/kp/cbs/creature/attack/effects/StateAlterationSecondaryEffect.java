@@ -279,36 +279,40 @@ public class StateAlterationSecondaryEffect extends SecondaryEffect
         return AIScore.medium(false).multiply(ratio);
     }
     
-    private String msg(AlteredStateId id) { return "Proboca " + id; }
-    private String msg(StateId id)
+    private void msg(StringJoiner joiner, AlteredStateId id, boolean flag)
     {
-        switch(id)
-        {
-            case CRITICAL_HIT: return "Incrementa el índice de golpe crítico";
-            case INTIMIDATED: return "Intimida al objetivo impidiendo que realice su ataque si este no ha atacado ya antes";
-            case RESTING: return "El usuario necesitará descansar el siguiente turno";
-            default: return "";
-        }
+        if(flag)
+            joiner.add("Proboca " + id);
+    }
+    private void msg(StringJoiner joiner, StateId id, boolean flag)
+    {
+        if(flag)
+            switch(id)
+            {
+                case CRITICAL_HIT: joiner.add("Incrementa el índice de golpe crítico"); break;
+                case INTIMIDATED: joiner.add("Intimida al objetivo impidiendo que realice su ataque si este no ha atacado ya antes"); break;
+                case RESTING: joiner.add("El usuario necesitará descansar el siguiente turno"); break;
+            }
     }
 
     @Override
     public final String generateDescription(AttackModel attack)
     {
-        return new StringJoiner(". ", "", ".")
-                .add(msg(AlteredStateId.CONFUSION))
-                .add(msg(AlteredStateId.PARALYSIS))
-                .add(msg(AlteredStateId.BURN))
-                .add(msg(AlteredStateId.POISONING))
-                .add(msg(AlteredStateId.INTOXICATION))
-                .add(msg(AlteredStateId.SLEEP))
-                .add(msg(AlteredStateId.SLEEPINESS))
-                .add(msg(AlteredStateId.FREEZING))
-                .add(msg(AlteredStateId.CURSE))
-                .add(msg(AlteredStateId.NIGHTMARE))
-                .add(msg(StateId.CRITICAL_HIT))
-                .add(msg(StateId.INTIMIDATED))
-                .add(msg(StateId.RESTING))
-                .toString();
+        StringJoiner joiner = new StringJoiner(". ", "", ".");
+        msg(joiner, AlteredStateId.CONFUSION, confusion);
+        msg(joiner, AlteredStateId.PARALYSIS, paralysis);
+        msg(joiner, AlteredStateId.BURN, burn);
+        msg(joiner, AlteredStateId.POISONING, poisoning);
+        msg(joiner, AlteredStateId.INTOXICATION, intoxication);
+        msg(joiner, AlteredStateId.SLEEP, sleep);
+        msg(joiner, AlteredStateId.SLEEPINESS, sleepinees);
+        msg(joiner, AlteredStateId.FREEZING, freezing);
+        msg(joiner, AlteredStateId.CURSE, curse);
+        msg(joiner, AlteredStateId.NIGHTMARE, nightmare);
+        msg(joiner, StateId.CRITICAL_HIT, critical_hit);
+        msg(joiner, StateId.INTIMIDATED, intimidated);
+        msg(joiner, StateId.RESTING, resting);
+        return joiner.toString();
     }
     
 }

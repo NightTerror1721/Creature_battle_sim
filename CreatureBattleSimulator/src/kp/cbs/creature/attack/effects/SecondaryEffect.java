@@ -5,7 +5,9 @@
  */
 package kp.cbs.creature.attack.effects;
 
+import kp.cbs.utils.Serializer;
 import kp.cbs.utils.Utils;
+import kp.udl.data.UDLObject;
 import kp.udl.data.UDLValue;
 
 /**
@@ -25,12 +27,30 @@ public abstract class SecondaryEffect implements Effect
     
     public static final UDLValue serialize(SecondaryEffect eff)
     {
-        return null;
+        return new UDLObject()
+                .setInt("id", eff.getType().ordinal())
+                .set("effect", Serializer.extract(eff));
     }
     
     public static final SecondaryEffect unserialize(UDLValue base)
     {
-        return null;
+        try
+        {
+            switch(SecondaryEffectType.decode(base.getInt("id")))
+            {
+                default:
+                case EMPTY_EFFECT: return EMPTY_EFFECT;
+                case STAT_ALTERATION: return Serializer.inject(base.get("effect"), StatAlterationSecondaryEffect.class);
+                case WEATHER_ALTERATION: return Serializer.inject(base.get("effect"), WeatherSecondaryEffect.class);
+                case STATE_ALTERATION: return Serializer.inject(base.get("effect"), StateAlterationSecondaryEffect.class);
+                case SPECIAL_EFFECT: return Serializer.inject(base.get("effect"), SpecialSecondaryEffect.class);
+            }
+        }
+        catch(Throwable ex)
+        {
+            ex.printStackTrace(System.err);
+            return EMPTY_EFFECT;
+        }
     }
     
     public enum SecondaryEffectType
