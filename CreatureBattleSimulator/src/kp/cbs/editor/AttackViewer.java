@@ -65,6 +65,8 @@ public class AttackViewer extends JDialog
                 .collect(Collectors.toList());
         models.removeAllElements();
         models.addAll(all);
+        
+        setTitle("Visor de Ataques - Número de ataques encontrados: " + all.size());
     }
     
     private boolean applyFilters(AttackModel model)
@@ -100,7 +102,7 @@ public class AttackViewer extends JDialog
         type.setText(model.getElementalType().toString());
         damType.setText(model.getGeneralDamageType().toString());
         power.setText(Integer.toString(model.getPower()));
-        precision.setText(Integer.toString(model.getPrecision()));
+        precision.setText(model.getPrecision() <= 0 ? "Nunca falla" : Integer.toString(model.getPrecision()));
         pps.setText(Integer.toString(model.getMaxPP()));
         priority.setText(Integer.toString(model.getPriority()));
         description.setText(model.generateDescription());

@@ -1,0 +1,84 @@
+"pp": 5,
+"precision": 85,
+"name": "Ira",
+"id": 25,
+"power": 100,
+"priority": 0,
+"type": 0,
+"turns": [{
+    "min_hits": 1,
+    "secondary_effects": [],
+    "max_hits": 1,
+    "damage_effect": {
+        "effect": {
+            "powerValue": 0,
+            "attackValue": 0,
+            "defenseValue": 0,
+            "backwardOrAbsorbDamage": 0,
+            "special": false,
+            "selfTarget": false,
+            "selfElementalTypeUsed": false,
+            "probCriticalHit": false
+        },
+        "id": 1
+    },
+    "id": 25,
+    "message": "¡<self> rebosa ira!"
+}, {
+    "min_hits": 1,
+    "secondary_effects": [],
+    "max_hits": 1,
+    "damage_effect": {
+        "effect": {
+            "powerValue": 130,
+            "attackValue": 0,
+            "defenseValue": 0,
+            "backwardOrAbsorbDamage": 0,
+            "special": false,
+            "selfTarget": false,
+            "selfElementalTypeUsed": false,
+            "probCriticalHit": false
+        },
+        "id": 1
+    },
+    "id": 25,
+    "message": "<self> está al máximo de su ira, y golpea con más fuerza"
+}, {
+    "min_hits": 1,
+    "secondary_effects": [{
+        "effect": {
+            "probability": 100,
+            "confusion": true,
+            "paralysis": false,
+            "burn": false,
+            "poisoning": false,
+            "intoxication": false,
+            "sleep": false,
+            "sleepinees": false,
+            "freezing": false,
+            "curse": false,
+            "nightmare": false,
+            "critical_hit": false,
+            "intimidated": false,
+            "resting": false,
+            "selfTarget": true
+        },
+        "id": 3
+    }],
+    "max_hits": 1,
+    "damage_effect": {
+        "effect": {
+            "powerValue": 130,
+            "attackValue": 0,
+            "defenseValue": 0,
+            "backwardOrAbsorbDamage": 0,
+            "special": false,
+            "selfTarget": false,
+            "selfElementalTypeUsed": false,
+            "probCriticalHit": false
+        },
+        "id": 1
+    },
+    "id": 25,
+    "message": "<self> se encuentra exhausto y confuso por el esfuerzo, despues de dar su último golpe al máximo."
+}]

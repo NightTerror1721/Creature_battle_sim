@@ -282,16 +282,18 @@ public class StateAlterationSecondaryEffect extends SecondaryEffect
     private void msg(StringJoiner joiner, AlteredStateId id, boolean flag)
     {
         if(flag)
-            joiner.add("Proboca " + id);
+            joiner.add("Proboca " + id + (isSelfTargetEnabled() ? "al Usuario" : "al Enemigo"));
     }
     private void msg(StringJoiner joiner, StateId id, boolean flag)
     {
         if(flag)
             switch(id)
             {
-                case CRITICAL_HIT: joiner.add("Incrementa el índice de golpe crítico"); break;
-                case INTIMIDATED: joiner.add("Intimida al objetivo impidiendo que realice su ataque si este no ha atacado ya antes"); break;
-                case RESTING: joiner.add("El usuario necesitará descansar el siguiente turno"); break;
+                case CRITICAL_HIT: joiner.add("Incrementa el índice de golpe crítico " +
+                        (isSelfTargetEnabled() ? "del Usuario" : "del Enemigo")); break;
+                case INTIMIDATED: joiner.add("Intimida al " +
+                        (isSelfTargetEnabled() ? "Usuario" : "Enemigo") + " impidiendo que realice su ataque si este no ha atacado ya antes"); break;
+                case RESTING: joiner.add("El " + (isSelfTargetEnabled() ? "Usuario" : "Enemigo") + " necesitará descansar el siguiente turno"); break;
             }
     }
 

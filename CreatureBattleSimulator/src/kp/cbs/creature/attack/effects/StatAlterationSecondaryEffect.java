@@ -304,18 +304,19 @@ public class StatAlterationSecondaryEffect extends SecondaryEffect
     
     private void msg(StringJoiner joiner, int stat, int levels)
     {
+        String target = isSelfTargetEnabled() ? "al Usuario" : "al Enemigo";
         if(levels == 0)
             return;
         String base;
         switch(stat)
         {
-            case 0: base = "el ataque"; break;
-            case 1: base = "la defensa"; break;
-            case 2: base = "el ataque especial"; break;
-            case 3: base = "la defensa especial"; break;
-            case 4: base = "la velocidad"; break;
-            case 5: base = "la precisión"; break;
-            case 6: base = "la evasión"; break;
+            case 0: base = "el ataque "; break;
+            case 1: base = "la defensa "; break;
+            case 2: base = "el ataque especial "; break;
+            case 3: base = "la defensa especial "; break;
+            case 4: base = "la velocidad "; break;
+            case 5: base = "la precisión "; break;
+            case 6: base = "la evasión "; break;
             default: base = "<ERROR> "; break;
         }
         
@@ -331,6 +332,6 @@ public class StatAlterationSecondaryEffect extends SecondaryEffect
             case 3: case 4: case 5: case 6: measure = "Sube muchísimo "; break;
         }
         
-        joiner.add(measure + base);
+        joiner.add(measure + base + target);
     }
 }

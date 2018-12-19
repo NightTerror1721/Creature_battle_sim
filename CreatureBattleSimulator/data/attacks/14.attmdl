@@ -1,0 +1,18 @@
+"pp": 10,
+"precision": 100,
+"name": "Recuperación",
+"id": 14,
+"power": 0,
+"priority": 0,
+"type": 0,
+"turns": [{
+    "min_hits": 1,
+    "secondary_effects": [],
+    "max_hits": 1,
+    "damage_effect": {
+        "effect": [128, 128, 128, 128, 128, 128, 128],
+        "id": 4
+    },
+    "id": 14,
+    "message": ""
+}]
