@@ -325,7 +325,7 @@ public final class NormalDamageEffect extends DamageEffect
     @Override
     public final String generateDescription(AttackModel attack)
     {
-        StringJoiner joiner = new StringJoiner(". ", "", ".");
+        StringJoiner joiner = new StringJoiner(". ");
         
         if(isSelfTargetEnabled())
             joiner.add("Causa daño al usuario del ataque");
@@ -354,7 +354,7 @@ public final class NormalDamageEffect extends DamageEffect
         if(isProbableCriticalHitEnabled())
             joiner.add("Alta probabilidad de golpe crítico");
         
-        return joiner.toString();
+        return joiner.length() > 0 ? joiner.toString() + "." : "";
     }
     
     private static String bytePercentage(int value)

@@ -79,5 +79,30 @@ public abstract class DamageEffect implements Effect
         PHYSICAL,
         SPECIAL,
         INDIRECT;
+        
+        public static final DamageType combine(DamageType d0, DamageType d1)
+        {
+            switch(d0)
+            {
+                default:
+                case NO_DAMAGE: return d1;
+                case PHYSICAL: return d0;
+                case SPECIAL: return d0;
+                case INDIRECT: return d1 == NO_DAMAGE ? d0 : d1;
+            }
+        }
+        
+        @Override
+        public final String toString()
+        {
+            switch(this)
+            {
+                default:
+                case NO_DAMAGE: return "Sin Daño";
+                case PHYSICAL: return "Físico";
+                case SPECIAL: return "Especial";
+                case INDIRECT: return "Indirecto";
+            }
+        }
     }
 }

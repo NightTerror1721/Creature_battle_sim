@@ -18,7 +18,7 @@ public abstract class SecondaryEffect implements Effect
 {
     public static final SecondaryEffect EMPTY_EFFECT = EmptySecondaryEffect.INSTANCE;
     
-    private int probability;
+    private int probability = 100;
     
     public final int getProbability() { return probability; }
     public final void setProbability(int probability) { this.probability = Utils.range(1, 100, probability); }

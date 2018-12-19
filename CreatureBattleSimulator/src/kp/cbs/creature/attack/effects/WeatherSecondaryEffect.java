@@ -19,7 +19,7 @@ import kp.udl.autowired.Property;
 public class WeatherSecondaryEffect extends SecondaryEffect
 {
     @Property
-    private WeatherId weather;
+    private WeatherId weather = WeatherId.RAIN;
     
     public final void setWeather(WeatherId weather) { this.weather = weather; }
     public final WeatherId getWeather() { return weather; }

@@ -8,7 +8,12 @@ package kp.cbs.editor;
 import java.util.Arrays;
 import java.util.stream.IntStream;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+import kp.cbs.creature.attack.AttackModel;
+import kp.cbs.creature.attack.AttackModel.AttackTurn;
+import kp.cbs.creature.attack.AttackPool;
 import kp.cbs.creature.elements.ElementalType;
 import kp.cbs.editor.utils.AttackTurnEditor;
 import kp.cbs.utils.Utils;
@@ -19,7 +24,7 @@ import kp.cbs.utils.Utils;
  */
 public class AttackEditor extends JDialog
 {
-    
+    private AttackModel loaded;
     
     private AttackEditor(MainMenuEditor parent)
     {
@@ -52,6 +57,7 @@ public class AttackEditor extends JDialog
     
     public final void createNew()
     {
+        loaded = null;
         name.setText("");
         power.setSelectedItem(0);
         pps.setSelectedItem(5);
@@ -60,9 +66,83 @@ public class AttackEditor extends JDialog
         type.setSelectedItem(ElementalType.NORMAL);
         
         turnsPanel.removeAll();
-        turnsPanel.add("Turno 1", new AttackTurnEditor(this));
+        createNewTurnTab();
         
         updateTitle(-1);
+    }
+    
+    private void load()
+    {
+        loaded = null;
+        var allModels = AttackPool.getAllModels(true);
+        if(allModels.isEmpty())
+            return;
+        allModels.sort((m0, m1) -> m0.toString().compareTo(m1.toString()));
+        var sel = JOptionPane.showInputDialog(this, "¿Que ataque quieres cargar?",
+                "Cargar Ataque", JOptionPane.QUESTION_MESSAGE, null,
+                allModels.toArray(), allModels.get(0));
+        if(sel == null)
+            return;
+        
+        var model = (AttackModel) sel;
+        createNew();
+        expandModel(loaded = model);
+        updateTitle(model.getId());
+    }
+    
+    private void store()
+    {
+        var model = generateModel();
+        if(AttackPool.registerNewOrUpdateModel(model, loaded == null))
+        {
+            loaded = model;
+            updateTitle(model.getId());
+            JOptionPane.showMessageDialog(this, "¡El ataque ha sido guardado con éxito!",
+                    "Guardar Ataque", JOptionPane.INFORMATION_MESSAGE);
+        }
+        else JOptionPane.showMessageDialog(this, "Ha habido un fallo al guardar el ataque.",
+                "Guardar Ataque", JOptionPane.ERROR_MESSAGE);
+    }
+    
+    private AttackModel generateModel()
+    {
+        AttackModel model = new AttackModel();
+        
+        model.setName(name.getText().isBlank() ? "UNKNOWN" : name.getText());
+        model.setPower(intValue(power));
+        model.setMaxPP(intValue(pps));
+        model.setPrecision(intValue(precision));
+        model.setPriority(intValue(priority));
+        model.setElementalType(value(type, ElementalType.UNKNOWN));
+        
+        int tabs = turnsPanel.getTabCount();
+        model.setTurns(tabs);
+        for(int i=0;i<tabs;i++)
+        {
+            AttackTurn turn = model.getTurn(i);
+            ((AttackTurnEditor) turnsPanel.getComponentAt(i)).fillTurn(turn);
+        }
+        
+        return model;
+    }
+    
+    private void expandModel(AttackModel model)
+    {
+        name.setText(model.getName());
+        power.setSelectedItem(model.getPower());
+        pps.setSelectedItem(model.getMaxPP());
+        precision.setSelectedItem(model.getPrecision());
+        priority.setSelectedItem(model.getPriority());
+        type.setSelectedItem(model.getElementalType());
+        
+        turnsPanel.removeAll();
+        int len = model.getTurnCount();
+        for(int i=0;i<len;i++)
+        {
+            AttackTurn turn = model.getTurn(i);
+            AttackTurnEditor tab = createNewTurnTab();
+            tab.expandTurn(turn);
+        }
     }
     
     public static final Integer[] generateIntegerRange(int first, int last, int interval)
@@ -74,6 +154,26 @@ public class AttackEditor extends JDialog
         for(int i = 0, current = first; i < len; i++, current += interval)
             array[i] = current;
         return array;
+    }
+    
+    private static int intValue(JComboBox<Integer> box)
+    {
+        try { return ((Number) box.getSelectedItem()).intValue(); }
+        catch(Throwable ex) { return 0; }
+    }
+    
+    private static <E> E value(JComboBox<E> box, E defaultVavlue)
+    {
+        try { return (E) box.getSelectedItem(); }
+        catch(Throwable ex) { return defaultVavlue; }
+    }
+    
+    private AttackTurnEditor createNewTurnTab()
+    {
+        int len = turnsPanel.getTabCount();
+        AttackTurnEditor tab = new AttackTurnEditor(this);
+        turnsPanel.add("Turno " + (len + 1), tab);
+        return tab;
     }
 
     /**
@@ -194,10 +294,25 @@ public class AttackEditor extends JDialog
         );
 
         jButton3.setText("Nuevo");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         jButton4.setText("Cargar");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         jButton5.setText("Guardar");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -235,9 +350,7 @@ public class AttackEditor extends JDialog
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        int len = turnsPanel.getTabCount();
-        AttackTurnEditor tab = new AttackTurnEditor(this);
-        turnsPanel.add("Turno " + (len + 1), tab);
+        createNewTurnTab();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -252,6 +365,18 @@ public class AttackEditor extends JDialog
         for(;sel < len; sel++)
             turnsPanel.setTitleAt(sel, "Turno " + (sel + 1));
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        createNew();
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        load();
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        store();
+    }//GEN-LAST:event_jButton5ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -20,7 +20,7 @@ import kp.udl.autowired.Property;
 public final class SpecialSecondaryEffect extends SecondaryEffect
 {
     @Property
-    private SpecialEffectId effect;
+    private SpecialEffectId effect = SpecialEffectId.EFFECT_CURSE;
     
     
     public final void setEffect(SpecialEffectId effect) { this.effect = effect; }

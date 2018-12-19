@@ -1,0 +1,604 @@
+const var dice = Math.random;
+const var checkDice = function(value) { return dice(100) < value; };
+
+const var getAllAttacks = function(creature) {
+	var atts = new Array();
+	for(var i=0;i<4;i++) {
+		var att = creature.getAttack(i);
+		if(att !== null) {
+			atts << att;
+		}
+	}
+	return new Tuple(atts);
+};
+
+const var AttackScore = const {
+	constructor: function(attack, score) {
+		if(attack === null || typeof(attack) === "undefined")
+			throw "Attack cannot be null or undefined";
+		if(typeof(score) !== "number")
+			throw "Score can only be valid number";
+		self.attack = attack;
+		self.score = score;
+	},
+	
+	equals: function(other) { return self.score === other.score; },
+	
+	notEquals: function(other) { return self.score !== other.score; },
+	
+	__smaller__: function(other) { return self.score < other.score; },
+	
+	toString: function() { return "["..self.attack.getName().." -> "..self.score.."]"; },
+	
+	compare: function(other) {
+		if(self === other)
+			return 0;
+		return self < other ? -1 : 1;
+	},
+	
+	id: function() { return self.attack.getId(); }
+};
+
+const var effectScoreFunction = new Map();
+
+const var computeEffectScore = function(attack, user, target, weather, baseScore) {
+	var effectid = attack.getEffect().id;
+	var func = effectScoreFunction[effectid];
+	var isState = (attack.isState() || attack.getPower() < 5);
+	if(typeof(func) !== "function")
+		return 0;
+	return func(attack, user, target, weather, effectid, isState, baseScore);
+};
+
+const var computePriorityMultiplier = function(attack) {
+	var pri = attack.getPriority();
+	var mult = 1;
+	if(pri > 0)
+		mult += 0.2 * pri;
+	else if(pri < 0)
+		mult += 0.1 * pri;
+	return mult;
+};
+
+const var computeAttackScore = function(attack, user, target, weather) {
+	var power, effectiveness, dif;
+	if(attack.isState() || attack.getPower() < 5) {
+		power = 0;
+		effectiveness = target.effectiveness(attack.getType()) > 0 ? 1 : 0;
+		dif = 1;
+	} else {
+		power = attack.getPower();
+		effectiveness = target.effectiveness(attack.getType());
+		if(effectiveness > 1)
+			effectiveness *= 0.75;
+		else if(effectiveness < 1)
+			effectiveness *= 1.5;
+		
+		if(attack.isPhysic())
+			dif = (user.getStat(1) * 1.2) / target.getStat(2);
+		else dif = (user.getStat(3) * 1.2) / target.getStat(4);
+	}
+	
+	var precision = attack.getPrecision();
+	precision = precision <= 0 ? 1.1 : (precision + 300) * 0.0025;
+	var score = power * effectiveness * dif * computePriorityMultiplier(attack) * precision;
+	score = (score + computeEffectScore(attack, user, target, weather, score)) * (1 + ((dice(10) - 5) * 0.01));
+	return Number.int(score * 10) / 10;
+};
+
+global AI = const {
+	computeNormal: function(user, target, weather) {
+		var userAttacks = getAllAttacks(user);
+		var scores = new Array();
+		for(attack : userAttacks) {
+			if(attack.getCurrentPP() > 0) {
+				var score = computeAttackScore(attack, user, target, weather);
+				scores << new AttackScore(attack, score);
+			}
+		}
+		if(scores.length === 0)
+			return -1;
+		scores.sort();
+		IO.print("scores!!");
+		IO.print(scores);
+		return scores[scores.length - 1].id();
+	}
+};
+
+const var healthPercentage = function(creature) { return creature.getCurrentHealthPoints() / creature.getMaxHealthPoints(); };
+
+const var basicAlteredEffect = function(alteredName, attack, user, target, weather, effectid, isState, base, baseDice, minToReduceU, minToReduceT) {
+	if(altered[alteredName](target))
+		return 0;
+	base = base + dice(baseDice);
+	if(minToReduceU > 0) {
+		var health = healthPercentage(user);
+		if(health < minToReduceU)
+			base *= health / minToReduceU;
+	}
+	if(minToReduceT > 0) {
+		var health = healthPercentage(user);
+		if(health < minToReduceT)
+			base *= health / minToReduceT
+	}
+	return isState ? base : (attack.getProbability() * 0.001) * base;
+};
+
+effectScoreFunction[1] = function(attack, user, target, weather, effectid, isState) {
+	return basicAlteredEffect("isConfused", attack, user, target, weather, effectid, isState, 125, 51, 0.8, 0.4);
+};
+
+effectScoreFunction[2] = function(attack, user, target, weather, effectid, isState) {
+	return basicAlteredEffect("isParalyzed", attack, user, target, weather, effectid, isState, 135, 56, 0.25, 0.25);
+};
+
+effectScoreFunction[3] = function(attack, user, target, weather, effectid, isState) {
+	return basicAlteredEffect("isFired", attack, user, target, weather, effectid, isState, 120, 51, 0.1, 0.5);
+};
+
+effectScoreFunction[4] = function(attack, user, target, weather, effectid, isState) {
+	var score = basicAlteredEffect("isPoisoned", attack, user, target, weather, effectid, isState, 130, 51, 0.1, 0.25);
+	return score === 0 ? basicAlteredEffect("isIntoxicated", attack, user, target, weather, effectid, isState, 130, 61, 0.1, 0.25) : 0;
+};
+
+effectScoreFunction[5] = function(attack, user, target, weather, effectid, isState) {
+	var score = basicAlteredEffect("isIntoxicated", attack, user, target, weather, effectid, isState, 130, 61, 0.1, 0.25);
+	return score === 0 ? basicAlteredEffect("isPoisoned", attack, user, target, weather, effectid, isState, 130, 51, 0.1, 0.25) : 0;
+};
+
+effectScoreFunction[6] = function(attack, user, target, weather, effectid, isState) {
+	return basicAlteredEffect("isSleeping", attack, user, target, weather, effectid, isState, 140, 56, 0.0, 0.0);
+};
+
+effectScoreFunction[7] = function(attack, user, target, weather, effectid, isState) {
+	return basicAlteredEffect("isFreezed", attack, user, target, weather, effectid, isState, 150, 61, 0.1, 0.0);
+};
+
+effectScoreFunction[8] = function(attack, user, target, weather, effectid, isState) {
+	return basicAlteredEffect("isCursed", attack, user, target, weather, effectid, isState, 100, 31, 0.9, 0.0);
+};
+
+effectScoreFunction[9] = function(attack, user, target, weather, effectid, isState) {
+	return basicAlteredEffect("isIntimidated", attack, user, target, weather, effectid, isState, 75, 26, 0.5, 0.0);
+};
+
+effectScoreFunction[10] = function(attack, user, target, weather, effectid, isState) {
+	var tlevel = target.getLevel();
+	if(tlevel >= user.getLevel())
+		return 0;
+	var prob = attack.getProbability();
+	return prob * (1 + (dice(30) * 0.1));
+};
+
+const var getStatScore = function(statid, user, target, inverse) {
+	var s1, s2;
+	switch(statid) {
+		case 1:
+			s1, s2 = target.getStat(2), user.getStat(1);
+			break;
+		case 2:
+			s1, s2 = target.getStat(1), user.getStat(2);
+			break;
+		case 3:
+			s1, s2 = target.getStat(4), user.getStat(3);
+			break;
+		case 4:
+			s1, s2 = target.getStat(3), user.getStat(4);
+			break;
+		case 5:
+			s1, s2 = target.getStat(5), user.getStat(5);
+			return s1 > s2 ? 40 + dice(81) : 0;
+		default: return 0;
+	}
+	if(inverse) {
+		var aux = s2;
+		s2 = s1;
+		s1 = aux;
+	}
+	return s1 > s2 ? s1 / (s2 * 0.9) * 120 : s1 / s2 * 20;
+};
+
+const var computeStatLevelsScore = function(levels) {
+	return levels >= 0 ? 1 + ((levels - 1) * 0.5) : 1 + ((levels + 1) * 0.2);
+};
+
+const var statModificator = function(attack, user, target, isState, statid, levels, isUser) {
+	var stateMul = isState ? 1 : attack.getProbability() * 0.001;
+	if(isUser) {
+		if(levels < 0)
+			return 0;
+		return getStatScore(statid, user, target, false) * computeStatLevelsScore(levels) * stateMul;
+	} else {
+		return getStatScore(statid, user, target, levels < 0) * computeStatLevelsScore(levels) * stateMul;
+	}
+};
+
+const var basicStatModificator = function(attack, user, target, weather, effectid, isState) {
+	var statid = ((effectid - 1) % 5) + 1;
+	var levels = Number.int(effectid / 10);
+	levels = levels === 2 || levels === 4 ? 2 : 1;
+	levels = ((effectid - 1) % 10) > 4 ? -levels : levels;
+	var isUser = effectid <= 30;
+	return statModificator(attack, user, target, isState, statid, levels, isUser);
+};
+
+for(var i=11;i<51;i++)
+	effectScoreFunction[i] = basicStatModificator;
+
+const var precisionEvasionModificator = function(attack, isState, isUser, increase) {
+	var base = isState ? 100 : attack.getProbability() * 0.25;
+	if(isUser)
+		return increase ? base : 0;
+	return increase ? 0 : base;
+};
+
+effectScoreFunction[51] = function(attack, user, target, weather, effectid, isState) { return precisionEvasionModificator(attack, isState, true, true); };
+effectScoreFunction[52] = function(attack, user, target, weather, effectid, isState) { return precisionEvasionModificator(attack, isState, true, false); };
+effectScoreFunction[53] = function(attack, user, target, weather, effectid, isState) { return precisionEvasionModificator(attack, isState, false, true); };
+effectScoreFunction[54] = function(attack, user, target, weather, effectid, isState) { return precisionEvasionModificator(attack, isState, false, false); };
+effectScoreFunction[55] = effectScoreFunction[51];
+effectScoreFunction[56] = effectScoreFunction[52];
+effectScoreFunction[57] = effectScoreFunction[53];
+effectScoreFunction[58] = effectScoreFunction[54];
+
+effectScoreFunction[59] = function(attack, user, target, weather, effectid, isState, baseScore) { return -(baseScore / 2); };
+
+effectScoreFunction[60] = function(attack, user, target, weather, effectid, isState, baseScore) {
+	var ratio = (1 - healthPercentage(user)) * 2;
+	return baseScore * ratio;
+};
+
+effectScoreFunction[61] = function(attack, user, target, weather, effectid, isState, baseScore) {
+	var ratio = (1 - healthPercentage(user)) / 4;
+	return -(baseScore * ratio);
+};
+
+effectScoreFunction[62] = function(attack, user, target, weather, effectid, isState, baseScore) {
+	var mod1 = attack.getProbability() * 0.01 + 1;
+	var ratio = (1 - healthPercentage(user)) / 6 * mod1;
+	return -(baseScore * ratio);
+};
+
+const var containsTypeAttack = function(creature, typeids) {
+	var types = new Array(typeids.length);
+	for(var id=0;id<typeids.length;id++)
+		type[id] = elementalTypeTable[typeids[id]];
+	var atts = getAllAttacks(creature);
+	for(att : atts) {
+		for(type : types) {
+			if(att.getType() == type)
+				return true;
+		}
+	}
+	return false;
+};
+
+const var containsTypeCreature = function(creature, typeids) {
+	for(id : typeids) {
+		if(creature.containsType(elementalTypeTable[id]))
+			return true;
+	}
+	return false;
+};
+
+effectScoreFunction[63] = function(attack, user, target, weather, effectid, isState, baseScore) {
+	if(weather.id === 1)
+		return 0;
+	var score = 0;
+	if(containsTypeAttack(user, [7]))
+		score = 400;
+	return score;
+};
+
+effectScoreFunction[64] = function(attack, user, target, weather, effectid, isState, baseScore) {
+	if(weather.id === 2)
+		return 0;
+	var score = 0;
+	if(containsTypeAttack(user, [5]))
+		score = 400;
+	return score;
+};
+
+effectScoreFunction[65] = function(attack, user, target, weather, effectid, isState, baseScore) {
+	if(weather.id === 4)
+		return 0;
+	var score = 0;
+	if(containsTypeAttack(user, [6]))
+		score += 250;
+	if(containsTypeCreature(user, [6]))
+		score += 150;
+	return score;
+};
+
+effectScoreFunction[66] = function(attack, user, target, weather, effectid, isState, baseScore) {
+	if(weather.id === 3)
+		return 0;
+	var score = 0;
+	if(containsTypeAttack(user, [8, 9]))
+		score += 300;
+	if(containsTypeCreature(user, [8, 9, 12]))
+		score += 100;
+	return score;
+};
+
+effectScoreFunction[67] = function(attack, user, target, weather, effectid, isState, baseScore) {
+	if(weather.id === 5)
+		return 0;
+	var score = 0;
+	if(containsTypeAttack(user, [3, 4]))
+		score = 400;
+	return score;
+};
+
+effectScoreFunction[68] = function(attack, user, target, weather, effectid, isState, baseScore) {
+	if(weather.id === 6)
+		return 0;
+	var score = 0;
+	if(containsTypeAttack(user, [11]))
+		score += 200;
+	if(containsTypeCreature(user, [11]))
+		score += 200;
+	return score;
+};
+
+effectScoreFunction[69] = function(attack, user, target, weather, effectid, isState, baseScore) {
+	var fail = altered.getProtectedFail(user) * 1.55;
+	return 500 * (1 - fail);
+};
+
+effectScoreFunction[70] = function(attack, user, target, weather, effectid, isState, baseScore) {
+	return altered.isConfused(user) ? baseScore * 0.15 : 0;
+};
+
+effectScoreFunction[71] = function(attack, user, target, weather, effectid, isState, baseScore) {
+	return dice(250);
+};
+
+effectScoreFunction[72] = function(attack, user, target, weather, effectid, isState, baseScore) {
+	var health = healthPercentage(user);
+	return health > 0.6 ? 0 : health / 0.7 * 500;
+};
+
+effectScoreFunction[73] = function(attack, user, target, weather, effectid, isState, baseScore) {
+	var health = healthPercentage(user);
+	return health > 0.5 ? 0 : health / 0.6 * 400;
+};
+
+effectScoreFunction[74] = function(attack, user, target, weather, effectid, isState, baseScore) {
+	var damage = user.getLevel() * 10;
+	var health = target.getCurrentHealthPoints();
+	return damage >= health ? 300 : 0;
+};
+
+effectScoreFunction[75] = function(attack, user, target, weather, effectid, isState, baseScore) {
+	var effe = target.effectiveness(user.getPrimaryType());
+	if(effe <= 0)
+		return -baseScore;
+	if(effe > 1)
+		return baseScore * effe * 0.75 - baseScore;
+	if(effe < 1)
+		return baseScore * effe * 1.5 - baseScore;
+	return 0;
+};
+
+effectScoreFunction[76] = function(attack, user, target, weather, effectid, isState, baseScore) {
+	return target.containsType(elementalTypeTable[15]) ? baseScore * 0.5 : 0;
+};
+
+effectScoreFunction[77] = function(attack, user, target, weather, effectid, isState, baseScore) {
+	return target.containsType(elementalTypeTable[16]) ? baseScore * 0.5 : 0;
+};
+
+effectScoreFunction[78] = function(attack, user, target, weather, effectid, isState, baseScore) {
+	var mult = 1 + dice(101) + 0.01;
+	return attack.getPower() * mult;
+};
+
+effectScoreFunction[79] = function(attack, user, target, weather, effectid, isState, baseScore) {
+	return target.containsType(elementalTypeTable[4]) ? baseScore : 0;
+};
+
+effectScoreFunction[80] = function(attack, user, target, weather, effectid, isState, baseScore) {
+	return baseScore * 0.1;
+};
+
+effectScoreFunction[81] = function(attack, user, target, weather, effectid, isState, baseScore) {
+	var value = 0;
+	value += statModificator(attack, user, target, isState, 3, 1, true);
+	value += statModificator(attack, user, target, isState, 5, 1, true);
+	return value / 1.8;
+};
+
+effectScoreFunction[82] = function(attack, user, target, weather, effectid, isState, baseScore) {
+	var value = 0;
+	value += statModificator(attack, user, target, isState, 1, 1, true);
+	value += statModificator(attack, user, target, isState, 3, 1, true);
+	return value / 1.8;
+};
+
+effectScoreFunction[83] = function(attack, user, target, weather, effectid, isState, baseScore) {
+	var value = 0;
+	value += statModificator(attack, user, target, isState, 2, 1, true);
+	value += statModificator(attack, user, target, isState, 4, 1, true);
+	return value / 1.8;
+};
+
+effectScoreFunction[84] = function(attack, user, target, weather, effectid, isState, baseScore) {
+	var value = 0;
+	value += statModificator(attack, user, target, isState, 1, -1, true);
+	value += statModificator(attack, user, target, isState, 2, -1, true);
+	return value / 1.8;
+};
+
+effectScoreFunction[85] = function(attack, user, target, weather, effectid, isState, baseScore) {
+	var health = healthPercentage(user);
+	return -(health * baseScore);
+};
+
+effectScoreFunction[86] = function(attack, user, target, weather, effectid, isState, baseScore) {
+	if(!altered.isSleeping(target))
+		return -baseScore;
+	var health = healthPercentage(user);
+	return health > 0.55 ? 0 : (1 - (health / 0.6)) * baseScore;
+};
+
+effectScoreFunction[87] = function(attack, user, target, weather, effectid, isState, baseScore) {
+	if(!altered.isConfused(target))
+		return -baseScore;
+	var dif = target.getStat(1) / user.getStat(2);
+	return (1 - (dif / 1.5)) * 200;
+};
+
+effectScoreFunction[88] = function(attack, user, target, weather, effectid, isState, baseScore) {
+	var value = 0;
+	value += statModificator(attack, user, target, isState, 2, -1, true);
+	value += statModificator(attack, user, target, isState, 4, -1, true);
+	return value / 1.8;
+};
+
+effectScoreFunction[89] = function(attack, user, target, weather, effectid, isState, baseScore) {
+	var health = 1 - healthPercentage(user);
+	var mult = 2 * health;
+	return attack.getPower() * mult;
+};
+
+effectScoreFunction[90] = function(attack, user, target, weather, effectid, isState, baseScore) {
+	return target.getAlteredStatesCount() > 0 ? baseScore : 0;
+};
+
+effectScoreFunction[91] = function(attack, user, target, weather, effectid, isState, baseScore) {
+	if(!altered.isSleeping(target) || altered.isNightmare(target))
+		return -baseScore;
+	return 200;
+};
+
+effectScoreFunction[92] = function(attack, user, target, weather, effectid, isState, baseScore) {
+	if(!target.containsType(elementalTypeTable[5]))
+		return -baseScore;
+	return baseScore * 2;
+};
+
+effectScoreFunction[93] = function(attack, user, target, weather, effectid, isState, baseScore) {
+	var score = 0;
+	score += basicAlteredEffect("isFired", attack, user, target, weather, effectid, isState, 120, 51, 0.1, 0.5);
+	score += basicAlteredEffect("isFreezed", attack, user, target, weather, effectid, isState, 150, 61, 0.1, 0.0);
+	return score / 1.8;
+};
+
+effectScoreFunction[94] = function(attack, user, target, weather, effectid, isState, baseScore) {
+	var score = basicAlteredEffect("isFreezed", attack, user, target, weather, effectid, isState, 150, 61, 0.1, 0.0);
+	if(weather.id === 4)
+		score *= 2;
+	return score;
+};
+
+effectScoreFunction[95] = function(attack, user, target, weather, effectid, isState, baseScore) {
+	var value = 0;
+	value += statModificator(attack, user, target, isState, 1, 1, true);
+	value += statModificator(attack, user, target, isState, 2, 1, true);
+	return value / 1.8;
+};
+
+effectScoreFunction[96] = function(attack, user, target, weather, effectid, isState, baseScore) {
+	return 60 + dice(201) * 0.1;
+};
+
+effectScoreFunction[97] = function(attack, user, target, weather, effectid, isState, baseScore) {
+	var health = healthPercentage(user);
+	switch(weather.id) {
+		case 2:
+			return health > 0.5 ? 0 : health / 0.66 * 500;
+		case 0:
+			return health > 0.6 ? 0 : health / 0.7 * 450;
+		default:
+			return health > 0.55 ? 0 : health / 0.6 * 400;
+	}
+};
+
+effectScoreFunction[98] = function(attack, user, target, weather, effectid, isState, baseScore) {
+	var charges = altered.getCharges(user);
+	return 150 - (50 * charges);
+};
+
+effectScoreFunction[99] = function(attack, user, target, weather, effectid, isState, baseScore) {
+	var charges = altered.getCharges(user);
+	return baseScore * charges;
+};
+
+effectScoreFunction[100] = function(attack, user, target, weather, effectid, isState, baseScore) {
+	var score = basicAlteredEffect("isParalyzed", attack, user, target, weather, effectid, isState, 135, 56, 0.25, 0.25);
+	switch(weather.id) {
+		case 1: return score * 2;
+		case 3: return score * 0.5;
+		case 6: return (score * 2) + (baseScore * 0.25);
+		default: return score;
+	}
+};
+
+effectScoreFunction[101] = function(attack, user, target, weather, effectid, isState, baseScore) {
+	var value = 0;
+	value += statModificator(attack, user, target, isState, 1, 1, true);
+	value += statModificator(attack, user, target, isState, 3, 1, true);
+	value += statModificator(attack, user, target, isState, 5, 1, true);
+	return value / 2.7;
+};
+
+effectScoreFunction[102] = function(attack, user, target, weather, effectid, isState, baseScore) {
+	var score = 0;
+	score += basicAlteredEffect("isParalyzed", attack, user, target, weather, effectid, isState, 135, 56, 0.25, 0.25);
+	score += basicAlteredEffect("isFired", attack, user, target, weather, effectid, isState, 120, 51, 0.1, 0.5);
+	score += basicAlteredEffect("isFreezed", attack, user, target, weather, effectid, isState, 150, 61, 0.1, 0.0);
+	return score / 2.7;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

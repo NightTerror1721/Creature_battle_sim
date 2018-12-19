@@ -8,7 +8,9 @@ package kp.cbs.creature.attack;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -39,26 +41,27 @@ public final class AttackPool
     public static final AttackModel getModel(int modelId)
     {
         AttackModel model = MODELS.getOrDefault(modelId, null);
-        return model == null ? loadModel(modelId) : model;
+        return model == null ? loadModel(modelId, true) : model;
     }
     
-    public static final List<AttackModel> getAllModels()
+    public static final List<AttackModel> getAllModels(boolean copy)
     {
         if(ALL != null)
-            return ALL;
+            return copy ? new LinkedList<>(ALL) : Collections.unmodifiableList(ALL);
         if(!Files.isDirectory(Paths.ATTACKS))
-            return List.of();
+            return copy ? new LinkedList<>() : List.of();
         try
         {
-            return ALL = Files.list(Paths.ATTACKS)
+            ALL = Files.list(Paths.ATTACKS)
                     .filter(AttackPool::isValidFile)
                     .map(AttackPool::mapFileToModel)
-                    .collect(Collectors.toUnmodifiableList());
+                    .collect(Collectors.toList());
+            return copy ? new LinkedList<>(ALL) : Collections.unmodifiableList(ALL);
         }
         catch(IOException ex)
         {
             ex.printStackTrace(System.err);
-            return List.of();
+            return copy ? new LinkedList<>() : List.of();
         }
     }
     
@@ -67,7 +70,28 @@ public final class AttackPool
         return CombatAttackModelGenerator.generate(creature.getLevel());
     }
     
-    private static AttackModel loadModel(int modelId)
+    public static final boolean registerNewOrUpdateModel(AttackModel model, boolean isNew)
+    {
+        if(isNew)
+            model.setId(getAllModels(false).size());
+        Path modelFile = Paths.concat(Paths.ATTACKS, generateFilename(model.getId()));
+        try
+        {
+            var value = AttackModel.LOADER.serialize(model);
+            Serializer.write(value, modelFile);
+            MODELS.put(model.getId(), model);
+            ALL.remove(model);
+            ALL.add(model);
+        }
+        catch(IOException | UDLException ex)
+        {
+            ex.printStackTrace(System.err);
+            return false;
+        }
+        return true;
+    }
+    
+    private static AttackModel loadModel(int modelId, boolean showError)
     {
         Path modelFile = Paths.concat(Paths.ATTACKS, generateFilename(modelId));
         try
@@ -79,8 +103,12 @@ public final class AttackPool
         }
         catch(IOException | UDLException ex)
         {
-            ex.printStackTrace(System.err);
-            return new AttackModel();
+            if(showError)
+            {
+                ex.printStackTrace(System.err);
+                return new AttackModel();
+            }
+            return null;
         }
     }
     
@@ -89,7 +117,7 @@ public final class AttackPool
         if(!Files.isReadable(modelFile))
             throw new IOException("File not found or not redeable");
         var base = Serializer.read(modelFile);
-        var model = AttackModel.SERIALIZER.unserialize(base);//Serializer.inject(base, AttackModel.class);
+        var model = AttackModel.LOADER.unserialize(base);//Serializer.inject(base, AttackModel.class);
         if(model == null)
             throw new IOException("Fail to read AttackModel in file: " + modelFile);
         return model;

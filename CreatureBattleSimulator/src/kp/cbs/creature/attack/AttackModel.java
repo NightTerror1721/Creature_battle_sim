@@ -16,6 +16,7 @@ import kp.cbs.battle.FighterTurnState;
 import kp.cbs.creature.attack.effects.AIIntelligence;
 import kp.cbs.creature.attack.effects.AIScore;
 import kp.cbs.creature.attack.effects.DamageEffect;
+import kp.cbs.creature.attack.effects.DamageEffect.DamageType;
 import kp.cbs.creature.attack.effects.SecondaryEffect;
 import kp.cbs.creature.elements.ElementalType;
 import kp.cbs.utils.IdentifierObject;
@@ -60,7 +61,7 @@ public final class AttackModel implements IdentifierObject, Comparable<AttackMod
     public final void setName(String name) { this.name = name == null ? "" : name; }
     
     public final int getPower() { return power; }
-    public final void setPower(int power) { Utils.range(0, 255, power); }
+    public final void setPower(int power) { this.power = Utils.range(0, 255, power); }
     
     public final int getMaxPP() { return maxPP; }
     public final void setMaxPP(int pp) { this.maxPP = Utils.range(1, 40, pp); }
@@ -94,6 +95,14 @@ public final class AttackModel implements IdentifierObject, Comparable<AttackMod
     public final int getTurnCount() { return turns.length; }
     public final AttackTurn getTurn(int index) { return turns[index]; }
     public final AttackTurn[] getAllTurns() { return Arrays.copyOf(turns, turns.length); }
+    
+    public final DamageType getGeneralDamageType()
+    {
+        var dam = DamageType.NO_DAMAGE;
+        for(var turn : turns)
+            dam = DamageType.combine(dam, turn.getDamageEffect().getDamageType());
+        return dam;
+    }
     
     private void unserializeTurns(List<UDLValue> lturns)
     {
@@ -130,18 +139,20 @@ public final class AttackModel implements IdentifierObject, Comparable<AttackMod
     
     public final String generateDescription()
     {
+        String desc;
         switch(turns.length)
         {
-            case 0: return "El ataque no tienen ningún efecto.";
-            case 1: return turns[0].generateDescription();
+            case 0: desc = "El ataque no tienen ningún efecto."; break;
+            case 1: desc = turns[0].generateDescription(); break;
             default: {
                 StringBuilder sb = new StringBuilder();
                 for(int i=0;i<turns.length;i++)
                     sb.append("Turno ").append(i + 1).append(":\n")
                         .append(turns[i].generateDescription()).append("\n\n\n");
-                return sb.toString();
-            }
+                desc = sb.toString();
+            } break;
         }
+        return desc.isBlank() ? "El ataque no tiene ningún efecto especial." : desc;
     }
     
     public final boolean equals(AttackModel model)
@@ -169,6 +180,9 @@ public final class AttackModel implements IdentifierObject, Comparable<AttackMod
     {
         return Integer.compare(id, o.id);
     }
+    
+    @Override
+    public final String toString() { return getName(); }
     
     
     
@@ -261,8 +275,8 @@ public final class AttackModel implements IdentifierObject, Comparable<AttackMod
                     sb.append("\n  - ").append(se.generateDescription(AttackModel.this));
             }
             
-            if(sb.length() < 1)
-                return "Preparación del ataque.";
+            /*if(sb.length() < 1)
+                return "Preparación del ataque.";*/
             return sb.toString();
         }
         
@@ -270,7 +284,7 @@ public final class AttackModel implements IdentifierObject, Comparable<AttackMod
         {
             return new UDLObject()
                     .setInt("id", getId())
-                    .setString("name", getName())
+                    .setString("message", getMessage())
                     .setInt("max_hits", getMaxHits())
                     .setInt("min_hits", getMinHits())
                     .set("damage_effect", DamageEffect.serialize(getDamageEffect()))
