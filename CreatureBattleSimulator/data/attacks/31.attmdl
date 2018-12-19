@@ -1,0 +1,40 @@
+"pp": 10,
+"precision": 90,
+"name": "Contraataque",
+"id": 31,
+"power": 100,
+"priority": -3,
+"type": 1,
+"turns": [{
+    "min_hits": 1,
+    "secondary_effects": [{
+        "effect": {
+            "probability": 20,
+            "attackLevels": 0,
+            "defenseLevels": -1,
+            "spAttackLevels": 0,
+            "spDefenseLevels": 0,
+            "speedLevels": 0,
+            "accuracyLevels": 0,
+            "evasionLevels": 0,
+            "selfTarget": false
+        },
+        "id": 1
+    }],
+    "max_hits": 1,
+    "damage_effect": {
+        "effect": {
+            "powerValue": 0,
+            "attackValue": 0,
+            "defenseValue": 0,
+            "backwardOrAbsorbDamage": 0,
+            "special": false,
+            "selfTarget": false,
+            "selfElementalTypeUsed": false,
+            "probCriticalHit": false
+        },
+        "id": 1
+    },
+    "id": 31,
+    "message": ""
+}]

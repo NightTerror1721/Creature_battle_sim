@@ -1,0 +1,27 @@
+"pp": 5,
+"precision": 80,
+"name": "Tajo Cruzado",
+"id": 32,
+"power": 100,
+"priority": 0,
+"type": 1,
+"turns": [{
+    "min_hits": 1,
+    "secondary_effects": [],
+    "max_hits": 1,
+    "damage_effect": {
+        "effect": {
+            "powerValue": 0,
+            "attackValue": 0,
+            "defenseValue": 0,
+            "backwardOrAbsorbDamage": 0,
+            "special": false,
+            "selfTarget": false,
+            "selfElementalTypeUsed": false,
+            "probCriticalHit": true
+        },
+        "id": 1
+    },
+    "id": 32,
+    "message": ""
+}]

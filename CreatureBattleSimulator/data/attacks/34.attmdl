@@ -1,0 +1,30 @@
+"pp": 10,
+"precision": 0,
+"name": "Grito de Guerra",
+"id": 34,
+"power": 0,
+"priority": 0,
+"type": 1,
+"turns": [{
+    "min_hits": 1,
+    "secondary_effects": [{
+        "effect": {
+            "probability": 100,
+            "attackLevels": 2,
+            "defenseLevels": 0,
+            "spAttackLevels": 0,
+            "spDefenseLevels": 0,
+            "speedLevels": 0,
+            "accuracyLevels": 0,
+            "evasionLevels": 0,
+            "selfTarget": true
+        },
+        "id": 1
+    }],
+    "max_hits": 1,
+    "damage_effect": {
+        "id": 0
+    },
+    "id": 34,
+    "message": ""
+}]

@@ -1,0 +1,27 @@
+"pp": 15,
+"precision": 90,
+"name": "Triple Patada",
+"id": 30,
+"power": 25,
+"priority": 0,
+"type": 1,
+"turns": [{
+    "min_hits": 1,
+    "secondary_effects": [],
+    "max_hits": 3,
+    "damage_effect": {
+        "effect": {
+            "powerValue": 0,
+            "attackValue": 0,
+            "defenseValue": 0,
+            "backwardOrAbsorbDamage": 0,
+            "special": false,
+            "selfTarget": false,
+            "selfElementalTypeUsed": false,
+            "probCriticalHit": false
+        },
+        "id": 1
+    },
+    "id": 30,
+    "message": ""
+}]

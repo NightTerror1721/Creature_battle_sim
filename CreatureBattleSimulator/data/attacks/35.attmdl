@@ -1,0 +1,17 @@
+"pp": 20,
+"precision": 100,
+"name": "Movimiento Sísmico",
+"id": 35,
+"power": 0,
+"priority": 0,
+"type": 1,
+"turns": [{
+    "min_hits": 1,
+    "secondary_effects": [],
+    "max_hits": 1,
+    "damage_effect": {
+        "id": 2
+    },
+    "id": 35,
+    "message": ""
+}]

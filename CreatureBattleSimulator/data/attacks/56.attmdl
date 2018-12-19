@@ -1,0 +1,27 @@
+"pp": 10,
+"precision": 85,
+"name": "Imitación",
+"id": 56,
+"power": 85,
+"priority": 0,
+"type": 2,
+"turns": [{
+    "min_hits": 1,
+    "secondary_effects": [],
+    "max_hits": 1,
+    "damage_effect": {
+        "effect": {
+            "powerValue": 0,
+            "attackValue": -1,
+            "defenseValue": 0,
+            "backwardOrAbsorbDamage": 0,
+            "special": true,
+            "selfTarget": false,
+            "selfElementalTypeUsed": false,
+            "probCriticalHit": false
+        },
+        "id": 1
+    },
+    "id": 56,
+    "message": ""
+}]
