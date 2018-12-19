@@ -93,6 +93,8 @@ public class AttackEditor extends JDialog
     private void store()
     {
         var model = generateModel();
+        if(loaded != null)
+            model.setId(loaded.getId());
         if(AttackPool.registerNewOrUpdateModel(model, loaded == null))
         {
             loaded = model;

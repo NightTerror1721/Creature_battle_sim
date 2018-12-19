@@ -1,8 +1,8 @@
 "pp": 35,
 "precision": 100,
-"name": "Destructor",
-"id": 0,
-"power": 40,
+"name": "Arañazo",
+"id": 4,
+"power": 35,
 "priority": 0,
 "type": 0,
 "turns": [{
@@ -22,6 +22,6 @@
         },
         "id": 1
     },
-    "id": 0,
+    "id": 4,
     "message": ""
 }]

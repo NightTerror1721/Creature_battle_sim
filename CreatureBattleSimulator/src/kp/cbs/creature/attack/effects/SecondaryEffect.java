@@ -7,6 +7,7 @@ package kp.cbs.creature.attack.effects;
 
 import kp.cbs.utils.Serializer;
 import kp.cbs.utils.Utils;
+import kp.udl.autowired.Property;
 import kp.udl.data.UDLObject;
 import kp.udl.data.UDLValue;
 
@@ -18,6 +19,7 @@ public abstract class SecondaryEffect implements Effect
 {
     public static final SecondaryEffect EMPTY_EFFECT = EmptySecondaryEffect.INSTANCE;
     
+    @Property
     private int probability = 100;
     
     public final int getProbability() { return probability; }

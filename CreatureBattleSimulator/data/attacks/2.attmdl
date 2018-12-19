@@ -1,7 +1,7 @@
 "pp": 35,
 "precision": 100,
-"name": "Destructor",
-"id": 0,
+"name": "Golpe Puño",
+"id": 2,
 "power": 40,
 "priority": 0,
 "type": 0,
@@ -22,6 +22,6 @@
         },
         "id": 1
     },
-    "id": 0,
+    "id": 2,
     "message": ""
 }]

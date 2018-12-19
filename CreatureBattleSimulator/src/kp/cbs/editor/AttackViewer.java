@@ -61,6 +61,7 @@ public class AttackViewer extends JDialog
     {
         var all = AttackPool.getAllModels(false).stream()
                 .filter(this::applyFilters)
+                .sorted((m0, m1) -> m0.toString().compareTo(m1.toString()))
                 .collect(Collectors.toList());
         models.removeAllElements();
         models.addAll(all);

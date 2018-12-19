@@ -1,8 +1,8 @@
-"pp": 35,
+"pp": 20,
 "precision": 100,
-"name": "Destructor",
-"id": 0,
-"power": 40,
+"name": "Cuchillada",
+"id": 5,
+"power": 70,
 "priority": 0,
 "type": 0,
 "turns": [{
@@ -18,10 +18,10 @@
             "special": false,
             "selfTarget": false,
             "selfElementalTypeUsed": false,
-            "probCriticalHit": false
+            "probCriticalHit": true
         },
         "id": 1
     },
-    "id": 0,
+    "id": 5,
     "message": ""
 }]

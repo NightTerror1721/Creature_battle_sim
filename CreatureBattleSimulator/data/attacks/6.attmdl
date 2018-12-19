@@ -1,8 +1,8 @@
-"pp": 35,
+"pp": 15,
 "precision": 100,
-"name": "Destructor",
-"id": 0,
-"power": 40,
+"name": "Derribo",
+"id": 6,
+"power": 80,
 "priority": 0,
 "type": 0,
 "turns": [{
@@ -14,7 +14,7 @@
             "powerValue": 0,
             "attackValue": 0,
             "defenseValue": 0,
-            "backwardOrAbsorbDamage": 0,
+            "backwardOrAbsorbDamage": -64,
             "special": false,
             "selfTarget": false,
             "selfElementalTypeUsed": false,
@@ -22,6 +22,6 @@
         },
         "id": 1
     },
-    "id": 0,
+    "id": 6,
     "message": ""
 }]

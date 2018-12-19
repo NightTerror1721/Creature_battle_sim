@@ -1,9 +1,9 @@
-"pp": 35,
+"pp": 20,
 "precision": 100,
-"name": "Destructor",
-"id": 0,
+"name": "Ataque Rápido",
+"id": 3,
 "power": 40,
-"priority": 0,
+"priority": 1,
 "type": 0,
 "turns": [{
     "min_hits": 1,
@@ -22,6 +22,6 @@
         },
         "id": 1
     },
-    "id": 0,
+    "id": 3,
     "message": ""
 }]

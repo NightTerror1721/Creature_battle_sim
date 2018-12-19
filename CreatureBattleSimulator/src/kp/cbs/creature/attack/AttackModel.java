@@ -272,7 +272,12 @@ public final class AttackModel implements IdentifierObject, Comparable<AttackMod
                     sb.append("\n\n");
                 sb.append("Efectos:");
                 for(SecondaryEffect se : seffects)
-                    sb.append("\n  - ").append(se.generateDescription(AttackModel.this));
+                {
+                    if(se.getProbability() < 100)
+                        sb.append("\n  - En el ").append(se.getProbability())
+                                .append("% de los casos: ").append(se.generateDescription(AttackModel.this));
+                    else sb.append("\n  - ").append(se.generateDescription(AttackModel.this));
+                }
             }
             
             /*if(sb.length() < 1)
