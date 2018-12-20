@@ -1,0 +1,30 @@
+"pp": 10,
+"precision": 0,
+"name": "Cristalizar",
+"id": 142,
+"power": 0,
+"priority": 0,
+"type": 9,
+"turns": [{
+    "min_hits": 1,
+    "secondary_effects": [{
+        "effect": {
+            "probability": 100,
+            "attackLevels": 0,
+            "defenseLevels": -1,
+            "spAttackLevels": 0,
+            "spDefenseLevels": -1,
+            "speedLevels": 2,
+            "accuracyLevels": 0,
+            "evasionLevels": 0,
+            "selfTarget": true
+        },
+        "id": 1
+    }],
+    "max_hits": 1,
+    "damage_effect": {
+        "id": 0
+    },
+    "id": 142,
+    "message": ""
+}]

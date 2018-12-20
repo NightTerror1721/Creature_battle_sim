@@ -282,7 +282,7 @@ public class StateAlterationSecondaryEffect extends SecondaryEffect
     private void msg(StringJoiner joiner, AlteredStateId id, boolean flag)
     {
         if(flag)
-            joiner.add("Proboca " + id + (isSelfTargetEnabled() ? "al Usuario" : "al Enemigo"));
+            joiner.add("Proboca " + id + (isSelfTargetEnabled() ? " al Usuario" : " al Enemigo"));
     }
     private void msg(StringJoiner joiner, StateId id, boolean flag)
     {

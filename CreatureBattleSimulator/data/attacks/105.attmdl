@@ -1,0 +1,46 @@
+"pp": 10,
+"precision": 100,
+"name": "Envite Ígneo",
+"id": 105,
+"power": 120,
+"priority": 0,
+"type": 6,
+"turns": [{
+    "min_hits": 1,
+    "secondary_effects": [{
+        "effect": {
+            "probability": 10,
+            "confusion": false,
+            "paralysis": false,
+            "burn": true,
+            "poisoning": false,
+            "intoxication": false,
+            "sleep": false,
+            "sleepinees": false,
+            "freezing": false,
+            "curse": false,
+            "nightmare": false,
+            "critical_hit": false,
+            "intimidated": false,
+            "resting": false,
+            "selfTarget": false
+        },
+        "id": 3
+    }],
+    "max_hits": 1,
+    "damage_effect": {
+        "effect": {
+            "powerValue": 0,
+            "attackValue": 0,
+            "defenseValue": 0,
+            "backwardOrAbsorbDamage": -86,
+            "special": false,
+            "selfTarget": false,
+            "selfElementalTypeUsed": false,
+            "probCriticalHit": false
+        },
+        "id": 1
+    },
+    "id": 105,
+    "message": ""
+}]

@@ -1,0 +1,27 @@
+"pp": 20,
+"precision": 100,
+"name": "Lanza-Chispas",
+"id": 109,
+"power": 20,
+"priority": 0,
+"type": 6,
+"turns": [{
+    "min_hits": 1,
+    "secondary_effects": [],
+    "max_hits": 5,
+    "damage_effect": {
+        "effect": {
+            "powerValue": 0,
+            "attackValue": 0,
+            "defenseValue": 0,
+            "backwardOrAbsorbDamage": 0,
+            "special": true,
+            "selfTarget": false,
+            "selfElementalTypeUsed": false,
+            "probCriticalHit": false
+        },
+        "id": 1
+    },
+    "id": 109,
+    "message": ""
+}]

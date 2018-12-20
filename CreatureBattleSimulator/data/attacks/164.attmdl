@@ -1,0 +1,36 @@
+"pp": 5,
+"precision": 100,
+"name": "Rayo Solar",
+"id": 164,
+"power": 180,
+"priority": 0,
+"type": 11,
+"turns": [{
+    "min_hits": 1,
+    "secondary_effects": [],
+    "max_hits": 1,
+    "damage_effect": {
+        "id": 0
+    },
+    "id": 164,
+    "message": "<self> está recogiendo energia solar."
+}, {
+    "min_hits": 1,
+    "secondary_effects": [],
+    "max_hits": 1,
+    "damage_effect": {
+        "effect": {
+            "powerValue": 0,
+            "attackValue": 0,
+            "defenseValue": 0,
+            "backwardOrAbsorbDamage": 0,
+            "special": true,
+            "selfTarget": false,
+            "selfElementalTypeUsed": false,
+            "probCriticalHit": false
+        },
+        "id": 1
+    },
+    "id": 164,
+    "message": ""
+}]

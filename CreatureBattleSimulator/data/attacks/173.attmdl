@@ -1,0 +1,27 @@
+"pp": 5,
+"precision": 85,
+"name": "Tormenta de Hojas-Aguja",
+"id": 173,
+"power": 120,
+"priority": 0,
+"type": 11,
+"turns": [{
+    "min_hits": 1,
+    "secondary_effects": [],
+    "max_hits": 1,
+    "damage_effect": {
+        "effect": {
+            "powerValue": 0,
+            "attackValue": 0,
+            "defenseValue": 0,
+            "backwardOrAbsorbDamage": 0,
+            "special": false,
+            "selfTarget": false,
+            "selfElementalTypeUsed": false,
+            "probCriticalHit": false
+        },
+        "id": 1
+    },
+    "id": 173,
+    "message": ""
+}]

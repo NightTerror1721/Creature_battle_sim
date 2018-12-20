@@ -1,0 +1,27 @@
+"pp": 15,
+"precision": 100,
+"name": "Tromba de Proyectiles Mágicos",
+"id": 71,
+"power": 25,
+"priority": 0,
+"type": 3,
+"turns": [{
+    "min_hits": 1,
+    "secondary_effects": [],
+    "max_hits": 5,
+    "damage_effect": {
+        "effect": {
+            "powerValue": 0,
+            "attackValue": 0,
+            "defenseValue": 0,
+            "backwardOrAbsorbDamage": 0,
+            "special": true,
+            "selfTarget": false,
+            "selfElementalTypeUsed": false,
+            "probCriticalHit": false
+        },
+        "id": 1
+    },
+    "id": 71,
+    "message": ""
+}]

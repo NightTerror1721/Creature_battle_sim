@@ -1,0 +1,40 @@
+"pp": 5,
+"precision": 90,
+"name": "Tormenta de Diamantes",
+"id": 157,
+"power": 110,
+"priority": 0,
+"type": 10,
+"turns": [{
+    "min_hits": 1,
+    "secondary_effects": [{
+        "effect": {
+            "probability": 50,
+            "attackLevels": 0,
+            "defenseLevels": 1,
+            "spAttackLevels": 0,
+            "spDefenseLevels": 0,
+            "speedLevels": 0,
+            "accuracyLevels": 0,
+            "evasionLevels": 0,
+            "selfTarget": true
+        },
+        "id": 1
+    }],
+    "max_hits": 1,
+    "damage_effect": {
+        "effect": {
+            "powerValue": 0,
+            "attackValue": 0,
+            "defenseValue": 0,
+            "backwardOrAbsorbDamage": 0,
+            "special": false,
+            "selfTarget": false,
+            "selfElementalTypeUsed": false,
+            "probCriticalHit": false
+        },
+        "id": 1
+    },
+    "id": 157,
+    "message": ""
+}]

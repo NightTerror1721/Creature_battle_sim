@@ -1,0 +1,23 @@
+"pp": 5,
+"precision": 0,
+"name": "Danza Llúvia",
+"id": 130,
+"power": 0,
+"priority": 0,
+"type": 8,
+"turns": [{
+    "min_hits": 1,
+    "secondary_effects": [{
+        "effect": {
+            "probability": 100,
+            "weather": 0
+        },
+        "id": 2
+    }],
+    "max_hits": 1,
+    "damage_effect": {
+        "id": 0
+    },
+    "id": 130,
+    "message": ""
+}]

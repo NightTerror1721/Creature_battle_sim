@@ -334,22 +334,22 @@ public final class NormalDamageEffect extends DamageEffect
             joiner.add("Empleará el tipo primario del usuario como tipo del ataque");
         
         if(isPowerValueCustom())
-            joiner.add("Poder base concreto de ").add(Integer.toString(getCustomPowerValue()));
+            joiner.add("Poder base concreto de " + Integer.toString(getCustomPowerValue()));
         
         if(isAttackValueCustom())
-            joiner.add("Valor de ").add(special ? "ataque" : "ataque especial").add(" base predefinido de ").add(Integer.toString(getCustomAttackValue()));
+            joiner.add("Valor de " + (special ? "ataque" : "ataque especial") + " base predefinido de " + Integer.toString(getCustomAttackValue()));
         else if(isAttackValueToEnemy())
-            joiner.add("Usa el ").add(special ? "ataque" : "ataque especial").add(" del objetivo");
+            joiner.add("Usa el " + (special ? "ataque" : "ataque especial") + " del objetivo");
         
         if(isDefenseValueCustom())
-            joiner.add("Valor de ").add(special ? "defensa" : "defensa especial").add(" base predefinido de ").add(Integer.toString(getCustomDefenseValue()));
+            joiner.add("Valor de " + (special ? "defensa" : "defensa especial") + " base predefinido de " + Integer.toString(getCustomDefenseValue()));
         else if(isDefenseValueToEnemy())
-            joiner.add("Usa la ").add(special ? "defensa" : "defensa especial").add(" del objetivo");
+            joiner.add("Usa la " + (special ? "defensa" : "defensa especial") + " del objetivo");
         
         if(hasBackwardDamage())
-            joiner.add("El usuario sufrirá daño por retroceso del ").add(bytePercentage(-getBackwardDamageOrAbsordb()));
+            joiner.add("El usuario sufrirá daño por retroceso del " + bytePercentage(-getBackwardDamageOrAbsordb()));
         else if(hasDamageAbsorbtion())
-            joiner.add("El usuario absorberá el ").add(bytePercentage(getBackwardDamageOrAbsordb())).add(" del daño producido");
+            joiner.add("El usuario absorberá el " + bytePercentage(getBackwardDamageOrAbsordb()) + " del daño producido");
         
         if(isProbableCriticalHitEnabled())
             joiner.add("Alta probabilidad de golpe crítico");

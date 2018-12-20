@@ -1,0 +1,46 @@
+"pp": 15,
+"precision": 95,
+"name": "Humareda",
+"id": 103,
+"power": 80,
+"priority": 0,
+"type": 6,
+"turns": [{
+    "min_hits": 1,
+    "secondary_effects": [{
+        "effect": {
+            "probability": 25,
+            "confusion": false,
+            "paralysis": false,
+            "burn": false,
+            "poisoning": true,
+            "intoxication": false,
+            "sleep": false,
+            "sleepinees": false,
+            "freezing": false,
+            "curse": false,
+            "nightmare": false,
+            "critical_hit": false,
+            "intimidated": false,
+            "resting": false,
+            "selfTarget": false
+        },
+        "id": 3
+    }],
+    "max_hits": 1,
+    "damage_effect": {
+        "effect": {
+            "powerValue": 0,
+            "attackValue": 0,
+            "defenseValue": 0,
+            "backwardOrAbsorbDamage": 0,
+            "special": true,
+            "selfTarget": false,
+            "selfElementalTypeUsed": false,
+            "probCriticalHit": false
+        },
+        "id": 1
+    },
+    "id": 103,
+    "message": ""
+}]

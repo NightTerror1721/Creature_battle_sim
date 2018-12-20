@@ -1,0 +1,17 @@
+"pp": 20,
+"precision": 100,
+"name": "Tinieblas",
+"id": 58,
+"power": 0,
+"priority": 0,
+"type": 4,
+"turns": [{
+    "min_hits": 1,
+    "secondary_effects": [],
+    "max_hits": 1,
+    "damage_effect": {
+        "id": 2
+    },
+    "id": 58,
+    "message": ""
+}]

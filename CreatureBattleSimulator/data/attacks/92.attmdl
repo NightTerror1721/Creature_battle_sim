@@ -1,0 +1,49 @@
+"pp": 20,
+"precision": 100,
+"name": "Contoneo",
+"id": 92,
+"power": 0,
+"priority": 0,
+"type": 5,
+"turns": [{
+    "min_hits": 1,
+    "secondary_effects": [{
+        "effect": {
+            "probability": 100,
+            "attackLevels": 2,
+            "defenseLevels": 0,
+            "spAttackLevels": 0,
+            "spDefenseLevels": 0,
+            "speedLevels": 0,
+            "accuracyLevels": 0,
+            "evasionLevels": 0,
+            "selfTarget": false
+        },
+        "id": 1
+    }, {
+        "effect": {
+            "probability": 100,
+            "confusion": true,
+            "paralysis": false,
+            "burn": false,
+            "poisoning": false,
+            "intoxication": false,
+            "sleep": false,
+            "sleepinees": false,
+            "freezing": false,
+            "curse": false,
+            "nightmare": false,
+            "critical_hit": false,
+            "intimidated": false,
+            "resting": false,
+            "selfTarget": false
+        },
+        "id": 3
+    }],
+    "max_hits": 1,
+    "damage_effect": {
+        "id": 0
+    },
+    "id": 92,
+    "message": ""
+}]

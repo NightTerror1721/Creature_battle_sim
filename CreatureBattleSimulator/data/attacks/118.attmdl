@@ -1,0 +1,36 @@
+"pp": 5,
+"precision": 50,
+"name": "Criogenizar",
+"id": 118,
+"power": 0,
+"priority": 0,
+"type": 7,
+"turns": [{
+    "min_hits": 1,
+    "secondary_effects": [{
+        "effect": {
+            "probability": 100,
+            "confusion": false,
+            "paralysis": false,
+            "burn": false,
+            "poisoning": false,
+            "intoxication": false,
+            "sleep": false,
+            "sleepinees": false,
+            "freezing": true,
+            "curse": false,
+            "nightmare": false,
+            "critical_hit": false,
+            "intimidated": false,
+            "resting": false,
+            "selfTarget": false
+        },
+        "id": 3
+    }],
+    "max_hits": 1,
+    "damage_effect": {
+        "id": 0
+    },
+    "id": 118,
+    "message": ""
+}]

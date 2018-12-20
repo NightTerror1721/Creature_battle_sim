@@ -1,0 +1,40 @@
+"pp": 15,
+"precision": 100,
+"name": "Terratemblor",
+"id": 139,
+"power": 70,
+"priority": 0,
+"type": 9,
+"turns": [{
+    "min_hits": 1,
+    "secondary_effects": [{
+        "effect": {
+            "probability": 30,
+            "attackLevels": 0,
+            "defenseLevels": 0,
+            "spAttackLevels": 0,
+            "spDefenseLevels": 0,
+            "speedLevels": -1,
+            "accuracyLevels": 0,
+            "evasionLevels": 0,
+            "selfTarget": false
+        },
+        "id": 1
+    }],
+    "max_hits": 1,
+    "damage_effect": {
+        "effect": {
+            "powerValue": 0,
+            "attackValue": 0,
+            "defenseValue": 0,
+            "backwardOrAbsorbDamage": 0,
+            "special": false,
+            "selfTarget": false,
+            "selfElementalTypeUsed": false,
+            "probCriticalHit": true
+        },
+        "id": 1
+    },
+    "id": 139,
+    "message": ""
+}]

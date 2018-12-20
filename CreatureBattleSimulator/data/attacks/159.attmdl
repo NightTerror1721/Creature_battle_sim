@@ -1,0 +1,30 @@
+"pp": 15,
+"precision": 0,
+"name": "Piel Pétrea",
+"id": 159,
+"power": 0,
+"priority": 0,
+"type": 10,
+"turns": [{
+    "min_hits": 1,
+    "secondary_effects": [{
+        "effect": {
+            "probability": 100,
+            "attackLevels": 0,
+            "defenseLevels": 1,
+            "spAttackLevels": 0,
+            "spDefenseLevels": 1,
+            "speedLevels": 0,
+            "accuracyLevels": 0,
+            "evasionLevels": 0,
+            "selfTarget": true
+        },
+        "id": 1
+    }],
+    "max_hits": 1,
+    "damage_effect": {
+        "id": 0
+    },
+    "id": 159,
+    "message": ""
+}]

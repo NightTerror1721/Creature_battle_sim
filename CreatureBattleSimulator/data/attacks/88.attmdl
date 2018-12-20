@@ -1,0 +1,46 @@
+"pp": 15,
+"precision": 100,
+"name": "Daga Venenosa",
+"id": 88,
+"power": 70,
+"priority": 0,
+"type": 5,
+"turns": [{
+    "min_hits": 1,
+    "secondary_effects": [{
+        "effect": {
+            "probability": 20,
+            "confusion": false,
+            "paralysis": false,
+            "burn": false,
+            "poisoning": false,
+            "intoxication": true,
+            "sleep": false,
+            "sleepinees": false,
+            "freezing": false,
+            "curse": false,
+            "nightmare": false,
+            "critical_hit": false,
+            "intimidated": false,
+            "resting": false,
+            "selfTarget": false
+        },
+        "id": 3
+    }],
+    "max_hits": 1,
+    "damage_effect": {
+        "effect": {
+            "powerValue": 0,
+            "attackValue": 0,
+            "defenseValue": 0,
+            "backwardOrAbsorbDamage": 0,
+            "special": false,
+            "selfTarget": false,
+            "selfElementalTypeUsed": false,
+            "probCriticalHit": false
+        },
+        "id": 1
+    },
+    "id": 88,
+    "message": ""
+}]

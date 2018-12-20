@@ -1,0 +1,23 @@
+"pp": 5,
+"precision": 0,
+"name": "Día Soleado",
+"id": 100,
+"power": 0,
+"priority": 0,
+"type": 6,
+"turns": [{
+    "min_hits": 1,
+    "secondary_effects": [{
+        "effect": {
+            "probability": 100,
+            "weather": 1
+        },
+        "id": 2
+    }],
+    "max_hits": 1,
+    "damage_effect": {
+        "id": 0
+    },
+    "id": 100,
+    "message": ""
+}]
