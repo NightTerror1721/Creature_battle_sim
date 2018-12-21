@@ -1,14 +1,14 @@
 "pp": 20,
-"precision": 100,
-"name": "Bucle Arena",
-"id": 136,
-"power": 18,
+"precision": 0,
+"name": "Bomba Imán",
+"id": 209,
+"power": 60,
 "priority": 0,
-"type": 9,
+"type": 14,
 "turns": [{
     "min_hits": 1,
     "secondary_effects": [],
-    "max_hits": 5,
+    "max_hits": 1,
     "damage_effect": {
         "effect": {
             "powerValue": 0,
@@ -22,6 +22,6 @@
         },
         "id": 1
     },
-    "id": 136,
+    "id": 209,
     "message": ""
 }]

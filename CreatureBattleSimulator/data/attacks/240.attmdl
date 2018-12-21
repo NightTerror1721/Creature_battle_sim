@@ -1,18 +1,18 @@
-"pp": 25,
-"precision": 95,
-"name": "Lucha Callejera",
-"id": 15,
-"power": 55,
+"pp": 5,
+"precision": 80,
+"name": "Haz Divino",
+"id": 240,
+"power": 120,
 "priority": 0,
-"type": 0,
+"type": 18,
 "turns": [{
     "min_hits": 1,
     "secondary_effects": [{
         "effect": {
-            "probability": 30,
-            "attackLevels": 1,
+            "probability": 50,
+            "attackLevels": 0,
             "defenseLevels": 0,
-            "spAttackLevels": 0,
+            "spAttackLevels": 1,
             "spDefenseLevels": 0,
             "speedLevels": 0,
             "accuracyLevels": 0,
@@ -27,14 +27,14 @@
             "powerValue": 0,
             "attackValue": 0,
             "defenseValue": 0,
-            "backwardOrAbsorbDamage": -52,
-            "special": false,
+            "backwardOrAbsorbDamage": 0,
+            "special": true,
             "selfTarget": false,
             "selfElementalTypeUsed": false,
             "probCriticalHit": false
         },
         "id": 1
     },
-    "id": 15,
+    "id": 240,
     "message": ""
 }]

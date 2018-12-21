@@ -1,18 +1,18 @@
-"pp": 25,
-"precision": 95,
-"name": "Lucha Callejera",
-"id": 15,
-"power": 55,
+"pp": 5,
+"precision": 90,
+"name": "Descarga",
+"id": 196,
+"power": 140,
 "priority": 0,
-"type": 0,
+"type": 13,
 "turns": [{
     "min_hits": 1,
     "secondary_effects": [{
         "effect": {
-            "probability": 30,
-            "attackLevels": 1,
+            "probability": 100,
+            "attackLevels": 0,
             "defenseLevels": 0,
-            "spAttackLevels": 0,
+            "spAttackLevels": -2,
             "spDefenseLevels": 0,
             "speedLevels": 0,
             "accuracyLevels": 0,
@@ -27,14 +27,14 @@
             "powerValue": 0,
             "attackValue": 0,
             "defenseValue": 0,
-            "backwardOrAbsorbDamage": -52,
-            "special": false,
+            "backwardOrAbsorbDamage": 0,
+            "special": true,
             "selfTarget": false,
             "selfElementalTypeUsed": false,
-            "probCriticalHit": false
+            "probCriticalHit": true
         },
         "id": 1
     },
-    "id": 15,
+    "id": 196,
     "message": ""
 }]

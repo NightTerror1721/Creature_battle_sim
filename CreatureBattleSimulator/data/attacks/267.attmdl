@@ -1,0 +1,30 @@
+"pp": 10,
+"precision": 100,
+"name": "Eco Metálico",
+"id": 267,
+"power": 0,
+"priority": 0,
+"type": 14,
+"turns": [{
+    "min_hits": 1,
+    "secondary_effects": [{
+        "effect": {
+            "probability": 100,
+            "attackLevels": 0,
+            "defenseLevels": -2,
+            "spAttackLevels": 0,
+            "spDefenseLevels": 0,
+            "speedLevels": 0,
+            "accuracyLevels": 0,
+            "evasionLevels": 0,
+            "selfTarget": false
+        },
+        "id": 1
+    }],
+    "max_hits": 1,
+    "damage_effect": {
+        "id": 0
+    },
+    "id": 267,
+    "message": ""
+}]

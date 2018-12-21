@@ -1,10 +1,10 @@
 "pp": 20,
 "precision": 100,
-"name": "Bucle Arena",
-"id": 136,
-"power": 18,
+"name": "Ciclón",
+"id": 182,
+"power": 20,
 "priority": 0,
-"type": 9,
+"type": 12,
 "turns": [{
     "min_hits": 1,
     "secondary_effects": [],
@@ -15,13 +15,13 @@
             "attackValue": 0,
             "defenseValue": 0,
             "backwardOrAbsorbDamage": 0,
-            "special": false,
+            "special": true,
             "selfTarget": false,
             "selfElementalTypeUsed": false,
             "probCriticalHit": false
         },
         "id": 1
     },
-    "id": 136,
+    "id": 182,
     "message": ""
 }]

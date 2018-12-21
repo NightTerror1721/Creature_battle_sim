@@ -1,0 +1,46 @@
+"pp": 30,
+"precision": 95,
+"name": "Cabezazo",
+"id": 248,
+"power": 50,
+"priority": 0,
+"type": 0,
+"turns": [{
+    "min_hits": 1,
+    "secondary_effects": [{
+        "effect": {
+            "probability": 10,
+            "confusion": false,
+            "paralysis": false,
+            "burn": false,
+            "poisoning": false,
+            "intoxication": false,
+            "sleep": false,
+            "sleepinees": false,
+            "freezing": false,
+            "curse": false,
+            "nightmare": false,
+            "critical_hit": false,
+            "intimidated": true,
+            "resting": false,
+            "selfTarget": false
+        },
+        "id": 3
+    }],
+    "max_hits": 1,
+    "damage_effect": {
+        "effect": {
+            "powerValue": 0,
+            "attackValue": 0,
+            "defenseValue": 0,
+            "backwardOrAbsorbDamage": 0,
+            "special": false,
+            "selfTarget": false,
+            "selfElementalTypeUsed": false,
+            "probCriticalHit": false
+        },
+        "id": 1
+    },
+    "id": 248,
+    "message": ""
+}]

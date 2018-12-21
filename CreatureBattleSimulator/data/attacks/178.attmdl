@@ -1,14 +1,23 @@
-"pp": 20,
-"precision": 100,
-"name": "Bucle Arena",
-"id": 136,
-"power": 18,
+"pp": 5,
+"precision": 90,
+"name": "Ataque Aéreo",
+"id": 178,
+"power": 140,
 "priority": 0,
-"type": 9,
+"type": 12,
 "turns": [{
     "min_hits": 1,
     "secondary_effects": [],
-    "max_hits": 5,
+    "max_hits": 1,
+    "damage_effect": {
+        "id": 0
+    },
+    "id": 178,
+    "message": "<self> Se eleva mucho para preparar su golpe."
+}, {
+    "min_hits": 1,
+    "secondary_effects": [],
+    "max_hits": 1,
     "damage_effect": {
         "effect": {
             "powerValue": 0,
@@ -22,6 +31,6 @@
         },
         "id": 1
     },
-    "id": 136,
+    "id": 178,
     "message": ""
 }]

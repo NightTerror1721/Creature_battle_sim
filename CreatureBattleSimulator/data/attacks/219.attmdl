@@ -1,0 +1,49 @@
+"pp": 15,
+"precision": 100,
+"name": "Pantano Lodoso",
+"id": 219,
+"power": 0,
+"priority": 0,
+"type": 15,
+"turns": [{
+    "min_hits": 1,
+    "secondary_effects": [{
+        "effect": {
+            "probability": 100,
+            "attackLevels": 0,
+            "defenseLevels": 0,
+            "spAttackLevels": 0,
+            "spDefenseLevels": 0,
+            "speedLevels": -1,
+            "accuracyLevels": 0,
+            "evasionLevels": 0,
+            "selfTarget": false
+        },
+        "id": 1
+    }, {
+        "effect": {
+            "probability": 50,
+            "confusion": false,
+            "paralysis": false,
+            "burn": false,
+            "poisoning": true,
+            "intoxication": false,
+            "sleep": false,
+            "sleepinees": false,
+            "freezing": false,
+            "curse": false,
+            "nightmare": false,
+            "critical_hit": false,
+            "intimidated": false,
+            "resting": false,
+            "selfTarget": false
+        },
+        "id": 3
+    }],
+    "max_hits": 1,
+    "damage_effect": {
+        "id": 0
+    },
+    "id": 219,
+    "message": ""
+}]

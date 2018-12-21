@@ -1,23 +1,23 @@
-"pp": 25,
-"precision": 95,
-"name": "Lucha Callejera",
-"id": 15,
-"power": 55,
+"pp": 10,
+"precision": 100,
+"name": "Pulso Dragón",
+"id": 228,
+"power": 85,
 "priority": 0,
-"type": 0,
+"type": 16,
 "turns": [{
     "min_hits": 1,
     "secondary_effects": [{
         "effect": {
-            "probability": 30,
-            "attackLevels": 1,
+            "probability": 20,
+            "attackLevels": 0,
             "defenseLevels": 0,
             "spAttackLevels": 0,
-            "spDefenseLevels": 0,
+            "spDefenseLevels": -1,
             "speedLevels": 0,
             "accuracyLevels": 0,
             "evasionLevels": 0,
-            "selfTarget": true
+            "selfTarget": false
         },
         "id": 1
     }],
@@ -27,14 +27,14 @@
             "powerValue": 0,
             "attackValue": 0,
             "defenseValue": 0,
-            "backwardOrAbsorbDamage": -52,
-            "special": false,
+            "backwardOrAbsorbDamage": 0,
+            "special": true,
             "selfTarget": false,
             "selfElementalTypeUsed": false,
             "probCriticalHit": false
         },
         "id": 1
     },
-    "id": 15,
+    "id": 228,
     "message": ""
 }]

@@ -1,14 +1,14 @@
 "pp": 20,
 "precision": 100,
-"name": "Bucle Arena",
-"id": 136,
-"power": 18,
+"name": "Corte Sombra",
+"id": 257,
+"power": 70,
 "priority": 0,
-"type": 9,
+"type": 4,
 "turns": [{
     "min_hits": 1,
     "secondary_effects": [],
-    "max_hits": 5,
+    "max_hits": 1,
     "damage_effect": {
         "effect": {
             "powerValue": 0,
@@ -18,10 +18,10 @@
             "special": false,
             "selfTarget": false,
             "selfElementalTypeUsed": false,
-            "probCriticalHit": false
+            "probCriticalHit": true
         },
         "id": 1
     },
-    "id": 136,
+    "id": 257,
     "message": ""
 }]

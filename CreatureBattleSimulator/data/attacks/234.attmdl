@@ -1,27 +1,27 @@
-"pp": 20,
+"pp": 15,
 "precision": 100,
-"name": "Bucle Arena",
-"id": 136,
-"power": 18,
+"name": "Esfera Maligna",
+"id": 234,
+"power": 80,
 "priority": 0,
-"type": 9,
+"type": 17,
 "turns": [{
     "min_hits": 1,
     "secondary_effects": [],
-    "max_hits": 5,
+    "max_hits": 1,
     "damage_effect": {
         "effect": {
             "powerValue": 0,
             "attackValue": 0,
             "defenseValue": 0,
             "backwardOrAbsorbDamage": 0,
-            "special": false,
+            "special": true,
             "selfTarget": false,
             "selfElementalTypeUsed": false,
-            "probCriticalHit": false
+            "probCriticalHit": true
         },
         "id": 1
     },
-    "id": 136,
+    "id": 234,
     "message": ""
 }]

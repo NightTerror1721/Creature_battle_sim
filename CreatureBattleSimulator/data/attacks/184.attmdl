@@ -1,0 +1,18 @@
+"pp": 10,
+"precision": 0,
+"name": "Respiro",
+"id": 184,
+"power": 0,
+"priority": 0,
+"type": 12,
+"turns": [{
+    "min_hits": 1,
+    "secondary_effects": [],
+    "max_hits": 1,
+    "damage_effect": {
+        "effect": [128, 128, 128, 128, 64, 128, 64],
+        "id": 4
+    },
+    "id": 184,
+    "message": ""
+}]

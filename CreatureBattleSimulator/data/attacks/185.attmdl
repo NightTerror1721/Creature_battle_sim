@@ -1,14 +1,14 @@
-"pp": 20,
+"pp": 10,
 "precision": 100,
-"name": "Bucle Arena",
-"id": 136,
-"power": 18,
-"priority": 0,
-"type": 9,
+"name": "Golpe Supersónico",
+"id": 185,
+"power": 50,
+"priority": 2,
+"type": 12,
 "turns": [{
     "min_hits": 1,
     "secondary_effects": [],
-    "max_hits": 5,
+    "max_hits": 1,
     "damage_effect": {
         "effect": {
             "powerValue": 0,
@@ -22,6 +22,6 @@
         },
         "id": 1
     },
-    "id": 136,
+    "id": 185,
     "message": ""
 }]
