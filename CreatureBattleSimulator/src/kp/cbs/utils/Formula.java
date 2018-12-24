@@ -109,6 +109,17 @@ public final class Formula
         //return (int) (base * killedLevel * bonus / 7);
     }
     
+    public static final int creatureExpBase(int statAmount)
+    {
+        return (int) (statAmount * (0.2f + (statAmount / 3250f)));
+    }
+    
+    public static final int creatureStatAbilityBase(int statAmount)
+    {
+        int value = Math.max(0, statAmount - 300) / 100;
+        return value + 1;
+    }
+    
     
     public static final int baseDamage(
             RNG rng,

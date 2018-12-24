@@ -8,7 +8,9 @@ package kp.cbs.creature.race;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -33,24 +35,46 @@ public final class RacePool
         return race == null ? loadRace(id) : race;
     }
     
-    public static final List<Race> getAllRaces()
+    public static final List<Race> getAllRaces(boolean copy)
     {
         if(ALL != null)
-            return ALL;;
+            return copy ? new LinkedList<>(ALL) : Collections.unmodifiableList(ALL);
         if(!Files.isDirectory(Paths.RACES))
-            return List.of();
+            return copy ? new LinkedList<>() : List.of();
         try
         {
-            return ALL = Files.list(Paths.RACES)
+            ALL = Files.list(Paths.RACES)
                     .filter(RacePool::isValidFile)
                     .map(RacePool::mapFileToRace)
-                    .collect(Collectors.toUnmodifiableList());
+                    .collect(Collectors.toList());
+            return copy ? new LinkedList<>(ALL) : Collections.unmodifiableList(ALL);
         }
         catch(IOException ex)
         {
             ex.printStackTrace(System.err);
-            return List.of();
+            return copy ? new LinkedList<>() : List.of();
         }
+    }
+    
+    public static final boolean registerNewOrUpdateRace(Race race, boolean isNew)
+    {
+        if(isNew)
+            race.setId(getAllRaces(false).size());
+        Path raceFile = Paths.concat(Paths.RACES, generateFilename(race.getId()));
+        try
+        {
+            var value = Serializer.rawExtract(race);
+            Serializer.write(value, raceFile);
+            RACES.put(race.getId(), race);
+            ALL.remove(race);
+            ALL.add(race);
+        }
+        catch(IOException | UDLException ex)
+        {
+            ex.printStackTrace(System.err);
+            return false;
+        }
+        return true;
     }
     
     private static Race loadRace(int id)

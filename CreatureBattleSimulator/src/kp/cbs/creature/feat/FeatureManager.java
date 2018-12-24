@@ -6,6 +6,7 @@
 package kp.cbs.creature.feat;
 
 import kp.cbs.creature.Nature;
+import kp.cbs.utils.Formula;
 import kp.udl.autowired.InjectOptions;
 import kp.udl.autowired.Property;
 
@@ -87,7 +88,7 @@ public final class FeatureManager
     public final int computeExperienceBase()
     {
         int sum = getStatSum();
-        return (int) (sum * (0.2f + (sum / 3250f)));
+        return Formula.creatureExpBase(sum);
     }
     
     

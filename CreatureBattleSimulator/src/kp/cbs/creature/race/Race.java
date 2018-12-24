@@ -63,6 +63,10 @@ public final class Race implements IdentifierObject
     RaceAttackPool attacks;
     
     
+    @Property(name = "evolutions", set = "setEvolutions")
+    RaceEvolutions evos;
+    
+    
     @Override
     public final void setId(int id) { this.id = Math.max(0, id); }
     
@@ -81,6 +85,8 @@ public final class Race implements IdentifierObject
     public final void setGrowth(Growth growth) { this.growth = Objects.requireNonNull(growth); }
     
     public final void setAttackPool(RaceAttackPool attacks) { this.attacks = Objects.requireNonNull(attacks); }
+    
+    public final void setEvolutions(RaceEvolutions evos) { this.evos = Objects.requireNonNull(evos); }
     
     
     
@@ -117,6 +123,11 @@ public final class Race implements IdentifierObject
     public final Growth getGrowth() { return growth; }
     
     public final RaceAttackPool getAttackPool() { return attacks; }
+    
+    public final RaceEvolutions getEvolutions() { return evos; }
+    
+    @Override
+    public final String toString() { return Objects.toString(getName()); }
     
     
     

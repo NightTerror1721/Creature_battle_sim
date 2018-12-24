@@ -8,6 +8,10 @@ package kp.cbs.creature.attack;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Objects;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 import kp.cbs.battle.FighterTurnState;
 import kp.cbs.creature.attack.AttackModel.AttackTurn;
 import kp.cbs.creature.attack.effects.AIIntelligence;
@@ -86,6 +90,11 @@ public final class AttackManager implements Iterable<Attack>
                 return this;
             }
         }.toNext();
+    }
+    
+    public final Stream<Attack> stream()
+    {
+        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator(), Spliterator.ORDERED), false);
     }
     
     private SelectedAttack selectByAI(FighterTurnState state, AIIntelligence intel, AttackModel combatModel)

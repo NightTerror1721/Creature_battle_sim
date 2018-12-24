@@ -44,7 +44,7 @@ public final class RaceAttackPool
     
     public final void registerAttack(int level, AttackModel attack, boolean hidden)
     {
-        RaceAttack ra = new RaceAttack(level, attack);
+        RaceAttack ra = new RaceAttack(level, attack, hidden);
         var list = hidden ? hiddenList : normalList;
         if(!list.contains(ra))
             list.add(ra);
@@ -52,7 +52,7 @@ public final class RaceAttackPool
     
     public final void removeAttack(int level, AttackModel attack, boolean hidden)
     {
-        RaceAttack ra = new RaceAttack(level, attack);
+        RaceAttack ra = new RaceAttack(level, attack, hidden);
         var list = hidden ? hiddenList : normalList;
         list.remove(ra);
     }
@@ -68,6 +68,16 @@ public final class RaceAttackPool
         var list = hidden ? hiddenList : normalList;
         return list.stream()
                 .map(RaceAttack::getAttackModel)
+                .collect(Collectors.toList());
+    }
+    
+    public final Stream<RaceAttack> streamAllAttacks()
+    {
+        return Stream.concat(normalList.stream(), hiddenList.stream());
+    }
+    public final List<AttackModel> getAllAttacks()
+    {
+        return streamAllAttacks().map(RaceAttack::getAttackModel)
                 .collect(Collectors.toList());
     }
     
@@ -126,11 +136,15 @@ public final class RaceAttackPool
         @Property(set = "setLevel")
         private int level;
         
+        @Property
+        private boolean hidden;
+        
         public RaceAttack() {}
-        private RaceAttack(int level, AttackModel attack)
+        private RaceAttack(int level, AttackModel attack, boolean hidden)
         {
             this.level = Utils.range(1, 100, level);
             this.attack = Objects.requireNonNull(attack);
+            this.hidden = hidden;
         }
         
         public final void setLevel(int level) { this.level = Utils.range(1, 100, level); }
@@ -138,6 +152,8 @@ public final class RaceAttackPool
         
         public final void setAttackModel(AttackModel attack) { this.attack = attack == null ? new AttackModel() : attack; }
         public final AttackModel getAttackModel() { return attack == null ? new AttackModel() : attack; }
+        
+        public final boolean isHidden() { return hidden; }
         
         private AttackModel loadModel(UDLValue value)
         {

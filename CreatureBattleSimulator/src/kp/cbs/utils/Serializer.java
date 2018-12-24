@@ -15,6 +15,7 @@ import kp.cbs.creature.attack.Attack;
 import kp.cbs.creature.attack.AttackModel;
 import kp.cbs.creature.attack.effects.HealDamageEffect;
 import kp.cbs.creature.elements.ElementalTypeSerializer;
+import kp.cbs.creature.race.Evolution;
 import kp.cbs.creature.race.Race;
 import kp.udl.UDLManager;
 import kp.udl.autowired.Autowired;
@@ -41,6 +42,7 @@ public final class Serializer
         Serializer.registerSerializer(Attack.SERIALIZER);
         Serializer.registerSerializer(AttackModel.SERIALIZER);
         Serializer.registerSerializer(HealDamageEffect.SERIALIZER);
+        Serializer.registerSerializer(Evolution.EVO_COND_SERIALIZER);
     }
     
     /* Read ops */

@@ -1,11 +1,63 @@
 "id": 0,
 "name": "Humano Joven",
-"hp_base": 45,
+"hp_base": 43,
 "attack_base": 45,
-"defense_base": 45,
-"spAttack_base": 45,
-"spDefense_base": 45,
-"speed_base": 45,
+"defense_base": 44,
+"spAttack_base": 40,
+"spDefense_base": 40,
+"speed_base": 46,
 "primary_type": 0,
-"secondary_type": 1,
-"growth": 3
+"secondary_type": 0,
+"growth": 3,
+"attack_pool": {
+    "normalList": [{
+        "attack": 19,
+        "level": 4,
+        "hidden": false
+    }, {
+        "attack": 21,
+        "level": 7,
+        "hidden": false
+    }, {
+        "attack": 248,
+        "level": 10,
+        "hidden": false
+    }, {
+        "attack": 3,
+        "level": 13,
+        "hidden": false
+    }, {
+        "attack": 18,
+        "level": 16,
+        "hidden": false
+    }, {
+        "attack": 15,
+        "level": 19,
+        "hidden": false
+    }, {
+        "attack": 146,
+        "level": 24,
+        "hidden": false
+    }, {
+        "attack": 6,
+        "level": 30,
+        "hidden": false
+    }],
+    "hiddenList": [{
+        "attack": 9,
+        "level": 15,
+        "hidden": true
+    }, {
+        "attack": 247,
+        "level": 20,
+        "hidden": true
+    }, {
+        "attack": 16,
+        "level": 30,
+        "hidden": true
+    }],
+    "innate": 2
+},
+"evolutions": {
+    "evolutions": []
+}
