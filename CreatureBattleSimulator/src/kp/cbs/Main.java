@@ -9,6 +9,7 @@ import java.awt.EventQueue;
 import java.io.IOException;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import kp.cbs.battle.Battle;
 import kp.cbs.editor.MainMenuEditor;
 
 /**
@@ -32,7 +33,10 @@ public final class Main
         
         RacePool.getAllRaces(false);*/
         
-        executeEditor();
+        executeGame();
+        new Battle(null).setVisible(true);
+        
+        //executeEditor();
     }
     
     private static void executeEditor()
