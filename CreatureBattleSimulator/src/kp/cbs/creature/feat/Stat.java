@@ -6,6 +6,8 @@
 package kp.cbs.creature.feat;
 
 import kp.cbs.creature.Nature;
+import kp.cbs.creature.race.Race;
+import kp.cbs.utils.Formula;
 import kp.cbs.utils.RNG;
 import kp.cbs.utils.Utils;
 import kp.udl.autowired.Property;
@@ -29,7 +31,7 @@ public abstract class Stat extends BaseFeature
     
     
     public abstract StatId getStatId();
-    public abstract void update(int level, Nature nature);
+    public abstract void update(Race race, int level, Nature nature);
     
     public final void setBasePoints(int points) { this.base = Math.max(1, points); }
     public final int getBasePoints() { return base; }
@@ -37,8 +39,8 @@ public abstract class Stat extends BaseFeature
     public final void setGeneticPoints(int points) { this.gen = Utils.range(0, 32, points); }
     public final int getGeneticPoints() { return gen; }
     
-    public final void setAbilityPoints(int points) { this.ab = Utils.range(0, 512, points); }
-    public final void addAbilityPoints(int points) { this.ab = Math.min(512, ab + Math.max(0, points)); }
+    public final void setAbilityPoints(int points) { this.ab = Utils.range(0, Formula.MAX_STAT_ABILITY_POINTS, points); }
+    public final void addAbilityPoints(int points) { this.ab = Math.min(Formula.MAX_STAT_ABILITY_POINTS, ab + Math.max(0, points)); }
     public final int getAbilityPoints() { return ab; }
     
     final void setValue(int value) { this.value = Math.max(0, value); }
@@ -46,7 +48,7 @@ public abstract class Stat extends BaseFeature
     
     final void fillRandom(RNG rng)
     {
-        
+        setGeneticPoints(rng.d(33));
     }
     
 }

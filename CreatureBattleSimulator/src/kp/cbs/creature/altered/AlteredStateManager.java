@@ -5,6 +5,7 @@
  */
 package kp.cbs.creature.altered;
 
+import java.util.StringJoiner;
 import kp.cbs.battle.BattleUpdater;
 import kp.cbs.battle.FighterTurnState;
 
@@ -44,6 +45,15 @@ public final class AlteredStateManager implements BattleUpdater
     {
         for(int i=0;i<states.length;i++)
             states[i] = null;
+    }
+    
+    public final String getAbbreviatedInfo()
+    {
+        var joiner = new StringJoiner(" ");
+        for(var astate : states)
+            if(astate != null)
+                joiner.add(astate.getId().getAbbreviation());
+        return joiner.toString();
     }
 
     @Override

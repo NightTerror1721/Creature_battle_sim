@@ -26,6 +26,9 @@ import kp.cbs.creature.feat.StatId;
 import kp.cbs.creature.race.Race;
 import kp.cbs.creature.race.RacePool;
 import kp.cbs.creature.state.StateManager;
+import kp.cbs.utils.Formula;
+import kp.cbs.utils.RNG;
+import kp.cbs.utils.Utils;
 import kp.udl.autowired.InjectOptions;
 import kp.udl.autowired.Property;
 
@@ -53,6 +56,9 @@ public final class Creature
     
     @Property
     private AttackManager attacks;
+    
+    @Property(name = "abilityPoints")
+    private int remainingAbPoints;
     
     private final ElementalManager types = new ElementalManager();
     
@@ -118,9 +124,13 @@ public final class Creature
     public final int getExperience() { return exp.getExperience(); }
     public final int getNextLevelExperience() { return exp.getNextLevelExperience(); }
     
+    public final CreatureClass getCreatureClass() { return Formula.creatureClass(this); }
+    
     public final AttackManager getAttackManager() { return attacks; }
     public final Attack getAttack(int index) { return attacks.getAttack(index); }
     public final Attack selectAttackByAI(FighterTurnState state, AIIntelligence intel) { return attacks.selectAttackByAI(state, intel); }
+    public final void setDefaultLearnedAttacksInLevel(int level) { attacks.setDefaultLearnedAttacksInLevel(race, level); }
+    public final void setDefaultLearnedAttacks() { attacks.setDefaultLearnedAttacksInLevel(race, getLevel()); }
     
     public final PercentageFeature getAccuracy() { return state.getAccuracy(); }
     public final PercentageFeature getEvasion() { return state.getEvasion(); }
@@ -161,16 +171,41 @@ public final class Creature
     public final boolean hasType(ElementalType type) { return types.has(type); }
     public final boolean hasAnyType(ElementalType... types) { return this.types.has(types); }
     public final Effectivity effectivity(ElementalType type) { return types.effectivity(type); }
+    public final String getElementalTypeNames() { return types.getElementalTypeNames(); }
     
     
     public final void setFighterId(int id) { this.fighterId = id; }
     public final int getFighterId() { return fighterId; }
     
     
+    public final void setRemainingAbilityPoints(int points)
+    {
+        int current = feats.getAbilityPointsCount();
+        this.remainingAbPoints = Utils.range(0, Formula.MAX_ABILITY_POINTS, points);
+        if(current + remainingAbPoints > Formula.MAX_ABILITY_POINTS)
+            remainingAbPoints = Formula.MAX_ABILITY_POINTS - current;
+    }
+    public final void giveAbilityPoints(int points) { setRemainingAbilityPoints(remainingAbPoints + points); }
+    public final int getRemainingAbilityPoints() { return remainingAbPoints; }
+    public final boolean canGiveAbilityPoints() { return !feats.hasMaxAbilityPoints(); }
+    public final void useAbilityPoint(StatId statId)
+    {
+        if(remainingAbPoints > 0)
+        {
+            var stat = feats.getStat(statId);
+            if(stat.getAbilityPoints() < Formula.MAX_STAT_ABILITY_POINTS)
+            {
+                remainingAbPoints--;
+                stat.addAbilityPoints(1);
+            }
+        }
+    }
+    
+    
     
     public final void updateAll()
     {
-        feats.update(exp.getLevel(), nature);
+        feats.update(race, exp.getLevel(), nature);
     }
     
     public final void clearAll()
@@ -180,6 +215,22 @@ public final class Creature
         altered.clearAllAlterations();
         types.restore(race);
         updateAll();
+        feats.getHealthPoints().fullHeal();
+    }
+    
+    
+    public static final Creature createWild(Race race, int level, RNG rng)
+    {
+        var c = create(race, level);
+        c.setName(race.getName());
+        c.feats.randomizeStatGenetics(rng);
+        c.attacks.setDefaultLearnedAttacksInLevel(race, level);
+        c.clearAll();
+        return c;
+    }
+    public static final Creature createWild(int raceId, int level, RNG rng)
+    {
+        return createWild(RacePool.getRace(raceId), level, rng);
     }
     
     

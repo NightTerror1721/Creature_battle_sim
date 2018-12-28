@@ -65,10 +65,18 @@ public final class SoundManager
         }
     }*/
     
+    public static final Music loadMusic(MusicModel model)
+    {
+        var file = Paths.concat(Paths.MUSIC, model.getName() + ".wav");
+        var music = TinySound.loadMusic(file.toFile(), true);
+        music.setLoopPositionByFrame((int) model.getLoopPosition());
+        music.setLoop(true);
+        return music;
+    }
     public static final Music loadMusic(String name)
     {
-        var file = Paths.concat(Paths.MUSIC, name + ".wav");
-        return TinySound.loadMusic(file.toFile());
+        var model = MusicModel.getModel(name);
+        return model == null ? null : loadMusic(model);
     }
     
     public static final String[] getAvaliableMusics()

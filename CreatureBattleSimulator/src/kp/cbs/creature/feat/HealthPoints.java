@@ -6,6 +6,7 @@
 package kp.cbs.creature.feat;
 
 import kp.cbs.creature.Nature;
+import kp.cbs.creature.race.Race;
 import kp.cbs.utils.Formula;
 import kp.cbs.utils.Utils;
 import kp.udl.autowired.Property;
@@ -34,8 +35,9 @@ public final class HealthPoints extends Stat
     public final StatId getStatId() { return StatId.HEALTH_POINTS; }
 
     @Override
-    public final void update(int level, Nature nature)
+    public final void update(Race race, int level, Nature nature)
     {
+        base = race.getBase(getStatId());
         setValue(Formula.hpValue(level, base, gen, ab));
         if(current > getValue())
             current = getValue();

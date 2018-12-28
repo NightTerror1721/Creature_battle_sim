@@ -5,6 +5,7 @@
  */
 package kp.cbs.battle;
 
+import java.util.Objects;
 import kp.cbs.battle.Team.SearchFirstBehabior;
 import kp.cbs.battle.Team.SearchNextBehabior;
 import kp.cbs.creature.attack.effects.AIIntelligence;
@@ -18,6 +19,8 @@ public final class Encounter
     private final Team selfTeam = new Team();
     private final Team enemyTeam = new Team();
     private int money;
+    private float expBonus = 1f;
+    private String music = "trainer";
     
     
     public final Team getSelfTeam() { return selfTeam; }
@@ -34,4 +37,10 @@ public final class Encounter
     
     public final void setMoney(int money) { this.money = Math.max(0, money); }
     public final int getMoney() { return money; }
+    
+    public final void setExperienceBonus(float bonus) { this.expBonus = Math.max(1f, bonus); }
+    public final float getExperienceBonus() { return expBonus; }
+    
+    public final void setMusic(String music) { this.music = Objects.requireNonNull(music); }
+    public final String getMusic() { return music; }
 }

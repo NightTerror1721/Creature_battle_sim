@@ -5,6 +5,7 @@
  */
 package kp.cbs.creature.elements;
 
+import java.awt.Color;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -22,12 +23,16 @@ public final class ElementalType
 {
     private final int id;
     private final String name;
+    private final Color color;
+    private final boolean whiteFont;
     private final HashMap<Integer, Effectivity> effectivity = new HashMap<>();
     
     private ElementalType(int id, UDLValue base)
     {
         this.id = id;
         this.name = base.getString("name");
+        this.color = Serializer.inject(base.get("color"), Color.class);
+        this.whiteFont = base.containsKey("white_font") && base.getBoolean("white_font");
         
         initEffectivities(base, "weak", Effectivity.SUPER_EFFECTIVE);
         initEffectivities(base, "resistant", Effectivity.NOT_VERY_EFFECTIVE);
@@ -37,6 +42,8 @@ public final class ElementalType
     {
         this.id = -1;
         this.name = "Desconocido";
+        this.color = Color.WHITE;
+        this.whiteFont = false;
     }
     
     private void initEffectivities(UDLValue base, String name, Effectivity effectivity)
@@ -48,6 +55,11 @@ public final class ElementalType
     public final int getId() { return id; }
     
     public final String getName() { return name; }
+    
+    public final Color getColor() { return color; }
+    
+    public final boolean hasWhiteFont() { return whiteFont; }
+    public final Color getFontColor() { return whiteFont ? Color.WHITE : Color.BLACK; }
     
     public final Effectivity getEffectivity(ElementalType attackType)
     {

@@ -1,0 +1,16 @@
+"music": [{
+	"name": "trainer",
+	"loopPosition": 3561755
+}, {
+	"name": "leader",
+	"loopPosition": 1087870
+}, {
+	"name": "elite",
+	"loopPosition": 1503955
+}, {
+	"name": "champion",
+	"loopPosition": 3283723
+}, {
+	"name": "wild",
+	"loopPosition": 2544265
+}]

@@ -47,8 +47,8 @@ public final class AttackManager implements Iterable<Attack>
             default: throw new IllegalArgumentException();
             case 0: return att1;
             case 1: return att2;
-            case 3: return att3;
-            case 4: return att4;
+            case 2: return att3;
+            case 3: return att4;
         }
     }
     
@@ -59,14 +59,33 @@ public final class AttackManager implements Iterable<Attack>
             default: throw new IllegalArgumentException();
             case 0: att1 = Objects.requireNonNull(attack); break;
             case 1: att2 = Objects.requireNonNull(attack); break;
-            case 3: att3 = Objects.requireNonNull(attack); break;
-            case 4: att4 = Objects.requireNonNull(attack); break;
+            case 2: att3 = Objects.requireNonNull(attack); break;
+            case 3: att4 = Objects.requireNonNull(attack); break;
         }
     }
     
     public final void setAttack(int index, AttackModel attackModel)
     {
         setAttack(index, AttackPool.createAttack(attackModel));
+    }
+    
+    public final boolean containsAttack(AttackModel model)
+    {
+        for(var att : this)
+        {
+            if(att.getModel().equals(model))
+                return true;
+        }
+        return false;
+    }
+    
+    public final int getFirstEmptySlot()
+    {
+        return att1 == null ? 0
+                : att2 == null ? 1
+                : att3 == null ? 2
+                : att4 == null ? 3
+                : -1;
     }
     
     @Override

@@ -37,6 +37,7 @@ public final class Serializer
     {
         UDL.enableDefaultUseCommand();
         
+        Serializer.registerSerializer(new ColorSerializer());
         Serializer.registerSerializer(new ElementalTypeSerializer());
         Serializer.registerSerializer(Race.SERIALIZER);
         Serializer.registerSerializer(Attack.SERIALIZER);

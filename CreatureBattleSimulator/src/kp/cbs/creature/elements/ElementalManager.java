@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.StringJoiner;
 import kp.cbs.creature.race.Race;
 
 /**
@@ -59,5 +60,13 @@ public final class ElementalManager
         for(ElementalType etype : elems)
             eff = eff.combine(etype.getEffectivity(type));
         return eff;
+    }
+    
+    public final String getElementalTypeNames()
+    {
+        var joiner = new StringJoiner(" ");
+        for(var type : elems)
+            joiner.add(type.getName());
+        return joiner.toString();
     }
 }

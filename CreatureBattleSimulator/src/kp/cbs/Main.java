@@ -10,7 +10,11 @@ import java.io.IOException;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import kp.cbs.battle.Battle;
+import kp.cbs.battle.Encounter;
+import kp.cbs.creature.Creature;
 import kp.cbs.editor.MainMenuEditor;
+import kp.cbs.utils.RNG;
+import kp.cbs.utils.SoundManager;
 
 /**
  *
@@ -34,7 +38,14 @@ public final class Main
         RacePool.getAllRaces(false);*/
         
         executeGame();
-        new Battle(null).setVisible(true);
+        
+        var encounter = new Encounter();
+        var rng = new RNG();
+        
+        encounter.getSelfTeam().addCreature(Creature.createWild(0, 10, rng));
+        encounter.getEnemyTeam().addCreature(Creature.createWild(0, 10, rng));
+        
+        Battle.initiate(null, encounter);
         
         //executeEditor();
     }
@@ -56,6 +67,8 @@ public final class Main
     
     private static void executeGame()
     {
+        SoundManager.loadSounds(true);
+        
         try
         {
             for(var info : UIManager.getInstalledLookAndFeels())

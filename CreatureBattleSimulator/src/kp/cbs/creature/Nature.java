@@ -56,6 +56,8 @@ public enum Nature
     
     public final float getStatModificator(StatId stat)
     {
+        if(up == down)
+            return 1f;
         return stat == up ? 1.1f : stat == down ? 0.9f : 1f;
     }
     

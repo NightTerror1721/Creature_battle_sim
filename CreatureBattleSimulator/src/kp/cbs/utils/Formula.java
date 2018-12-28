@@ -7,10 +7,12 @@ package kp.cbs.utils;
 
 import kp.cbs.battle.weather.WeatherId;
 import kp.cbs.creature.Creature;
+import kp.cbs.creature.CreatureClass;
 import kp.cbs.creature.Growth;
 import kp.cbs.creature.Nature;
 import kp.cbs.creature.elements.Effectivity;
 import kp.cbs.creature.elements.ElementalType;
+import kp.cbs.creature.feat.FeatureManager;
 import kp.cbs.creature.feat.StatId;
 
 /**
@@ -20,6 +22,10 @@ import kp.cbs.creature.feat.StatId;
 public final class Formula
 {
     private Formula() {}
+    
+    
+    public static final int MAX_STAT_ABILITY_POINTS = 512;
+    public static final int MAX_ABILITY_POINTS = MAX_STAT_ABILITY_POINTS * 6;
     
     
     private static int statBase(int level, int base, int gen)
@@ -75,6 +81,53 @@ public final class Formula
     public static final int hpValue(int level, int base, int gen, int ab)
     {
         return 200 + hpBase(level, base, gen) + hpAbilityPoints(level, ab) + (level * 20);
+    }
+    
+    private static int classStatValue(FeatureManager man, StatId statId, Nature nature, int level)
+    {
+        var stat = man.getStat(statId);
+        return natureModification(statId, nature, statBase(level, stat.getBasePoints(), stat.getGeneticPoints()) +
+                statAbilityPoints(level, stat.getAbilityPoints()));
+    }
+    
+    public static final CreatureClass creatureClass(Creature creature)
+    {
+        int level = creature.getLevel();
+        var nature = creature.getNature();
+        var man = creature.getFeaturesManager();
+        int statSum = classStatValue(man, StatId.HEALTH_POINTS, nature, level) +
+                      classStatValue(man, StatId.ATTACK, nature, level) +
+                      classStatValue(man, StatId.DEFENSE, nature, level) +
+                      classStatValue(man, StatId.SPECIAL_ATTACK, nature, level) +
+                      classStatValue(man, StatId.SPECIAL_DEFENSE, nature, level) +
+                      classStatValue(man, StatId.SPEED, nature, level);
+        if(statSum <= 0)
+            return CreatureClass.E;
+        switch(statSum / 100)
+        {
+            case 0: return CreatureClass.E;
+            case 1: return CreatureClass.E2;
+            case 2: return CreatureClass.E3;
+            case 3: return CreatureClass.D;
+            case 4: return CreatureClass.D2;
+            case 5: return CreatureClass.D3;
+            case 6: return CreatureClass.C;
+            case 7: return CreatureClass.C2;
+            case 8: return CreatureClass.C3;
+            case 9: return CreatureClass.B;
+            case 10: return CreatureClass.B2;
+            case 11: return CreatureClass.B3;
+            case 12: return CreatureClass.A;
+            case 13: return CreatureClass.A2;
+            case 14: return CreatureClass.A3;
+            case 15: return CreatureClass.S;
+            case 16: return CreatureClass.S2;
+            case 17: return CreatureClass.S3;
+            case 18: return CreatureClass.SS;
+            case 19: return CreatureClass.SS2;
+            case 20: return CreatureClass.SS3;
+            default: return CreatureClass.SSS;
+        }
     }
     
     

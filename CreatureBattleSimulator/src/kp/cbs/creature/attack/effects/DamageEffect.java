@@ -80,6 +80,8 @@ public abstract class DamageEffect implements Effect
         SPECIAL,
         INDIRECT;
         
+        public final String getName() { return toString(); }
+        
         public static final DamageType combine(DamageType d0, DamageType d1)
         {
             switch(d0)

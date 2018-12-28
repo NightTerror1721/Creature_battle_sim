@@ -106,8 +106,9 @@ public final class RaceAttackPool
         AttackModel[] array = normalList.stream()
                 .filter(ra -> ra.level <= level)
                 .sorted(RaceAttack::inverseCompareTo)
-                .map(RaceAttack::getAttackModel)
                 .limit(4)
+                .sorted(RaceAttack::compareTo)
+                .map(RaceAttack::getAttackModel)
                 .toArray(AttackModel[]::new);
         
         if(array.length == 4)

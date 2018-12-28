@@ -2,114 +2,152 @@
 	"name": "Normal",
 	"weak": 	 [1],
 	"resistant": [],
-	"immune": 	 [4]
+	"immune": 	 [4],
+	"color": [207, 140, 85],
+	"white_font": false
 },
 1: {
 	"name": "Lucha",
 	"weak": 	 [2, 3, 12],
 	"resistant": [5, 10, 11],
-	"immune": 	 []
+	"immune": 	 [],
+	"color": [210, 63, 0],
+	"white_font": false
 },
 2: {
 	"name": "Psíquico",
 	"weak": 	 [4, 5, 11],
 	"resistant": [1, 2, 3],
-	"immune": 	 []
+	"immune": 	 [],
+	"color": [255, 58, 117],
+	"white_font": false
 },
 3: {
 	"name": "Mágico",
 	"weak": 	 [3, 15, 18],
 	"resistant": [2, 4],
-	"immune": 	 [16]
+	"immune": 	 [16],
+	"color": [255, 0, 255],
+	"white_font": true
 },
 4: {
 	"name": "Fantasma",
 	"weak": 	 [4, 5, 17],
 	"resistant": [11, 15],
-	"immune": 	 [0, 1]
+	"immune": 	 [0, 1],
+	"color": [128, 0, 192],
+	"white_font": true
 },
 5: {
 	"name": "Siniestro",
 	"weak": 	 [1, 3, 17, 18],
 	"resistant": [4, 5],
-	"immune": 	 [2]
+	"immune": 	 [2],
+	"color": [17, 0, 52],
+	"white_font": true
 },
 6: {
 	"name": "Fuego",
 	"weak": 	 [8, 9, 10, 12, 17],
 	"resistant": [6, 7, 11],
-	"immune": 	 []
+	"immune": 	 [],
+	"color": [250, 0, 0],
+	"white_font": false
 },
 7: {
 	"name": "Hielo",
 	"weak": 	 [6, 10, 14],
 	"resistant": [7, 11],
-	"immune": 	 []
+	"immune": 	 [],
+	"color": [0, 196, 255],
+	"white_font": false
 },
 8: {
 	"name": "Agua",
 	"weak": 	 [11, 13, 18],
 	"resistant": [7, 8, 14],
-	"immune": 	 []
+	"immune": 	 [],
+	"color": [0, 128, 255],
+	"white_font": false
 },
 9: {
 	"name": "Tierra",
 	"weak": 	 [8, 11, 12],
 	"resistant": [10],
-	"immune": 	 [13, 15]
+	"immune": 	 [13, 15],
+	"color": [150, 90, 40],
+	"white_font": false
 },
 10: {
 	"name": "Roca",
 	"weak": 	 [7, 8, 9, 11, 14],
 	"resistant": [6, 10, 12],
-	"immune": 	 []
+	"immune": 	 [],
+	"color": [128, 64, 0],
+	"white_font": true
 },
 11: {
 	"name": "Naturaleza",
 	"weak": 	 [6, 7, 11, 15],
 	"resistant": [8, 9, 12, 13],
-	"immune": 	 []
+	"immune": 	 [],
+	"color": [25, 255, 64],
+	"white_font": false
 },
 12: {
 	"name": "Viento",
 	"weak": 	 [7, 13],
 	"resistant": [1, 12],
-	"immune": 	 [0]
+	"immune": 	 [0],
+	"color": [135, 206, 250],
+	"white_font": false
 },
 13: {
 	"name": "Eléctrico",
 	"weak": 	 [9],
 	"resistant": [13],
-	"immune": 	 []
+	"immune": 	 [],
+	"color": [250, 250, 0],
+	"white_font": false
 },
 14: {
 	"name": "Acero",
 	"weak": 	 [1, 6, 9],
 	"resistant": [0, 3, 7, 8, 10, 11, 12, 14, 16],
-	"immune": 	 [15]
+	"immune": 	 [15],
+	"color": [192, 192, 192],
+	"white_font": false
 },
 15: {
 	"name": "Veneno",
 	"weak": 	 [2, 9],
 	"resistant": [1, 3, 11, 15],
-	"immune": 	 []
+	"immune": 	 [],
+	"color": [174, 0, 133],
+	"white_font": false
 },
 16: {
 	"name": "Dragón",
 	"weak": 	 [3, 7, 16],
 	"resistant": [6, 8, 11, 12, 13, 17, 18],
-	"immune": 	 []
+	"immune": 	 [],
+	"color": [215, 0, 107],
+	"white_font": false
 },
 17: {
 	"name": "Demónio",
 	"weak": 	 [18],
 	"resistant": [3, 9, 11, 12],
-	"immune": 	 [6, 17]
+	"immune": 	 [6, 17],
+	"color": [118, 0, 0],
+	"white_font": true
 },
 18: {
 	"name": "Divino",
 	"weak": 	 [17],
 	"resistant": [3, 9, 11, 12],
-	"immune": 	 [8, 18]
+	"immune": 	 [8, 18],
+	"color": [178, 255, 255],
+	"white_font": false
 }
 

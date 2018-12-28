@@ -44,6 +44,19 @@ public final class ExperienceManager
     
     public final int getNextLevelExperience() { return maxExp; }
     
+    public final int getRemainingToNextLevel()
+    {
+        return level >= 100 ? 0 : maxExp - exp;
+    }
+    
+    public final float getCurrentPercentage()
+    {
+        if(level >= 100)
+            return 0f;
+        var min = Formula.expToLevel(growth, level);
+        return ((float) (exp - min)) / (maxExp - min);
+    }
+    
     
     private void checkExp()
     {

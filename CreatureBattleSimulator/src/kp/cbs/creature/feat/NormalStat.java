@@ -6,6 +6,7 @@
 package kp.cbs.creature.feat;
 
 import kp.cbs.creature.Nature;
+import kp.cbs.creature.race.Race;
 import kp.cbs.utils.Formula;
 import kp.cbs.utils.Utils;
 
@@ -21,8 +22,9 @@ public abstract class NormalStat extends Stat
     
     
     @Override
-    public final void update(int level, Nature nature)
+    public final void update(Race race, int level, Nature nature)
     {
+        base = race.getBase(getStatId());
         setValue(Formula.statValue(getStatId(), level, base, gen, ab, nature, modifLevel));
     }
     
@@ -55,6 +57,21 @@ public abstract class NormalStat extends Stat
     }
     
     public final int getAlterationLevels() { return modifLevel; }
+    
+    public final float getAlterationRatio()
+    {
+        if(modifLevel > 0)
+            return (2f + modifLevel) / 2f;
+        else if(modifLevel < 0)
+            return 2f / (2f - modifLevel);
+        return 1f;
+    }
+    
+    public final String getPowerupAbbreviation()
+    {
+        var ratio = getAlterationRatio();
+        return ratio == 1f ? "" : (getStatId() + "x" + ratio);
+    }
     
     
     public static final class Attack extends NormalStat

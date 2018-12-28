@@ -5,8 +5,11 @@
  */
 package kp.cbs.creature.feat;
 
+import java.util.StringJoiner;
 import kp.cbs.creature.Nature;
+import kp.cbs.creature.race.Race;
 import kp.cbs.utils.Formula;
+import kp.cbs.utils.RNG;
 import kp.udl.autowired.InjectOptions;
 import kp.udl.autowired.Property;
 
@@ -70,14 +73,14 @@ public final class FeatureManager
         speed.clearAlterations();
     }
     
-    public final void update(int level, Nature nature)
+    public final void update(Race race, int level, Nature nature)
     {
-        hp.update(level, nature);
-        attack.update(level, nature);
-        defense.update(level, nature);
-        specialAttack.update(level, nature);
-        specialDefense.update(level, nature);
-        speed.update(level, nature);
+        hp.update(race, level, nature);
+        attack.update(race, level, nature);
+        defense.update(race, level, nature);
+        specialAttack.update(race, level, nature);
+        specialDefense.update(race, level, nature);
+        speed.update(race, level, nature);
     }
     
     public final int getStatSum()
@@ -89,6 +92,44 @@ public final class FeatureManager
     {
         int sum = getStatSum();
         return Formula.creatureExpBase(sum);
+    }
+    
+    public final int getAbilityPointsCount()
+    {
+        return hp.ab + attack.ab + defense.ab + specialAttack.ab + specialDefense.ab + speed.ab;
+    }
+    
+    public final boolean hasMaxAbilityPoints()
+    {
+        return getAbilityPointsCount() < Formula.MAX_ABILITY_POINTS;
+    }
+    
+    public final String getPowerupAbbreviations()
+    {
+        var joiner = new StringJoiner(" ");
+        addAbbreviation(joiner, attack);
+        addAbbreviation(joiner, defense);
+        addAbbreviation(joiner, specialAttack);
+        addAbbreviation(joiner, specialDefense);
+        addAbbreviation(joiner, speed);
+        return joiner.toString();
+        
+    }
+    private static void addAbbreviation(StringJoiner joiner, NormalStat stat)
+    {
+        var abb = stat.getPowerupAbbreviation();
+        if(!abb.isBlank())
+            joiner.add(abb);
+    }
+    
+    public final void randomizeStatGenetics(RNG rng)
+    {
+        hp.fillRandom(rng);
+        attack.fillRandom(rng);
+        defense.fillRandom(rng);
+        specialAttack.fillRandom(rng);
+        specialDefense.fillRandom(rng);
+        speed.fillRandom(rng);
     }
     
     

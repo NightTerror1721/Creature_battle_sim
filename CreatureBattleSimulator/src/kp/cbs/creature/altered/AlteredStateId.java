@@ -11,22 +11,29 @@ package kp.cbs.creature.altered;
  */
 public enum AlteredStateId
 {
-    CONFUSION("Confusión"),
-    PARALYSIS("Parálisis"),
-    BURN("Quemadura"),
-    POISONING("Envenenamiento"),
-    INTOXICATION("Intoxicamiento"),
-    SLEEP("Sueño"),
-    SLEEPINESS("Somnolencia"),
-    FREEZING("Congelación"),
-    CURSE("Maldición"),
-    NIGHTMARE("Pesadillas");
+    CONFUSION("Confusión", "CNF"),
+    PARALYSIS("Parálisis", "PAR"),
+    BURN("Quemadura", "QUE"),
+    POISONING("Envenenamiento", "ENV"),
+    INTOXICATION("Intoxicamiento", "ENVG"),
+    SLEEP("Sueño", "DOR"),
+    SLEEPINESS("Somnolencia", ""),
+    FREEZING("Congelación", "CON"),
+    CURSE("Maldición", "MAL"),
+    NIGHTMARE("Pesadillas", "PES");
     
-    public final String name;
+    private final String name;
+    private final String abbreviation;
     
-    private AlteredStateId(String name) { this.name = name; }
+    private AlteredStateId(String name, String abbreviation)
+    {
+        this.name = name;
+        this.abbreviation = abbreviation;
+    }
     
     public final String getName() { return name; }
+    
+    public final String getAbbreviation() { return abbreviation; }
     
     @Override
     public final String toString() { return name; }

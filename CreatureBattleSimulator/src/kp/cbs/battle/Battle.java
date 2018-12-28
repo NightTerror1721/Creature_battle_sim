@@ -6,11 +6,29 @@
 package kp.cbs.battle;
 
 import java.awt.Color;
+import java.awt.Dialog;
+import java.awt.Frame;
+import java.awt.Window;
+import java.util.Objects;
+import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JProgressBar;
-import static kp.cbs.battle.Battle.TeamId.SELF;
+import javax.swing.border.LineBorder;
+import javax.swing.text.BadLocationException;
+import static kp.cbs.battle.TeamId.ENEMY;
+import static kp.cbs.battle.TeamId.SELF;
+import kp.cbs.creature.Creature;
+import kp.cbs.creature.attack.Attack;
+import kp.cbs.creature.elements.ElementalType;
+import kp.cbs.creature.feat.StatId;
+import kp.cbs.utils.LifebarUtils;
 import kp.cbs.utils.Semaphore;
+import kp.cbs.utils.SoundManager;
+import kp.cbs.utils.Utils;
+import kuusisto.tinysound.Music;
+import kuusisto.tinysound.Sound;
 
 /**
  *
@@ -18,31 +36,76 @@ import kp.cbs.utils.Semaphore;
  */
 public class Battle extends JDialog
 {
+    private final BattleCore core;
+    
     private final Semaphore sem = new Semaphore(1);
     private final Semaphore round = new Semaphore(1);
     private final Semaphore damC = new Semaphore(1);
     private final Semaphore healC = new Semaphore(1);
     
-    public Battle(JFrame parent)
+    private final Sound expGet = SoundManager.getSound("expget");
+    
+    private float expBonus = 1f;
+    
+    private ButtonsMenuState butState = ButtonsMenuState.DISABLED;
+    
+    private Music music;
+    
+    private Battle(Frame parent, BattleCore core)
     {
         super(parent, true);
+        this.core = Objects.requireNonNull(core);
         initComponents();
         init();
     }
     
-    private Battle(JDialog parent)
+    private Battle(Dialog parent, BattleCore core)
     {
         super(parent, true);
+        this.core = Objects.requireNonNull(core);
         initComponents();
         init();
     }
     
     private void init()
     {
+        setResizable(false);
+        Utils.focus(this);
         
+        core.setBattle(this);
     }
     
-    private void modifBarlifePlayer(TeamId team, final int goal, boolean isHeal)
+    public static final void initiate(Window parent, Encounter encounter)
+    {
+        var bcore = new BattleCore(encounter.getSelfTeam(), encounter.getEnemyTeam());
+        
+        Battle battle;
+        if(parent == null || parent instanceof Frame)
+            battle = new Battle((Frame) parent, bcore);
+        else if(parent instanceof Dialog)
+            battle = new Battle((Dialog) parent, bcore);
+        else throw new IllegalStateException();
+        
+        battle.expBonus = encounter.getExperienceBonus();
+        
+        battle.music = SoundManager.loadMusic(encounter.getMusic());
+        
+        battle.start();
+    }
+    
+    
+    private void start()
+    {
+        var mainThread = new Thread(() -> {
+            core.start();
+        });
+        mainThread.start();
+        if(music != null)
+                music.play(true);
+        setVisible(true);
+    }
+    
+    final void modifBarlifePlayer(TeamId team, final int goal, boolean isHeal)
     {
         final JProgressBar bar = team == SELF ? self_lifebar : enemy_lifebar;
         //final JProgressBar bar = team == USER ? user_ps_bar : enemy_ps_bar;
@@ -131,10 +194,10 @@ public class Battle extends JDialog
         sem.toRed(0);
         new Thread(() -> {
             expGet.play();
-            while(user_exp.getValue() < goal)
+            while(self_expbar.getValue() < goal)
             {
-                user_exp.setValue(user_exp.getValue() + 1);
-                user_exp.repaint();
+                self_expbar.setValue(self_expbar.getValue() + 1);
+                self_expbar.repaint();
                 sleep(speed);
             }
             expGet.stop();
@@ -143,7 +206,7 @@ public class Battle extends JDialog
         sem.pass(0);
     }
     
-    private void insertMessage(String message)
+    final void insertMessage(String message)
     {
         try
         {
@@ -151,14 +214,172 @@ public class Battle extends JDialog
             jTextPane1.getDocument().insertString(offset,message + "\n",null);
             jTextPane1.setCaretPosition(jTextPane1.getDocument().getLength());
         }
-        catch(Exception ex) {}
+        catch(BadLocationException ex) {}
     }
     
-    private void clearText()
+    final void clearText()
     {
         jTextPane1.setText("");
         jTextPane1.setCaretPosition(jTextPane1.getDocument().getLength());
     }
+    
+    
+    final void updateCreatureInterface(TeamId team)
+    {
+        JLabel name = team == SELF ? self_name : enemy_name;
+        JLabel race = team == SELF ? self_race : enemy_race;
+        JLabel level = team == SELF ? self_level : enemy_level;
+        JLabel altered = team == SELF ? self_altered : enemy_altered;
+        JPanel panel = team == SELF ? jPanel2 : jPanel3;
+        
+        var creature = core.getFighter(team);
+        
+        name.setEnabled(creature != null);
+        race.setEnabled(creature != null);
+        level.setEnabled(creature != null);
+        altered.setEnabled(creature != null);
+        
+        if(creature == null)
+        {
+            name.setText("");
+            race.setText("");
+            level.setText("");
+            altered.setText("");
+            panel.setBorder(new LineBorder(Color.BLACK, 1));
+            
+            updateCreatureHp(creature, team);
+            
+            if(team == SELF)
+            {
+                self_expbar.setEnabled(false);
+                self_powerup.setEnabled(false);
+                
+                self_expbar.setMaximum(100);
+                self_expbar.setValue(0);
+                self_powerup.setText("");
+
+                self_lifecount.setForeground(Color.BLACK);
+                self_powerup.setForeground(Color.BLACK);
+            }
+        }
+        else
+        {
+            name.setText("Nombre: " + creature.getName());
+            race.setText(creature.getRace() + " [Clase: " + creature.getCreatureClass() + "]");
+            level.setText("Nivel " + creature.getLevel());
+            altered.setText(creature.getAlterationManager().getAbbreviatedInfo());
+            updateCreatureHp(creature, team);
+
+            float hpPer = creature.getCurrentHealthPoints() / ((float) creature.getMaxHealthPoints());
+            Color bcolor = hpPer <= 0.2f ? Color.RED : hpPer <= 0.5f ? Color.YELLOW : Color.BLACK;
+
+            name.setForeground(bcolor);
+            race.setForeground(bcolor);
+            level.setForeground(bcolor);
+            altered.setForeground(bcolor);
+            panel.setBorder(new LineBorder(bcolor, 1));
+            
+            if(team == SELF)
+            {
+                self_expbar.setEnabled(true);
+                self_powerup.setEnabled(true);
+                
+                self_expbar.setMaximum(100);
+                self_expbar.setValue((int) (creature.getExperienceManager().getCurrentPercentage() * 100));
+                self_powerup.setText(creature.getFeaturesManager().getPowerupAbbreviations());
+
+                self_lifecount.setForeground(bcolor);
+                self_powerup.setForeground(bcolor);
+            }
+        }
+        
+    }
+    
+    private void updateCreatureHp(Creature creature, TeamId team)
+    {
+        var bar = team == SELF ? self_lifebar : enemy_lifebar;
+        if(creature == null)
+        {
+            if(team == SELF)
+            {
+                self_lifecount.setEnabled(false);
+                self_lifecount.setText("");
+            }
+            bar.setMaximum(1);
+            bar.setValue(0);
+            bar.setForeground(Color.BLACK);
+            bar.setEnabled(false);
+        }
+        else
+        {
+            if(team == SELF)
+            {
+                self_lifecount.setEnabled(true);
+                self_lifecount.setText(creature.getCurrentHealthPoints() + "/" + creature.getMaxHealthPoints());
+            }
+            bar.setMaximum(creature.getMaxHealthPoints());
+            bar.setValue(creature.getCurrentHealthPoints());
+            bar.setForeground(LifebarUtils.computeColor(creature.getMaxHealthPoints()));
+            bar.setEnabled(false);
+        }
+    }
+    
+    
+    private void setButtonsState(ButtonsMenuState state)
+    {
+        but1.setEnabled(state != ButtonsMenuState.DISABLED);
+        but2.setEnabled(state != ButtonsMenuState.DISABLED);
+        but3.setEnabled(state != ButtonsMenuState.DISABLED);
+        but4.setEnabled(state != ButtonsMenuState.DISABLED);
+        but5.setEnabled(state == ButtonsMenuState.ATTACKS);
+        switch(state)
+        {
+            case DISABLED:
+            case MAIN:
+                but1.setText("Usar Ataque");
+                but2.setText("Golpear");
+                but3.setText("Equipo");
+                but4.setText("Escapar");
+                but5.setText("----------");
+                but1.setBackground(Color.WHITE);
+                but2.setBackground(Color.WHITE);
+                but3.setBackground(Color.WHITE);
+                but4.setBackground(Color.WHITE);
+                but5.setBackground(Color.WHITE);
+                but1.setForeground(Color.BLACK);
+                but2.setForeground(Color.BLACK);
+                but3.setForeground(Color.BLACK);
+                but4.setForeground(Color.BLACK);
+                but5.setForeground(Color.BLACK);
+            break;
+            case ATTACKS: {
+                var self = core.getFighter(SELF);
+                setButtonText(but1, self.getAttack(0));
+                setButtonText(but2, self.getAttack(1));
+                setButtonText(but3, self.getAttack(2));
+                setButtonText(but4, self.getAttack(3));
+                but5.setText("Atrás");
+            } break;
+        }
+        butState = state;
+    }
+    private static void setButtonText(JButton but, Attack att)
+    {
+        if(att == null)
+        {
+            but.setText("----------");
+            but.setEnabled(false);
+        }
+        else
+        {
+            but.setText(att.getName() + " (" +
+                    att.getCurrentPP()+ "/" + att.getMaxPP() + ")");
+            ElementalType type = att.getElementalType();
+            but.setBackground(type.getColor());
+            but.setForeground(type.getFontColor());
+        }
+    }
+    
     
     private void damageColor(TeamId team)
     {
@@ -277,23 +498,106 @@ public class Battle extends JDialog
         th.start();
     }
     
-    private static void sleep(int sleep)
+    final void sleep(int sleep)
     {
-        try
+        try { Thread.sleep(sleep); }
+        catch(InterruptedException ex) {}
+    }
+    
+    
+    final void checkExperience()
+    {
+        if(!core.isCurrentAlive(ENEMY) || core.isCurrentAlive(SELF))
+            return;
+        int expGain = core.getExperieneGained(expBonus);
+        if(expGain <= 0)
+            return;
+        var creature = core.getFighter(SELF);
+        var cexp = creature.getExperienceManager();
+        insertMessage(creature.getName() + " gana " + expGain + " puntos de experiencia.");
+        sleep(1000);
+        while(expGain > 0 && creature.getLevel() < 100)
         {
-            Thread.sleep(sleep);
-        }
-        catch(InterruptedException ex)
-        {
-            
+            if(expGain < cexp.getRemainingToNextLevel())
+            {
+                cexp.addExperience(expGain);
+                modifExpBar((int) (cexp.getCurrentPercentage() * 100));
+                expGain = 0;
+                break;
+            }
+            int exp = cexp.getRemainingToNextLevel();
+            expGain -= exp;
+            modifExpBar(100);
+            cexp.addExperience(exp);
+            SoundManager.playSound("exp_max");
+            sleep(650);
+            var stats = new int[12];
+            for(int i=0;i<6;i++)
+                stats[i] = creature.getStat(StatId.decode(i)).getValue();
+            creature.updateAll();
+            for(int i=6;i<12;i++)
+            {
+                stats[i] = creature.getStat(StatId.decode(i - 6)).getValue();
+                stats[i - 6] = stats[i] - stats[i - 6];
+            }
+            updateCreatureInterface(SELF);
+            SoundManager.playSound("level_up");
+            LevelUpStatComparison.open(this,stats);
+            checkLevelAttacksToLearn(creature);
         }
     }
     
-    enum TeamId
+    private void checkLevelAttacksToLearn(Creature creature)
     {
-        SELF, ENEMY;
-        private TeamId invert() { return this == SELF ? ENEMY : SELF; }
+        var latts = creature.getRace().getAttackPool().getNormalAttacksInLevel(creature.getLevel());
+        if(latts == null || latts.isEmpty())
+            return;
+        var atts = creature.getAttackManager();
+        int len = latts.size();
+        for(var att : latts)
+        {
+            if(atts.containsAttack(att))
+                continue;
+            int slot = atts.getFirstEmptySlot();
+            if(slot < 0)
+            {
+                slot = LearnAttack.open(this, creature, att);
+                if(slot < 0)
+                    continue;
+            }
+            atts.setAttack(slot, att);
+            insertMessage("¡" + creature.getName() + " ha aprendido \"" + att.getName() + "\"!");
+            SoundManager.playSound("level_up");
+            sleep(1000);
+        }
     }
+    
+    /*private boolean checkChanges()
+    {
+        BattleConnectorCommand action = connector.readCheckChangeCommand();
+        switch(action.getAction())
+        {
+            case REQUIRE_CHANGE:
+                //TODO Require change creature
+                connector.sendChange(TeamViewer.open(this,userTeam,true));
+                break;
+            case CHOOSE_CHANGE:
+                //TODO Choose if change creature or not
+                if(JOptionPane.showConfirmDialog(this,"Va a salir a luchar un enemigo de la raza " +
+                        action.get(0) + ". ¿Quieres cambiar de criatura?",
+                        "Cambio de Creatura",JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
+                {
+                    int slot = TeamViewer.open(this,userTeam,false);
+                    if(slot >= 0)
+                        connector.sendChange(slot);
+                }
+                break;
+            default: return true;
+        }
+        return false;
+    }*/
+    
+
     public enum ButtonsMenuState { DISABLED, MAIN, ATTACKS }
 
     /**
@@ -304,6 +608,7 @@ public class Battle extends JDialog
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
@@ -328,6 +633,7 @@ public class Battle extends JDialog
         but2 = new javax.swing.JButton();
         but3 = new javax.swing.JButton();
         but4 = new javax.swing.JButton();
+        but5 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -473,22 +779,55 @@ public class Battle extends JDialog
                 .addContainerGap())
         );
 
+        jTextPane1.setEditable(false);
+        jTextPane1.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        jTextPane1.setFocusable(false);
         jScrollPane1.setViewportView(jTextPane1);
 
         jPanel4.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jPanel4.setLayout(new java.awt.GridLayout(2, 2));
+        jPanel4.setLayout(new java.awt.GridBagLayout());
 
         but1.setText("jButton1");
-        jPanel4.add(but1);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.weighty = 0.1;
+        jPanel4.add(but1, gridBagConstraints);
 
         but2.setText("jButton2");
-        jPanel4.add(but2);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.weighty = 0.1;
+        jPanel4.add(but2, gridBagConstraints);
 
         but3.setText("jButton3");
-        jPanel4.add(but3);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.weighty = 0.1;
+        jPanel4.add(but3, gridBagConstraints);
 
         but4.setText("jButton4");
-        jPanel4.add(but4);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.weighty = 0.1;
+        jPanel4.add(but4, gridBagConstraints);
+
+        but5.setText("jButton1");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.weighty = 0.1;
+        jPanel4.add(but5, gridBagConstraints);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -510,7 +849,7 @@ public class Battle extends JDialog
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 116, Short.MAX_VALUE)
+                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -523,6 +862,7 @@ public class Battle extends JDialog
     private javax.swing.JButton but2;
     private javax.swing.JButton but3;
     private javax.swing.JButton but4;
+    private javax.swing.JButton but5;
     private javax.swing.JLabel enemy_altered;
     private javax.swing.JLabel enemy_level;
     private javax.swing.JProgressBar enemy_lifebar;

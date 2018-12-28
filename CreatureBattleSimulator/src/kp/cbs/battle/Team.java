@@ -55,11 +55,11 @@ public final class Team
     public final AIIntelligence getIntelligence() { return intel == null ? AIIntelligence.createDummy() : intel; }
     
     
-    public final Creature findFirst(RNG rng)
+    public final Creature findFirst(RNG rng, SearchFirstBehabior behabior)
     {
         if(creatures.size() < 2)
             return creatures.get(0);
-        switch(searchFirst)
+        switch(behabior)
         {
             case FIRST:
                 for(Creature c : creatures)
@@ -72,6 +72,7 @@ public final class Team
         }
         return null;
     }
+    public final Creature findFirst(RNG rng) { return findFirst(rng, searchFirst); }
     
     public final Creature findNext(Creature enemy, RNG rng, WeatherId weather)
     {
