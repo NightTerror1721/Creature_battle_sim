@@ -6,6 +6,9 @@
 package kp.cbs.creature.altered;
 
 import kp.cbs.battle.FighterTurnState;
+import kp.cbs.battle.cmd.BattleCommandManager;
+import kp.cbs.creature.Creature;
+import kp.cbs.utils.RNG;
 
 /**
  *
@@ -29,10 +32,10 @@ public final class Sleep extends AlteredState
     public final boolean isEnabled() { return turns > 0; }
 
     @Override
-    public final void start(FighterTurnState state)
+    public final void start(Creature self, RNG rng, BattleCommandManager bcm)
     {
-        turns = fixedTurns ? 3 : state.rng.d7() + 1;
-        state.bcm.message(state.self.getName() + " se ha dormido.")
+        turns = fixedTurns ? 3 : rng.d7() + 1;
+        bcm.message(self.getName() + " se ha dormido.")
                 .waitTime(1000).playSound("sleep").waitTime(500);
     }
 
@@ -51,12 +54,12 @@ public final class Sleep extends AlteredState
     }
 
     @Override
-    public final void end(FighterTurnState state)
+    public final void end(Creature self, RNG rng, BattleCommandManager bcm)
     {
         turns = 0;
-        state.bcm.message(state.self.getName() + " despertó.")
+        bcm.message(self.getName() + " despertó.")
                 .waitTime(1000);
-        state.self.getAlterationManager().removeAlteredState(state, AlteredStateId.NIGHTMARE);
+        self.removeAlteration(rng, bcm, AlteredStateId.NIGHTMARE);
     }
     
 }

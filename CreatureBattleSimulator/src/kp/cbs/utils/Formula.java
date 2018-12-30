@@ -5,6 +5,7 @@
  */
 package kp.cbs.utils;
 
+import java.util.Arrays;
 import kp.cbs.battle.weather.WeatherId;
 import kp.cbs.creature.Creature;
 import kp.cbs.creature.CreatureClass;
@@ -92,18 +93,38 @@ public final class Formula
     
     public static final CreatureClass creatureClass(Creature creature)
     {
+        return creatureClass(creatureClassStatSum(creature));
+    }
+    
+    public static final CreatureClass creaturesClass(Creature... creatures)
+    {
+        if(creatures == null || creatures.length < 1)
+            return CreatureClass.E;
+        if(creatures.length == 1)
+            return creatureClass(creatures[0]);
+        
+        int average = Arrays.stream(creatures).mapToInt(Formula::creatureClassStatSum).sum() / creatures.length;
+        return creatureClass(average);
+    }
+    
+    private static int creatureClassStatSum(Creature creature)
+    {
         int level = creature.getLevel();
         var nature = creature.getNature();
         var man = creature.getFeaturesManager();
-        int statSum = classStatValue(man, StatId.HEALTH_POINTS, nature, level) +
-                      classStatValue(man, StatId.ATTACK, nature, level) +
-                      classStatValue(man, StatId.DEFENSE, nature, level) +
-                      classStatValue(man, StatId.SPECIAL_ATTACK, nature, level) +
-                      classStatValue(man, StatId.SPECIAL_DEFENSE, nature, level) +
-                      classStatValue(man, StatId.SPEED, nature, level);
-        if(statSum <= 0)
+        return classStatValue(man, StatId.HEALTH_POINTS, nature, level) +
+               classStatValue(man, StatId.ATTACK, nature, level) +
+               classStatValue(man, StatId.DEFENSE, nature, level) +
+               classStatValue(man, StatId.SPECIAL_ATTACK, nature, level) +
+               classStatValue(man, StatId.SPECIAL_DEFENSE, nature, level) +
+               classStatValue(man, StatId.SPEED, nature, level);
+    }
+    
+    private static CreatureClass creatureClass(int sum)
+    {
+        if(sum <= 0)
             return CreatureClass.E;
-        switch(statSum / 100)
+        switch(sum / 100)
         {
             case 0: return CreatureClass.E;
             case 1: return CreatureClass.E2;
@@ -129,6 +150,7 @@ public final class Formula
             default: return CreatureClass.SSS;
         }
     }
+    
     
     
     public static final int expToLevel(Growth growth, int level)

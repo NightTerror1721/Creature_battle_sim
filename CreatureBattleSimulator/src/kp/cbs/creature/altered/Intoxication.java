@@ -6,6 +6,9 @@
 package kp.cbs.creature.altered;
 
 import kp.cbs.battle.FighterTurnState;
+import kp.cbs.battle.cmd.BattleCommandManager;
+import kp.cbs.creature.Creature;
+import kp.cbs.utils.RNG;
 
 /**
  *
@@ -22,10 +25,10 @@ public final class Intoxication extends AlteredState
     public final boolean isEnabled() { return severity > 0; }
 
     @Override
-    public final void start(FighterTurnState state)
+    public final void start(Creature self, RNG rng, BattleCommandManager bcm)
     {
         severity = 1;
-        state.bcm.message(state.self.getName() + " ha sido gravemente envenenado.")
+        bcm.message(self.getName() + " ha sido gravemente envenenado.")
                 .waitTime(1000).playSound("poison").waitTime(500);
     }
 
@@ -41,10 +44,10 @@ public final class Intoxication extends AlteredState
     }
 
     @Override
-    public final void end(FighterTurnState state)
+    public final void end(Creature self, RNG rng, BattleCommandManager bcm)
     {
         severity = 0;
-        state.bcm.message(state.self.getName() + " ya no está envenenado.")
+        bcm.message(self.getName() + " ya no está envenenado.")
                 .waitTime(1000);
     }
 }

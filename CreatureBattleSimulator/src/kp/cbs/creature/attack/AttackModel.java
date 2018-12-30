@@ -216,6 +216,9 @@ public final class AttackModel implements IdentifierObject, Comparable<AttackMod
         
         public final int getTurnId() { return id; }
         
+        public final AttackTurn getNextTurn() { return id + 1 >= turns.length ? null : turns[id + 1]; }
+        public final boolean hasMoreTurns() { return id + 1 >= turns.length; }
+        
         public final String getMessage() { return message; }
         public final void setMessage(String message) { this.message = message == null ? "" : message; }
         

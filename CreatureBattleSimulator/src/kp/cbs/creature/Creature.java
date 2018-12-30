@@ -8,11 +8,14 @@ package kp.cbs.creature;
 import java.util.List;
 import java.util.Objects;
 import kp.cbs.battle.FighterTurnState;
+import kp.cbs.battle.TeamId;
+import kp.cbs.battle.cmd.BattleCommandManager;
 import kp.cbs.creature.altered.AlteredState;
 import kp.cbs.creature.altered.AlteredStateId;
 import kp.cbs.creature.altered.AlteredStateManager;
 import kp.cbs.creature.attack.Attack;
 import kp.cbs.creature.attack.AttackManager;
+import kp.cbs.creature.attack.AttackManager.SelectedAttack;
 import kp.cbs.creature.attack.effects.AIIntelligence;
 import kp.cbs.creature.elements.Effectivity;
 import kp.cbs.creature.elements.ElementalManager;
@@ -66,7 +69,7 @@ public final class Creature
     
     private final AlteredStateManager altered = new AlteredStateManager();
     
-    private int fighterId;
+    private TeamId fighterId;
     
     private Creature() {}
     
@@ -128,7 +131,7 @@ public final class Creature
     
     public final AttackManager getAttackManager() { return attacks; }
     public final Attack getAttack(int index) { return attacks.getAttack(index); }
-    public final Attack selectAttackByAI(FighterTurnState state, AIIntelligence intel) { return attacks.selectAttackByAI(state, intel); }
+    public final SelectedAttack selectAttackByAI(FighterTurnState state, AIIntelligence intel) { return attacks.selectAttackByAI(state, intel); }
     public final void setDefaultLearnedAttacksInLevel(int level) { attacks.setDefaultLearnedAttacksInLevel(race, level); }
     public final void setDefaultLearnedAttacks() { attacks.setDefaultLearnedAttacksInLevel(race, getLevel()); }
     
@@ -147,8 +150,14 @@ public final class Creature
     public final AlteredStateManager getAlterationManager() { return altered; }
     
     public final boolean isAlterationEnabled(AlteredStateId state) { return altered.isAlteredStateEnabled(state); }
-    public final void addAlteration(FighterTurnState state, AlteredState alteredState) { altered.addAlteredState(state, alteredState); }
-    public final void removeAlteration(FighterTurnState state, AlteredStateId alteredState) { altered.removeAlteredState(state, alteredState); }
+    public final void addAlteration(RNG rng, BattleCommandManager bcm, AlteredState alteredState)
+    {
+        altered.addAlteredState(this, rng, bcm, alteredState);
+    }
+    public final void removeAlteration(RNG rng, BattleCommandManager bcm, AlteredStateId alteredState)
+    {
+        altered.removeAlteredState(this, rng, bcm, alteredState);
+    }
     
     public final boolean isConfused() { return altered.isAlteredStateEnabled(AlteredStateId.CONFUSION); }
     public final boolean isParalyzed() { return altered.isAlteredStateEnabled(AlteredStateId.PARALYSIS); }
@@ -174,8 +183,8 @@ public final class Creature
     public final String getElementalTypeNames() { return types.getElementalTypeNames(); }
     
     
-    public final void setFighterId(int id) { this.fighterId = id; }
-    public final int getFighterId() { return fighterId; }
+    public final void setFighterId(TeamId id) { this.fighterId = id; }
+    public final TeamId getFighterId() { return fighterId; }
     
     
     public final void setRemainingAbilityPoints(int points)

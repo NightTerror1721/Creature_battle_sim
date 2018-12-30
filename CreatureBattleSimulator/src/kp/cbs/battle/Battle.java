@@ -21,8 +21,10 @@ import static kp.cbs.battle.TeamId.ENEMY;
 import static kp.cbs.battle.TeamId.SELF;
 import kp.cbs.creature.Creature;
 import kp.cbs.creature.attack.Attack;
+import kp.cbs.creature.attack.AttackPool;
 import kp.cbs.creature.elements.ElementalType;
 import kp.cbs.creature.feat.StatId;
+import kp.cbs.utils.Formula;
 import kp.cbs.utils.LifebarUtils;
 import kp.cbs.utils.Semaphore;
 import kp.cbs.utils.SoundManager;
@@ -47,9 +49,15 @@ public class Battle extends JDialog
     
     private float expBonus = 1f;
     
+    private boolean wildBattle;
+    
     private ButtonsMenuState butState = ButtonsMenuState.DISABLED;
     
     private Music music;
+    
+    private boolean gameOver;
+    
+    private BattleResult result;
     
     private Battle(Frame parent, BattleCore core)
     {
@@ -98,6 +106,7 @@ public class Battle extends JDialog
     {
         var mainThread = new Thread(() -> {
             core.start();
+            selectActionState();
         });
         mainThread.start();
         if(music != null)
@@ -167,7 +176,8 @@ public class Battle extends JDialog
                     bar.setValue((int) (goalLive - rest));
                 else
                     bar.setValue((int) (goalLive + rest));
-                //if(flag) updatePSValue(bar.getValue());
+                if(flag)
+                    updateSelfHpPoints(bar.getValue());
                 bar.repaint();
                 sleep(ratio);
             }
@@ -324,14 +334,28 @@ public class Battle extends JDialog
         }
     }
     
+    private void updateSelfHpPoints(int value)
+    {
+        var creature = core.getFighter(SELF);
+        self_lifecount.setText(value + "/" + creature.getMaxHealthPoints());
+    }
     
-    private void setButtonsState(ButtonsMenuState state)
+    
+    final void setButtonsState(ButtonsMenuState state)
     {
         but1.setEnabled(state != ButtonsMenuState.DISABLED);
         but2.setEnabled(state != ButtonsMenuState.DISABLED);
         but3.setEnabled(state != ButtonsMenuState.DISABLED);
-        but4.setEnabled(state != ButtonsMenuState.DISABLED);
-        but5.setEnabled(state == ButtonsMenuState.ATTACKS);
+        if(wildBattle)
+        {
+            but4.setEnabled(state != ButtonsMenuState.DISABLED);
+            but5.setEnabled(state != ButtonsMenuState.DISABLED);
+        }
+        else
+        {
+            but4.setEnabled(state == ButtonsMenuState.ATTACKS);
+            but5.setEnabled(state == ButtonsMenuState.ATTACKS);
+        }
         switch(state)
         {
             case DISABLED:
@@ -339,8 +363,8 @@ public class Battle extends JDialog
                 but1.setText("Usar Ataque");
                 but2.setText("Golpear");
                 but3.setText("Equipo");
-                but4.setText("Escapar");
-                but5.setText("----------");
+                but4.setText("Capturar");
+                but5.setText("Escapar");
                 but1.setBackground(Color.WHITE);
                 but2.setBackground(Color.WHITE);
                 but3.setBackground(Color.WHITE);
@@ -553,7 +577,6 @@ public class Battle extends JDialog
         if(latts == null || latts.isEmpty())
             return;
         var atts = creature.getAttackManager();
-        int len = latts.size();
         for(var att : latts)
         {
             if(atts.containsAttack(att))
@@ -572,33 +595,207 @@ public class Battle extends JDialog
         }
     }
     
-    /*private boolean checkChanges()
+    final void selectActionState()
     {
-        BattleConnectorCommand action = connector.readCheckChangeCommand();
-        switch(action.getAction())
-        {
-            case REQUIRE_CHANGE:
-                //TODO Require change creature
-                connector.sendChange(TeamViewer.open(this,userTeam,true));
-                break;
-            case CHOOSE_CHANGE:
-                //TODO Choose if change creature or not
-                if(JOptionPane.showConfirmDialog(this,"Va a salir a luchar un enemigo de la raza " +
-                        action.get(0) + ". ¿Quieres cambiar de criatura?",
-                        "Cambio de Creatura",JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
+        clearText();
+        insertMessage("¿Que quieres hacer?");
+        setButtonsState(ButtonsMenuState.MAIN);
+    }
+    
+    final void executeRound(final BattleAction selfAction)
+    {
+        setButtonsState(ButtonsMenuState.DISABLED);
+        new Thread(() -> {
+            var selfState = core.generateFighterState(SELF);
+            selfState.action = Objects.requireNonNull(selfAction);
+            
+            while(!gameOver)
+            {
+                var enemyState = core.generateFighterState(ENEMY);
+                if(core.hasAttackInProgress(enemyState))
+                    enemyState.action = BattleAction.CONTINUE_ATTACK;
+                else enemyState.selectAttackAction(core.getEnemyIntelligence());
+
+                round(selfState, enemyState);
+                
+                if(!gameOver && core.hasAttackInProgress(selfState))
                 {
-                    int slot = TeamViewer.open(this,userTeam,false);
-                    if(slot >= 0)
-                        connector.sendChange(slot);
+                    selfState = core.generateFighterState(SELF);
+                    selfState.action = BattleAction.CONTINUE_ATTACK;
+                    
+                    sleep(1000);
                 }
-                break;
-            default: return true;
+                else break;
+            }
+            
+            if(!gameOver)
+                selectActionState();
+            else applyGameOver();
+        }).start();
+    }
+    
+    private void round(FighterTurnState selfState, FighterTurnState enemyState)
+    {
+        updateCreatureInterface(SELF);
+        updateCreatureInterface(ENEMY);
+        
+        var currentTeam = SELF;
+        
+        var selfSpeed = Formula.computeRealSpeed(selfState.self, core.getWeatherId());
+        var enemySpeed = Formula.computeRealSpeed(enemyState.self, core.getWeatherId());
+        
+        if(!selfState.action.hasMorePriority(enemyState.action) && (
+                enemyState.action.hasMorePriority(selfState.action) ||
+                selfSpeed < enemySpeed ||
+                (selfSpeed == enemySpeed && core.getCoreRng().d2(1))))
+        {
+            currentTeam = currentTeam.invert();
         }
-        return false;
-    }*/
+        
+        
+        for(int i = 0; i < 2; i++)
+        {
+            var state = currentTeam == SELF ? selfState : enemyState;
+
+            clearText();
+            
+            switch(state.action)
+            {
+                case USE_ATTACK1: useAttackAction(state, 0); break;
+                case USE_ATTACK2: useAttackAction(state, 1); break;
+                case USE_ATTACK3: useAttackAction(state, 2); break;
+                case USE_ATTACK4: useAttackAction(state, 3); break;
+                case USE_COMBAT: useAttackAction(state, -1); break;
+                case CONTINUE_ATTACK: continueAttackAction(state); break;
+                case CATCH: applyCatch(state); break;
+                case CHANGE: applyChange(state); break;
+                case RUN: applyRun(state); break;
+            }
+            
+            updateCreatureInterface(currentTeam);
+            updateCreatureInterface(currentTeam.invert());
+            state.setTurnToEnd();
+            if(!core.isCurrentAlive(SELF) || !core.isCurrentAlive(ENEMY))
+            {
+                selfState.setTurnToEnd();
+                enemyState.setTurnToEnd();
+                break;
+            }
+            currentTeam = currentTeam.invert();
+        }
+        
+        if(core.isCurrentAlive(SELF))
+        {
+            core.updateAlterations(selfState);
+            updateCreatureInterface(SELF);
+        }
+        if(core.isCurrentAlive(ENEMY))
+        {
+            core.updateAlterations(enemyState);
+            updateCreatureInterface(ENEMY);
+        }
+        
+        core.updateWeather();
+        updateCreatureInterface(SELF);
+        updateCreatureInterface(ENEMY);
+        
+        //sleep(2000);
+        
+        if(core.isGameOver())
+        {
+            gameOver = true;
+        }
+        else core.checkChanges();
+    }
+    
+    private void useAttackAction(FighterTurnState state, int attackIndex)
+    {
+        core.updateAlterations(state);
+        if(!state.canAttack())
+            return;
+        
+        var attack = attackIndex < 0 ? AttackPool.createAttack(AttackPool.createCombatAttackModel(state.self))
+                : state.self.getAttack(attackIndex);
+        if(attack == null)
+            attack = AttackPool.createAttack(AttackPool.createCombatAttackModel(state.self));
+        
+        
+        
+        core.applyAttack(state, attack);
+    }
+    
+    private void continueAttackAction(FighterTurnState state)
+    {
+        core.updateAlterations(state);
+        if(!state.canAttack())
+            return;
+        
+        core.applyNextTurn(state);
+    }
+    
+    private void applyCatch(FighterTurnState state)
+    {
+        
+    }
+    
+    private void applyChange(FighterTurnState state)
+    {
+        core.applyChange(state.self.getFighterId());
+    }
+    
+    private void applyRun(FighterTurnState state)
+    {
+        
+    }
     
 
     public enum ButtonsMenuState { DISABLED, MAIN, ATTACKS }
+    
+    public enum BattleAction
+    {
+        USE_ATTACK1(0),
+        USE_ATTACK2(0),
+        USE_ATTACK3(0),
+        USE_ATTACK4(0),
+        USE_COMBAT(0),
+        CONTINUE_ATTACK(0),
+        CHANGE(1),
+        CATCH(1),
+        RUN(2);
+        
+        private final int priority;
+        private BattleAction(int priority) { this.priority = priority; }
+        
+        public final boolean hasMorePriority(BattleAction other)
+        {
+            return priority > other.priority;
+        }
+    }
+    
+    private void applyGameOver()
+    {
+        clearText();
+        var win = core.isSelfWinner();
+        result = core.createResult();
+        if(win)
+        {
+            insertMessage("¡Has ganado el combate!");
+            sleep(1000);
+            insertMessage("¡Has ganado " + result.getMoney() + " de dinero!");
+            sleep(1000);
+            insertMessage("¡Tu elo se ha incrementado " + result.getElo() + " puntos!");
+        }
+        else
+        {
+            insertMessage("Pierdes el combate...");
+            sleep(1000);
+            insertMessage("Has perdido " + result.getMoney() + " de dinero.");
+            sleep(1000);
+            insertMessage("Tu elo ha descendido " + result.getElo() + " puntos");
+        }
+        sleep(2000);
+        dispose();
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -788,6 +985,11 @@ public class Battle extends JDialog
         jPanel4.setLayout(new java.awt.GridBagLayout());
 
         but1.setText("jButton1");
+        but1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                but1ActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 0.1;
@@ -795,6 +997,11 @@ public class Battle extends JDialog
         jPanel4.add(but1, gridBagConstraints);
 
         but2.setText("jButton2");
+        but2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                but2ActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 0.1;
@@ -802,6 +1009,11 @@ public class Battle extends JDialog
         jPanel4.add(but2, gridBagConstraints);
 
         but3.setText("jButton3");
+        but3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                but3ActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -811,6 +1023,11 @@ public class Battle extends JDialog
         jPanel4.add(but3, gridBagConstraints);
 
         but4.setText("jButton4");
+        but4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                but4ActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
@@ -820,6 +1037,11 @@ public class Battle extends JDialog
         jPanel4.add(but4, gridBagConstraints);
 
         but5.setText("jButton1");
+        but5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                but5ActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
@@ -855,6 +1077,49 @@ public class Battle extends JDialog
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void but1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but1ActionPerformed
+        switch(butState)
+        {
+            case MAIN: setButtonsState(ButtonsMenuState.ATTACKS); break;
+            case ATTACKS: executeRound(BattleAction.USE_ATTACK1); break;
+        }
+    }//GEN-LAST:event_but1ActionPerformed
+
+    private void but2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but2ActionPerformed
+        switch(butState)
+        {
+            case MAIN: executeRound(BattleAction.USE_COMBAT); break;
+            case ATTACKS: executeRound(BattleAction.USE_ATTACK2); break;
+        }
+    }//GEN-LAST:event_but2ActionPerformed
+
+    private void but3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but3ActionPerformed
+        switch(butState)
+        {
+            case MAIN: {
+                if(core.prepareChange(SELF))
+                    executeRound(BattleAction.CHANGE);
+            } break;
+            case ATTACKS: executeRound(BattleAction.USE_ATTACK3); break;
+        }
+    }//GEN-LAST:event_but3ActionPerformed
+
+    private void but4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but4ActionPerformed
+        switch(butState)
+        {
+            case MAIN: executeRound(BattleAction.CATCH); break;
+            case ATTACKS: executeRound(BattleAction.USE_ATTACK4); break;
+        }
+    }//GEN-LAST:event_but4ActionPerformed
+
+    private void but5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but5ActionPerformed
+        switch(butState)
+        {
+            case MAIN: executeRound(BattleAction.RUN); break;
+            case ATTACKS: setButtonsState(ButtonsMenuState.MAIN); break;
+        }
+    }//GEN-LAST:event_but5ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -6,6 +6,9 @@
 package kp.cbs.creature.altered;
 
 import kp.cbs.battle.FighterTurnState;
+import kp.cbs.battle.cmd.BattleCommandManager;
+import kp.cbs.creature.Creature;
+import kp.cbs.utils.RNG;
 
 /**
  *
@@ -22,12 +25,12 @@ public final class Nightmare extends AlteredState
     public final boolean isEnabled() { return enabled; }
 
     @Override
-    public final void start(FighterTurnState state)
+    public final void start(Creature self, RNG rng, BattleCommandManager bcm)
     {
-        if(state.self.isSleeping())
+        if(self.isSleeping())
         {
             enabled = true;
-            state.bcm.message(state.self.getName() + " ha empezado a sufrir pesadillas.")
+            bcm.message(self.getName() + " ha empezado a sufrir pesadillas.")
                     .waitTime(1000).playSound("effect_curse").waitTime(500);
         }
     }
@@ -43,10 +46,10 @@ public final class Nightmare extends AlteredState
     }
 
     @Override
-    public final void end(FighterTurnState state)
+    public final void end(Creature self, RNG rng, BattleCommandManager bcm)
     {
         enabled = false;
-        state.bcm.message(state.self.getName() + " dejó de sufrir pesadillas.")
+        bcm.message(self.getName() + " dejó de sufrir pesadillas.")
                 .waitTime(1000);
     }
 }

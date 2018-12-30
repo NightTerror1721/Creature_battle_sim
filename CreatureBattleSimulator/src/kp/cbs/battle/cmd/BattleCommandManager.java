@@ -53,7 +53,7 @@ public final class BattleCommandManager implements Iterable<BattleCommand>
     public final BattleCommandManager statModification(Creature target, StatId stat, int levels)
     {
         if(stat != StatId.HEALTH_POINTS)
-            return addCommand(BattleCommandType.STAT_MODIFICATION, target.getFighterId(), levels);
+            return addCommand(BattleCommandType.STAT_MODIFICATION, target.getFighterId(), stat, levels);
         return this;
     }
     
@@ -84,27 +84,22 @@ public final class BattleCommandManager implements Iterable<BattleCommand>
     }
     
     
-    private BattleCommandManager alteration(Creature target, AlteredStateId astate, boolean enabled, Object extra)
+    private BattleCommandManager alteration(Creature target, AlteredStateId astate, Object extra)
     {
-        return addCommand(BattleCommandType.ALTERATION, target.getFighterId(), astate, enabled, extra);
+        return addCommand(BattleCommandType.ALTERATION, target.getFighterId(), astate, extra);
     }
     
-    public final BattleCommandManager removeAlteration(Creature target, AlteredStateId astate)
-    {
-        return alteration(target, astate, false, null);
-    }
-    
-    public final BattleCommandManager confuse(Creature target) { return alteration(target, AlteredStateId.CONFUSION, true, null); }
-    public final BattleCommandManager paralyze(Creature target) { return alteration(target, AlteredStateId.PARALYSIS, true, null); }
-    public final BattleCommandManager burn(Creature target) { return alteration(target, AlteredStateId.BURN, true, null); }
-    public final BattleCommandManager poison(Creature target) { return alteration(target, AlteredStateId.POISONING, true, null); }
-    public final BattleCommandManager intoxicate(Creature target) { return alteration(target, AlteredStateId.INTOXICATION, true, null); }
-    public final BattleCommandManager sleep(Creature target) { return alteration(target, AlteredStateId.SLEEP, true, false); }
-    public final BattleCommandManager fixedSleep(Creature target) { return alteration(target, AlteredStateId.CONFUSION, true, true); }
-    public final BattleCommandManager sleepiness(Creature target) { return alteration(target, AlteredStateId.SLEEPINESS, true, null); }
-    public final BattleCommandManager freeze(Creature target) { return alteration(target, AlteredStateId.FREEZING, true, null); }
-    public final BattleCommandManager curse(Creature target) { return alteration(target, AlteredStateId.CURSE, true, null); }
-    public final BattleCommandManager nightmare(Creature target) { return alteration(target, AlteredStateId.NIGHTMARE, true, null); }
+    public final BattleCommandManager confuse(Creature target) { return alteration(target, AlteredStateId.CONFUSION, null); }
+    public final BattleCommandManager paralyze(Creature target) { return alteration(target, AlteredStateId.PARALYSIS, null); }
+    public final BattleCommandManager burn(Creature target) { return alteration(target, AlteredStateId.BURN, null); }
+    public final BattleCommandManager poison(Creature target) { return alteration(target, AlteredStateId.POISONING, null); }
+    public final BattleCommandManager intoxicate(Creature target) { return alteration(target, AlteredStateId.INTOXICATION, null); }
+    public final BattleCommandManager sleep(Creature target) { return alteration(target, AlteredStateId.SLEEP, false); }
+    public final BattleCommandManager fixedSleep(Creature target) { return alteration(target, AlteredStateId.CONFUSION, true); }
+    public final BattleCommandManager sleepiness(Creature target) { return alteration(target, AlteredStateId.SLEEPINESS, null); }
+    public final BattleCommandManager freeze(Creature target) { return alteration(target, AlteredStateId.FREEZING, null); }
+    public final BattleCommandManager curse(Creature target) { return alteration(target, AlteredStateId.CURSE, null); }
+    public final BattleCommandManager nightmare(Creature target) { return alteration(target, AlteredStateId.NIGHTMARE, null); }
     
     
     public final BattleCommandManager weatherChange(WeatherId weather, int turns)

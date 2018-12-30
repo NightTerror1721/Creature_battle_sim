@@ -30,8 +30,12 @@ public abstract class Weather
     public final void battleUpdate(BattleCommandManager bcm, RNG rng, Creature c1, Creature c2)
     {
         preUpdate(bcm);
-        battleUpdate(bcm, rng, c1);
-        battleUpdate(bcm, rng, c2);
+        
+        if(c1.isAlive())
+            battleUpdate(bcm, rng, c1);
+        
+        if(c2.isAlive())
+            battleUpdate(bcm, rng, c2);
         turns--;
     }
     abstract void preUpdate(BattleCommandManager bcm);

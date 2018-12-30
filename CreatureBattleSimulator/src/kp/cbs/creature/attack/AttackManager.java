@@ -116,35 +116,39 @@ public final class AttackManager implements Iterable<Attack>
         return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator(), Spliterator.ORDERED), false);
     }
     
-    private SelectedAttack selectByAI(FighterTurnState state, AIIntelligence intel, AttackModel combatModel)
+    private SelectedAttack selectByAI(FighterTurnState state, AIIntelligence intel, AttackModel combatModel, boolean printAIs)
     {
         LinkedList<SelectedAttack> scores = new LinkedList<>();
-        for(Attack a : this)
+        for(int i=0;i<4;i++)
         {
+            var a = getAttack(i);
             if(a == null || !a.hasPP())
                 continue;
-            scores.add(new SelectedAttack(a, a.computeAIScore(state, intel)));
+            scores.add(new SelectedAttack(a, a.computeAIScore(state, intel), i));
         }
         
         if(scores.isEmpty())
             return null;
         
-        SelectedAttack combat = new SelectedAttack(AttackPool.createAttack(combatModel), combatModel.computeAIScore(state, intel));
+        if(printAIs)
+            System.out.println(scores); 
+        
+        SelectedAttack combat = new SelectedAttack(AttackPool.createAttack(combatModel), combatModel.computeAIScore(state, intel), -1);
         return scores.stream()
                 .reduce(combat, (s0, s1) -> s0.score.compareTo(s1.score) > 0 ? s0 : s1);
     }
     
-    public final Attack selectAttackByAI(FighterTurnState state, AIIntelligence intel)
+    public final SelectedAttack selectAttackByAI(FighterTurnState state, AIIntelligence intel)
     {
         AttackModel combatModel = AttackPool.createCombatAttackModel(state.self);
-        SelectedAttack att = selectByAI(state, intel, combatModel);
-        return att == null ? AttackPool.createAttack(combatModel) : att.attack;
+        SelectedAttack att = selectByAI(state, intel, combatModel, true);
+        return att == null ? null : att;
     }
     
     public final AIScore selectScoreByAI(FighterTurnState state, AIIntelligence intel)
     {
         AttackModel combatModel = AttackPool.createCombatAttackModel(state.self);
-        SelectedAttack att = selectByAI(state, intel, combatModel);
+        SelectedAttack att = selectByAI(state, intel, combatModel, false);
         return att == null ? combatModel.computeAIScore(state, intel) : att.score;
     }
     
@@ -182,15 +186,24 @@ public final class AttackManager implements Iterable<Attack>
     }
     
     
-    private static final class SelectedAttack
+    public static final class SelectedAttack
     {
         private final Attack attack;
         private final AIScore score;
+        private final int index;
         
-        private SelectedAttack(Attack attack, AIScore score)
+        private SelectedAttack(Attack attack, AIScore score, int index)
         {
             this.attack = attack;
             this.score = score;
+            this.index = index;
         }
+        
+        public final Attack getAttack() { return attack; }
+        public final int getIndex() { return index; }
+        public final boolean isCombat() { return index < 0 || index > 3; }
+        
+        @Override
+        public final String toString() { return attack.getName() + ": " + score.getScore(); }
     }
 }

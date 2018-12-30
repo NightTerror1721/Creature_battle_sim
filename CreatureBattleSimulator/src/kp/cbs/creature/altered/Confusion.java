@@ -6,8 +6,11 @@
 package kp.cbs.creature.altered;
 
 import kp.cbs.battle.FighterTurnState;
+import kp.cbs.battle.cmd.BattleCommandManager;
+import kp.cbs.creature.Creature;
 import kp.cbs.creature.elements.Effectivity;
 import kp.cbs.utils.Formula;
+import kp.cbs.utils.RNG;
 
 /**
  *
@@ -24,10 +27,10 @@ public final class Confusion extends AlteredState
     public boolean isEnabled() { return turns > 0; }
 
     @Override
-    public final void start(FighterTurnState state)
+    public final void start(Creature self, RNG rng, BattleCommandManager bcm)
     {
-        this.turns = state.rng.d5() + 1;
-        state.bcm.message(state.self.getName() + " se ha confundido.")
+        this.turns = rng.d5() + 1;
+        bcm.message(self.getName() + " se ha confundido.")
                 .waitTime(1000).playSound("confused").waitTime(500);
     }
 
@@ -62,10 +65,10 @@ public final class Confusion extends AlteredState
     }
 
     @Override
-    public final void end(FighterTurnState state)
+    public final void end(Creature self, RNG rng, BattleCommandManager bcm)
     {
         turns = 0;
-        state.bcm.message(state.self.getName() + " ya no está confuso.")
+        bcm.message(self.getName() + " ya no está confuso.")
                 .waitTime(1000);
     }
     

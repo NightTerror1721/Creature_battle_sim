@@ -8,6 +8,9 @@ package kp.cbs.creature.altered;
 import java.util.StringJoiner;
 import kp.cbs.battle.BattleUpdater;
 import kp.cbs.battle.FighterTurnState;
+import kp.cbs.battle.cmd.BattleCommandManager;
+import kp.cbs.creature.Creature;
+import kp.cbs.utils.RNG;
 
 /**
  *
@@ -17,22 +20,24 @@ public final class AlteredStateManager implements BattleUpdater
 {
     private final AlteredState[] states = new AlteredState[AlteredStateId.count()];
     
-    public final void addAlteredState(FighterTurnState state, AlteredState alteredState)
+    public final boolean addAlteredState(Creature self, RNG rng, BattleCommandManager bcm, AlteredState alteredState)
     {
         int id = alteredState.getId().ordinal();
         if(states[id] != null)
-            return;
+            return false;
         states[id] = alteredState;
-        alteredState.start(state);
+        alteredState.start(self, rng, bcm);
+        return true;
     }
     
-    public final void removeAlteredState(FighterTurnState state, AlteredStateId alteredState)
+    public final boolean removeAlteredState(Creature self, RNG rng, BattleCommandManager bcm, AlteredStateId alteredState)
     {
         int id = alteredState.ordinal();
         if(states[id] == null)
-            return;
-        states[id].end(state);
+            return false;
+        states[id].end(self, rng, bcm);
         states[id] = null;
+        return true;
     }
     
     public final boolean isAlteredStateEnabled(AlteredStateId alteredState)
@@ -75,7 +80,7 @@ public final class AlteredStateManager implements BattleUpdater
     {
         if(!alteredState.isEnabled())
         {
-            alteredState.end(state);
+            alteredState.end(state.self, state.rng, state.bcm);
             states[alteredState.getId().ordinal()] = null;
             return false;
         }

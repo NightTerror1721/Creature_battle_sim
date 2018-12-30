@@ -12,6 +12,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import kp.cbs.battle.Battle;
 import kp.cbs.battle.Encounter;
 import kp.cbs.creature.Creature;
+import kp.cbs.creature.attack.effects.AIIntelligence;
 import kp.cbs.editor.MainMenuEditor;
 import kp.cbs.utils.RNG;
 import kp.cbs.utils.SoundManager;
@@ -42,8 +43,10 @@ public final class Main
         var encounter = new Encounter();
         var rng = new RNG();
         
-        encounter.getSelfTeam().addCreature(Creature.createWild(0, 10, rng));
-        encounter.getEnemyTeam().addCreature(Creature.createWild(0, 10, rng));
+        encounter.getSelfTeam().addCreature(Creature.createWild(0, 15, rng));
+        encounter.getEnemyTeam().addCreature(Creature.createWild(0, 15, rng));
+        
+        encounter.setIntelligence(AIIntelligence.create(255));
         
         Battle.initiate(null, encounter);
         

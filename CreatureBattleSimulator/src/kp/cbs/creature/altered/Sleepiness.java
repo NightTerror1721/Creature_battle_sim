@@ -6,6 +6,9 @@
 package kp.cbs.creature.altered;
 
 import kp.cbs.battle.FighterTurnState;
+import kp.cbs.battle.cmd.BattleCommandManager;
+import kp.cbs.creature.Creature;
+import kp.cbs.utils.RNG;
 
 /**
  *
@@ -22,12 +25,12 @@ public final class Sleepiness extends AlteredState
     public final boolean isEnabled() { return turns > 0; }
 
     @Override
-    public final void start(FighterTurnState state)
+    public final void start(Creature self, RNG rng, BattleCommandManager bcm)
     {
-        if(!state.self.isSleeping())
+        if(!self.isSleeping())
         {
             turns = 1;
-            state.bcm.message(state.self.getName() + " se encuentra somnoliento.")
+            bcm.message(self.getName() + " se encuentra somnoliento.")
                     .waitTime(1000);
         }
     }
@@ -47,14 +50,14 @@ public final class Sleepiness extends AlteredState
                 {
                     turns = 0;
                     if(!state.self.isSleeping())
-                        state.self.getAlterationManager().addAlteredState(state, new Sleep());
+                        state.self.addAlteration(state.rng, state.bcm, new Sleep());
                 }
             }
         }
     }
 
     @Override
-    public final void end(FighterTurnState state)
+    public final void end(Creature self, RNG rng, BattleCommandManager bcm)
     {
         turns = 0;
     }

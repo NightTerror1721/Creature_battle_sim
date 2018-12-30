@@ -6,6 +6,9 @@
 package kp.cbs.creature.altered;
 
 import kp.cbs.battle.FighterTurnState;
+import kp.cbs.battle.cmd.BattleCommandManager;
+import kp.cbs.creature.Creature;
+import kp.cbs.utils.RNG;
 
 /**
  *
@@ -17,7 +20,7 @@ public abstract class AlteredState
     
     public abstract boolean isEnabled();
     
-    public abstract void start(FighterTurnState state);
+    public abstract void start(Creature self, RNG rng, BattleCommandManager bcm);
     public abstract void update(FighterTurnState state);
-    public abstract void end(FighterTurnState state);
+    public abstract void end(Creature self, RNG rng, BattleCommandManager bcm);
 }

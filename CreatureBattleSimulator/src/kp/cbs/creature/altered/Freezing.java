@@ -6,6 +6,9 @@
 package kp.cbs.creature.altered;
 
 import kp.cbs.battle.FighterTurnState;
+import kp.cbs.battle.cmd.BattleCommandManager;
+import kp.cbs.creature.Creature;
+import kp.cbs.utils.RNG;
 
 /**
  *
@@ -22,12 +25,12 @@ public final class Freezing extends AlteredState
     public final boolean isEnabled() { return probs > 0; }
 
     @Override
-    public final void start(FighterTurnState state)
+    public final void start(Creature self, RNG rng, BattleCommandManager bcm)
     {
         probs = 9;
-        state.bcm.message(state.self.getName() + " ha sido congelado.")
+        bcm.message(self.getName() + " ha sido congelado.")
                 .waitTime(1000).playSound("effect_ice1").waitTime(500);
-        state.self.removeAlteration(state, AlteredStateId.BURN);
+        self.removeAlteration(rng, bcm, AlteredStateId.BURN);
     }
 
     @Override
@@ -50,10 +53,10 @@ public final class Freezing extends AlteredState
     }
 
     @Override
-    public final void end(FighterTurnState state)
+    public final void end(Creature self, RNG rng, BattleCommandManager bcm)
     {
         probs = 0;
-        state.bcm.message(state.self.getName() + " ya no está congelado.")
+        bcm.message(self.getName() + " ya no está congelado.")
                 .waitTime(1000);
     }
 }

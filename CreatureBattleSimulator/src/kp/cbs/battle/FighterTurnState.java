@@ -6,9 +6,11 @@
 package kp.cbs.battle;
 
 import java.util.Objects;
+import kp.cbs.battle.Battle.BattleAction;
 import kp.cbs.battle.cmd.BattleCommandManager;
 import kp.cbs.battle.weather.WeatherId;
 import kp.cbs.creature.Creature;
+import kp.cbs.creature.attack.effects.AIIntelligence;
 import kp.cbs.utils.RNG;
 
 /**
@@ -20,24 +22,22 @@ public final class FighterTurnState
     public final Creature self, enemy;
     public final BattleCommandManager bcm;
     public final RNG rng;
-    private int turn;
     private boolean turnEnd;
     private boolean canAttack;
     private WeatherId weather;
+    BattleAction action;
     
-    public FighterTurnState(Creature self, Creature enemy, BattleCommandManager bcm, RNG rng, int turn, boolean turnEnd, WeatherId weather)
+    public FighterTurnState(Creature self, Creature enemy, BattleCommandManager bcm, RNG rng,  boolean turnEnd, WeatherId weather)
     {
         this.self = Objects.requireNonNull(self);
         this.enemy = Objects.requireNonNull(enemy);
         this.bcm = Objects.requireNonNull(bcm);
         this.rng = Objects.requireNonNull(rng);
-        this.turn = turn;
         this.turnEnd = turnEnd;
         this.canAttack = true;
         this.weather = weather;
     }
     
-    public final int getTurn() { return turn; }
     public final boolean isTurnEnd() { return turnEnd; }
     public final boolean canAttack() { return canAttack; }
     public final WeatherId getWeather() { return weather; }
@@ -45,10 +45,24 @@ public final class FighterTurnState
     
     public final void dissableAttack() { this.canAttack = false; }
     
-    final void forward()
+    final void setTurnToEnd()
     {
-        if(turnEnd)
-            turn++;
-        turnEnd = !turnEnd;
+        turnEnd = true;
+    }
+    
+    final void selectAttackAction(AIIntelligence intel)
+    {
+        var sel = self.selectAttackByAI(this, intel);
+        if(sel == null)
+            action = BattleAction.USE_COMBAT;
+        else
+        {
+            var index = sel.getIndex();
+            action = index == 0 ? BattleAction.USE_ATTACK1 :
+                     index == 1 ? BattleAction.USE_ATTACK2 :
+                     index == 2 ? BattleAction.USE_ATTACK3 :
+                     index == 3 ? BattleAction.USE_ATTACK4 :
+                     BattleAction.USE_COMBAT;
+        }
     }
 }

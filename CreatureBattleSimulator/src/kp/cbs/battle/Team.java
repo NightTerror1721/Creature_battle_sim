@@ -8,8 +8,10 @@ package kp.cbs.battle;
 import java.util.ArrayList;
 import kp.cbs.battle.weather.WeatherId;
 import kp.cbs.creature.Creature;
+import kp.cbs.creature.CreatureClass;
 import kp.cbs.creature.attack.effects.AIIntelligence;
 import kp.cbs.creature.attack.effects.AIScore;
+import kp.cbs.utils.Formula;
 import kp.cbs.utils.RNG;
 
 /**
@@ -40,9 +42,16 @@ public final class Team
     
     public final Creature getCreature(int index) { return creatures.get(index); }
     
+    public final boolean isValidIndex(int index) { return index > 0 && index < creatures.size(); }
+    
     public final boolean hasAnyAlive()
     {
         return creatures.stream().anyMatch(Creature::isAlive);
+    }
+    
+    public final int getAliveCount()
+    {
+        return creatures.stream().mapToInt(c -> c.isAlive() ? 1 : 0).sum();
     }
     
     public final void setSearchFirstBehabior(SearchFirstBehabior behabior) { this.searchFirst = behabior; }
@@ -100,6 +109,20 @@ public final class Team
         return null;
     }
     
+    public final CreatureClass getTeamClass()
+    {
+        return Formula.creaturesClass(creatures.toArray(Creature[]::new));
+    }
+    
+    public final float getLevelAverage()
+    {
+        if(creatures.isEmpty())
+            return 0;
+        if(creatures.size() == 1)
+            return creatures.get(0).getLevel();
+        return creatures.stream().mapToInt(Creature::getLevel).sum() / (float) creatures.size();
+    }
+    
     
     public enum SearchFirstBehabior { FIRST, RANDOM_WITHOUT_LAST, RANDOM }
     public enum SearchNextBehabior { ORDERED, SEARCH_WITHOUT_LAST, SEARCH }
@@ -112,7 +135,7 @@ public final class Team
         private CreatureSelected(Creature creature, Creature enemy, RNG rng, WeatherId weather)
         {
             this.creature = creature;
-            FighterTurnState state = new FighterTurnState(creature, enemy, null, rng, 0, true, weather);
+            FighterTurnState state = new FighterTurnState(creature, enemy, null, rng, true, weather);
             this.score = creature.getAttackManager().selectScoreByAI(state, intel);
         }
     }

@@ -66,7 +66,7 @@ public final class LifebarUtils
     
     private static int value(int level, int value, int base, int addition)
     {
-        value = (value - (level * 2500)) / 25;
+        //value = (value - (level * 2500)) / 25;
         float ratio = (value - (level * 2500)) / 2500f;
         return Utils.range(0, 255, (int) (base + (ratio * addition)));
     }

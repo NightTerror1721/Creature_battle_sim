@@ -6,6 +6,9 @@
 package kp.cbs.creature.altered;
 
 import kp.cbs.battle.FighterTurnState;
+import kp.cbs.battle.cmd.BattleCommandManager;
+import kp.cbs.creature.Creature;
+import kp.cbs.utils.RNG;
 
 /**
  *
@@ -22,10 +25,10 @@ public final class Curse extends AlteredState
     public final boolean isEnabled() { return enabled; }
 
     @Override
-    public final void start(FighterTurnState state)
+    public final void start(Creature self, RNG rng, BattleCommandManager bcm)
     {
         enabled = true;
-        state.bcm.message(state.self.getName() + " ha sido maldito.")
+        bcm.message(self.getName() + " ha sido maldito.")
                 .waitTime(1000).playSound("effect_curse").waitTime(500);
     }
 
@@ -40,10 +43,10 @@ public final class Curse extends AlteredState
     }
 
     @Override
-    public final void end(FighterTurnState state)
+    public final void end(Creature self, RNG rng, BattleCommandManager bcm)
     {
         enabled = false;
-        state.bcm.message(state.self.getName() + " ya no está maldito.")
+        bcm.message(self.getName() + " ya no está maldito.")
                 .waitTime(1000);
     }
 }
