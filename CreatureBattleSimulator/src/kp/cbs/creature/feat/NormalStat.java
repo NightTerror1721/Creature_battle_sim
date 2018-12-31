@@ -70,7 +70,8 @@ public abstract class NormalStat extends Stat
     public final String getPowerupAbbreviation()
     {
         var ratio = getAlterationRatio();
-        return ratio == 1f ? "" : (getStatId() + "x" + ratio);
+        ratio = (float) ((int) (ratio * 100)) / 100f;
+        return ratio == 1f ? "" : (getStatId() + " x" + ratio);
     }
     
     

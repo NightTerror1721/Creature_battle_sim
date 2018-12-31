@@ -168,7 +168,7 @@ public class Battle extends JDialog
                     }
                 }
                 else pp = (life * 0.03f) / 400f * 3.5f * mod;
-                //pp = rest / 400f * 3.5f * mod;
+                //else pp = rest / 400f * 3.5f * mod;
                 if(Math.abs(pp) < 0.15f) pp = 0.15f * mod;
                 if(Math.abs(pp) > maxSpeed) pp = maxSpeed * mod;
                 rest += isHeal ? -pp : pp;
@@ -531,7 +531,7 @@ public class Battle extends JDialog
     
     final void checkExperience()
     {
-        if(!core.isCurrentAlive(ENEMY) || core.isCurrentAlive(SELF))
+        if(!core.isCurrentAlive(SELF) || core.isCurrentAlive(ENEMY))
             return;
         int expGain = core.getExperieneGained(expBonus);
         if(expGain <= 0)
@@ -539,7 +539,7 @@ public class Battle extends JDialog
         var creature = core.getFighter(SELF);
         var cexp = creature.getExperienceManager();
         insertMessage(creature.getName() + " gana " + expGain + " puntos de experiencia.");
-        sleep(1000);
+        sleep(1500);
         while(expGain > 0 && creature.getLevel() < 100)
         {
             if(expGain < cexp.getRemainingToNextLevel())
@@ -613,7 +613,7 @@ public class Battle extends JDialog
             {
                 var enemyState = core.generateFighterState(ENEMY);
                 if(core.hasAttackInProgress(enemyState))
-                    enemyState.action = BattleAction.CONTINUE_ATTACK;
+                    enemyState.action = BattleAction.continueAction();
                 else enemyState.selectAttackAction(core.getEnemyIntelligence());
 
                 round(selfState, enemyState);
@@ -621,7 +621,7 @@ public class Battle extends JDialog
                 if(!gameOver && core.hasAttackInProgress(selfState))
                 {
                     selfState = core.generateFighterState(SELF);
-                    selfState.action = BattleAction.CONTINUE_ATTACK;
+                    selfState.action = BattleAction.continueAction();
                     
                     sleep(1000);
                 }
@@ -643,9 +643,9 @@ public class Battle extends JDialog
         
         var selfSpeed = Formula.computeRealSpeed(selfState.self, core.getWeatherId());
         var enemySpeed = Formula.computeRealSpeed(enemyState.self, core.getWeatherId());
+        var priorityComp = selfState.action.compareTo(enemyState.action);
         
-        if(!selfState.action.hasMorePriority(enemyState.action) && (
-                enemyState.action.hasMorePriority(selfState.action) ||
+        if(priorityComp <= 0 && (priorityComp < 0 ||
                 selfSpeed < enemySpeed ||
                 (selfSpeed == enemySpeed && core.getCoreRng().d2(1))))
         {
@@ -659,14 +659,10 @@ public class Battle extends JDialog
 
             clearText();
             
-            switch(state.action)
+            switch(state.action.getType())
             {
-                case USE_ATTACK1: useAttackAction(state, 0); break;
-                case USE_ATTACK2: useAttackAction(state, 1); break;
-                case USE_ATTACK3: useAttackAction(state, 2); break;
-                case USE_ATTACK4: useAttackAction(state, 3); break;
-                case USE_COMBAT: useAttackAction(state, -1); break;
-                case CONTINUE_ATTACK: continueAttackAction(state); break;
+                case ATTACK: useAttackAction(state, state.action.getAttack()); break;
+                case CONTINUE: continueAttackAction(state); break;
                 case CATCH: applyCatch(state); break;
                 case CHANGE: applyChange(state); break;
                 case RUN: applyRun(state); break;
@@ -684,6 +680,28 @@ public class Battle extends JDialog
             currentTeam = currentTeam.invert();
         }
         
+        if(!core.isCurrentAlive(SELF))
+        {
+            clearText();
+            insertMessage(core.getFighter(SELF).getName() + " ha sido derrotado, y cae debilitado.");
+            sleep(1000);
+            SoundManager.playSound("faint");
+            sleep(250);
+            updateCreatureInterface(SELF);
+            sleep(1000);
+        }
+        
+        if(!core.isCurrentAlive(ENEMY))
+        {
+            clearText();
+            insertMessage(core.getFighter(ENEMY).getName() + " ha sido derrotado, y cae debilitado.");
+            sleep(1000);
+            SoundManager.playSound("faint");
+            sleep(250);
+            updateCreatureInterface(ENEMY);
+            sleep(1000);
+        }
+        
         if(core.isCurrentAlive(SELF))
         {
             core.updateAlterations(selfState);
@@ -699,6 +717,8 @@ public class Battle extends JDialog
         updateCreatureInterface(SELF);
         updateCreatureInterface(ENEMY);
         
+        checkExperience();
+        
         //sleep(2000);
         
         if(core.isGameOver())
@@ -708,14 +728,14 @@ public class Battle extends JDialog
         else core.checkChanges();
     }
     
-    private void useAttackAction(FighterTurnState state, int attackIndex)
+    private void useAttackAction(FighterTurnState state, Attack attack)
     {
         core.updateAlterations(state);
         if(!state.canAttack())
             return;
         
-        var attack = attackIndex < 0 ? AttackPool.createAttack(AttackPool.createCombatAttackModel(state.self))
-                : state.self.getAttack(attackIndex);
+        /*var attack = attackIndex < 0 ? AttackPool.createAttack(AttackPool.createCombatAttackModel(state.self))
+                : state.self.getAttack(attackIndex);*/
         if(attack == null)
             attack = AttackPool.createAttack(AttackPool.createCombatAttackModel(state.self));
         
@@ -750,27 +770,6 @@ public class Battle extends JDialog
     
 
     public enum ButtonsMenuState { DISABLED, MAIN, ATTACKS }
-    
-    public enum BattleAction
-    {
-        USE_ATTACK1(0),
-        USE_ATTACK2(0),
-        USE_ATTACK3(0),
-        USE_ATTACK4(0),
-        USE_COMBAT(0),
-        CONTINUE_ATTACK(0),
-        CHANGE(1),
-        CATCH(1),
-        RUN(2);
-        
-        private final int priority;
-        private BattleAction(int priority) { this.priority = priority; }
-        
-        public final boolean hasMorePriority(BattleAction other)
-        {
-            return priority > other.priority;
-        }
-    }
     
     private void applyGameOver()
     {
@@ -1082,15 +1081,15 @@ public class Battle extends JDialog
         switch(butState)
         {
             case MAIN: setButtonsState(ButtonsMenuState.ATTACKS); break;
-            case ATTACKS: executeRound(BattleAction.USE_ATTACK1); break;
+            case ATTACKS: executeRound(BattleAction.attackAction(core.getFighter(SELF).getAttack(0))); break;
         }
     }//GEN-LAST:event_but1ActionPerformed
 
     private void but2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but2ActionPerformed
         switch(butState)
         {
-            case MAIN: executeRound(BattleAction.USE_COMBAT); break;
-            case ATTACKS: executeRound(BattleAction.USE_ATTACK2); break;
+            case MAIN: executeRound(BattleAction.combatAction(core.getFighter(SELF))); break;
+            case ATTACKS: executeRound(BattleAction.attackAction(core.getFighter(SELF).getAttack(1))); break;
         }
     }//GEN-LAST:event_but2ActionPerformed
 
@@ -1099,24 +1098,24 @@ public class Battle extends JDialog
         {
             case MAIN: {
                 if(core.prepareChange(SELF))
-                    executeRound(BattleAction.CHANGE);
+                    executeRound(BattleAction.changeAction());
             } break;
-            case ATTACKS: executeRound(BattleAction.USE_ATTACK3); break;
+            case ATTACKS: executeRound(BattleAction.attackAction(core.getFighter(SELF).getAttack(2))); break;
         }
     }//GEN-LAST:event_but3ActionPerformed
 
     private void but4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but4ActionPerformed
         switch(butState)
         {
-            case MAIN: executeRound(BattleAction.CATCH); break;
-            case ATTACKS: executeRound(BattleAction.USE_ATTACK4); break;
+            case MAIN: executeRound(BattleAction.catchAction()); break;
+            case ATTACKS: executeRound(BattleAction.attackAction(core.getFighter(SELF).getAttack(3))); break;
         }
     }//GEN-LAST:event_but4ActionPerformed
 
     private void but5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but5ActionPerformed
         switch(butState)
         {
-            case MAIN: executeRound(BattleAction.RUN); break;
+            case MAIN: executeRound(BattleAction.runAction()); break;
             case ATTACKS: setButtonsState(ButtonsMenuState.MAIN); break;
         }
     }//GEN-LAST:event_but5ActionPerformed

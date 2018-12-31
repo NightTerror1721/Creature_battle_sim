@@ -410,6 +410,8 @@ public final class BattleCore
         if(weather == null)
             return;
         
+        battle.clearText();
+        
         weather.battleUpdate(bcm, coreRng, selfCreature, enemyCreature);
         
         if(weather.isEnd())
@@ -420,6 +422,8 @@ public final class BattleCore
     
     public final void updateAlterations(FighterTurnState state)
     {
+        battle.clearText();
+        
         state.self.getAlterationManager().battleUpdate(state);
         applyBattleCommands(state.bcm);
     }

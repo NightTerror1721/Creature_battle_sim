@@ -31,6 +31,9 @@ public enum StatId
     
     public final String getName() { return name; }
     
+    @Override
+    public final String toString() { return name; }
+    
     public static final StatId decode(int index)
     {
         switch(index)

@@ -6,7 +6,6 @@
 package kp.cbs.battle;
 
 import java.util.Objects;
-import kp.cbs.battle.Battle.BattleAction;
 import kp.cbs.battle.cmd.BattleCommandManager;
 import kp.cbs.battle.weather.WeatherId;
 import kp.cbs.creature.Creature;
@@ -54,15 +53,7 @@ public final class FighterTurnState
     {
         var sel = self.selectAttackByAI(this, intel);
         if(sel == null)
-            action = BattleAction.USE_COMBAT;
-        else
-        {
-            var index = sel.getIndex();
-            action = index == 0 ? BattleAction.USE_ATTACK1 :
-                     index == 1 ? BattleAction.USE_ATTACK2 :
-                     index == 2 ? BattleAction.USE_ATTACK3 :
-                     index == 3 ? BattleAction.USE_ATTACK4 :
-                     BattleAction.USE_COMBAT;
-        }
+            action = BattleAction.combatAction(self);
+        else action = BattleAction.attackAction(sel.getAttack());
     }
 }
