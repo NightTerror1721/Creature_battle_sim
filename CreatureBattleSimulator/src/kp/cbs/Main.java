@@ -43,8 +43,8 @@ public final class Main
         var encounter = new Encounter();
         var rng = new RNG();
         
-        encounter.getSelfTeam().addCreature(Creature.createWild(0, 50, rng));
-        encounter.getEnemyTeam().addCreature(Creature.createWild(0, 35, rng));
+        encounter.getSelfTeam().addCreature(Creature.createWild(5, 100, rng));
+        encounter.getEnemyTeam().addCreature(Creature.createWild(11, 100, rng));
         
         encounter.setIntelligence(AIIntelligence.create(255));
         

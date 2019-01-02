@@ -1,66 +1,66 @@
-"id": 0,
-"name": "Humano Joven",
-"hp_base": 46,
-"attack_base": 47,
-"defense_base": 47,
-"spAttack_base": 47,
-"spDefense_base": 47,
-"speed_base": 46,
+"id": 9,
+"name": "Elfo Oscuro Joven",
+"hp_base": 38,
+"attack_base": 48,
+"defense_base": 42,
+"spAttack_base": 48,
+"spDefense_base": 42,
+"speed_base": 62,
 "primary_type": 0,
 "secondary_type": 0,
 "growth": 3,
 "attack_pool": {
     "normalList": [{
-        "attack": 19,
+        "attack": 246,
         "level": 4,
         "hidden": false
     }, {
-        "attack": 21,
+        "attack": 247,
         "level": 7,
         "hidden": false
     }, {
-        "attack": 248,
+        "attack": 89,
         "level": 10,
         "hidden": false
     }, {
-        "attack": 3,
+        "attack": 212,
         "level": 13,
         "hidden": false
     }, {
-        "attack": 18,
+        "attack": 29,
         "level": 16,
         "hidden": false
     }, {
-        "attack": 15,
-        "level": 19,
+        "attack": 82,
+        "level": 20,
         "hidden": false
     }, {
-        "attack": 146,
-        "level": 24,
+        "attack": 59,
+        "level": 25,
         "hidden": false
     }, {
-        "attack": 6,
+        "attack": 90,
         "level": 30,
         "hidden": false
     }],
     "hiddenList": [{
-        "attack": 9,
-        "level": 15,
+        "attack": 80,
+        "level": 10,
         "hidden": true
     }, {
-        "attack": 247,
+        "attack": 222,
         "level": 20,
         "hidden": true
     }, {
-        "attack": 16,
+        "attack": 54,
         "level": 30,
         "hidden": true
     }],
-    "innate": 2
+    "innate": 4
 },
 "evolutions": {
     "evolutions": [{
-        "raceToEvolve": 1,
+        "raceToEvolve": 10,
         "conditions": [{
             "condition": {
                 "level": 18

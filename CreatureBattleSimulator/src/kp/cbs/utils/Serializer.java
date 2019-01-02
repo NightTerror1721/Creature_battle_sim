@@ -43,7 +43,7 @@ public final class Serializer
         Serializer.registerSerializer(Attack.SERIALIZER);
         Serializer.registerSerializer(AttackModel.SERIALIZER);
         Serializer.registerSerializer(HealDamageEffect.SERIALIZER);
-        Serializer.registerSerializer(Evolution.EVO_COND_SERIALIZER);
+        Evolution.registerSerializers();
     }
     
     /* Read ops */

@@ -135,7 +135,7 @@ public class AttackViewer extends JDialog
             return true;
         
         var e = box.getItemAt(sel);
-        return e.isAll() || (min ? getter.getAsInt() <= e.element : getter.getAsInt() >= e.element);
+        return e.isAll() || (min ? getter.getAsInt() >= e.element : getter.getAsInt() <= e.element);
     }
     
     private static <E> DefaultComboBoxModel<FilterElement<E>> newModel(E... base)

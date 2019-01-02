@@ -17,6 +17,7 @@ import kp.cbs.creature.Creature;
 import kp.cbs.creature.attack.Attack;
 import kp.cbs.creature.attack.AttackModel;
 import kp.cbs.creature.attack.AttackPool;
+import kp.cbs.creature.attack.AttackSlot;
 import kp.cbs.creature.attack.AttackViewer;
 import kp.cbs.utils.Utils;
 
@@ -28,7 +29,7 @@ public class LearnAttack extends JDialog
 {
     private final Creature creature;
     private final AttackModel attToLearn;
-    private int selectedIndex;
+    private AttackSlot selectedSlot;
     
     private LearnAttack(Dialog parent, Creature creature, AttackModel attackToLearn)
     {
@@ -36,7 +37,7 @@ public class LearnAttack extends JDialog
         initComponents();
         this.creature = Objects.requireNonNull(creature);
         this.attToLearn = Objects.requireNonNull(attackToLearn);
-        this.selectedIndex = -1;
+        this.selectedSlot = null;
         init();
     }
     
@@ -46,11 +47,11 @@ public class LearnAttack extends JDialog
         initComponents();
         this.creature = Objects.requireNonNull(creature);
         this.attToLearn = Objects.requireNonNull(attackToLearn);
-        this.selectedIndex = -1;
+        this.selectedSlot = null;
         init();
     }
     
-    public static final int open(Window parent, Creature creature, AttackModel attackToLearn)
+    public static final AttackSlot open(Window parent, Creature creature, AttackModel attackToLearn)
     {
         LearnAttack la;
         if(parent == null)
@@ -59,9 +60,9 @@ public class LearnAttack extends JDialog
             la = new LearnAttack((Frame) parent, creature, attackToLearn);
         else if(parent instanceof Dialog)
             la = new LearnAttack((Dialog) parent, creature, attackToLearn);
-        else return -1;
+        else return null;
         la.setVisible(true);
-        return la.selectedIndex;
+        return la.selectedSlot;
     }
     
     private void init()
@@ -80,17 +81,17 @@ public class LearnAttack extends JDialog
     private void fillAttacks()
     {
         var atts = creature.getAttackManager();
-        for(int i=0;i<4;i++)
+        for(var slot : AttackSlot.iterable())
         {
-            Attack a = atts.getAttack(i);
-            JButton but = attackButton(i);
+            Attack a = atts.getAttack(slot);
+            JButton but = attackButton(slot);
             if(a == null)
             {
                 but.setEnabled(false);
                 but.setText("----------");
                 but.setBackground(Color.WHITE);
                 but.setForeground(Color.BLACK);
-                forgetButton(i).setEnabled(false);
+                forgetButton(slot).setEnabled(false);
                 continue;
             }
             but.setEnabled(true);
@@ -105,36 +106,36 @@ public class LearnAttack extends JDialog
         att5.setForeground(attToLearn.getElementalType().getFontColor());
     }
     
-    private JButton attackButton(int index)
+    private JButton attackButton(AttackSlot slot)
     {
-        switch(index)
+        switch(slot)
         {
             default: throw new IllegalStateException();
-            case 0: return att1;
-            case 1: return att2;
-            case 2: return att3;
-            case 3: return att4;
+            case SLOT_1: return att1;
+            case SLOT_2: return att2;
+            case SLOT_3: return att3;
+            case SLOT_4: return att4;
         }
     }
     
-    private JButton forgetButton(int index)
+    private JButton forgetButton(AttackSlot slot)
     {
-        switch(index)
+        switch(slot)
         {
             default: throw new IllegalStateException();
-            case 0: return forget1;
-            case 1: return forget2;
-            case 2: return forget3;
-            case 3: return forget4;
+            case SLOT_1: return forget1;
+            case SLOT_2: return forget2;
+            case SLOT_3: return forget3;
+            case SLOT_4: return forget4;
         }
     }
     
-    private void forget(int index)
+    private void forget(AttackSlot slot)
     {
-        Attack a = creature.getAttack(index);
+        Attack a = creature.getAttack(slot);
         if(!askSure(a))
             return;
-        selectedIndex = index;
+        selectedSlot = slot;
         dispose();
     }
     
@@ -344,19 +345,19 @@ public class LearnAttack extends JDialog
     }// </editor-fold>//GEN-END:initComponents
 
     private void att1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_att1ActionPerformed
-        AttackViewer.open(this, creature.getAttack(0));
+        AttackViewer.open(this, creature.getAttack(AttackSlot.SLOT_1));
     }//GEN-LAST:event_att1ActionPerformed
 
     private void att2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_att2ActionPerformed
-        AttackViewer.open(this,creature.getAttack(1));
+        AttackViewer.open(this,creature.getAttack(AttackSlot.SLOT_2));
     }//GEN-LAST:event_att2ActionPerformed
 
     private void att3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_att3ActionPerformed
-        AttackViewer.open(this,creature.getAttack(2));
+        AttackViewer.open(this,creature.getAttack(AttackSlot.SLOT_3));
     }//GEN-LAST:event_att3ActionPerformed
 
     private void att4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_att4ActionPerformed
-        AttackViewer.open(this,creature.getAttack(3));
+        AttackViewer.open(this,creature.getAttack(AttackSlot.SLOT_4));
     }//GEN-LAST:event_att4ActionPerformed
 
     private void att5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_att5ActionPerformed
@@ -364,19 +365,19 @@ public class LearnAttack extends JDialog
     }//GEN-LAST:event_att5ActionPerformed
 
     private void forget1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_forget1ActionPerformed
-        forget(0);
+        forget(AttackSlot.SLOT_1);
     }//GEN-LAST:event_forget1ActionPerformed
 
     private void forget2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_forget2ActionPerformed
-        forget(1);
+        forget(AttackSlot.SLOT_2);
     }//GEN-LAST:event_forget2ActionPerformed
 
     private void forget3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_forget3ActionPerformed
-        forget(2);
+        forget(AttackSlot.SLOT_3);
     }//GEN-LAST:event_forget3ActionPerformed
 
     private void forget4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_forget4ActionPerformed
-        forget(3);
+        forget(AttackSlot.SLOT_4);
     }//GEN-LAST:event_forget4ActionPerformed
 
     private void forget5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_forget5ActionPerformed
@@ -384,7 +385,7 @@ public class LearnAttack extends JDialog
                 "¿Seguro que no quieres aprender el ataque \"" + attToLearn.getName() +
                         "\"?","", JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION)
             return;
-        selectedIndex = -1;
+        selectedSlot = null;
         dispose();
     }//GEN-LAST:event_forget5ActionPerformed
 

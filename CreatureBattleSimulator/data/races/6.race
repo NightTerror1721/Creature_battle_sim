@@ -1,21 +1,21 @@
-"id": 0,
-"name": "Humano Joven",
-"hp_base": 46,
-"attack_base": 47,
-"defense_base": 47,
-"spAttack_base": 47,
-"spDefense_base": 47,
-"speed_base": 46,
+"id": 6,
+"name": "Orco Joven",
+"hp_base": 62,
+"attack_base": 49,
+"defense_base": 54,
+"spAttack_base": 37,
+"spDefense_base": 43,
+"speed_base": 35,
 "primary_type": 0,
 "secondary_type": 0,
 "growth": 3,
 "attack_pool": {
     "normalList": [{
-        "attack": 19,
+        "attack": 18,
         "level": 4,
         "hidden": false
     }, {
-        "attack": 21,
+        "attack": 20,
         "level": 7,
         "hidden": false
     }, {
@@ -23,44 +23,44 @@
         "level": 10,
         "hidden": false
     }, {
-        "attack": 3,
+        "attack": 28,
         "level": 13,
         "hidden": false
     }, {
-        "attack": 18,
+        "attack": 29,
         "level": 16,
         "hidden": false
     }, {
-        "attack": 15,
-        "level": 19,
+        "attack": 34,
+        "level": 20,
         "hidden": false
     }, {
-        "attack": 146,
-        "level": 24,
+        "attack": 251,
+        "level": 25,
         "hidden": false
     }, {
-        "attack": 6,
+        "attack": 7,
         "level": 30,
         "hidden": false
     }],
     "hiddenList": [{
-        "attack": 9,
-        "level": 15,
+        "attack": 15,
+        "level": 10,
         "hidden": true
     }, {
-        "attack": 247,
+        "attack": 80,
         "level": 20,
         "hidden": true
     }, {
-        "attack": 16,
+        "attack": 26,
         "level": 30,
         "hidden": true
     }],
-    "innate": 2
+    "innate": 1
 },
 "evolutions": {
     "evolutions": [{
-        "raceToEvolve": 1,
+        "raceToEvolve": 7,
         "conditions": [{
             "condition": {
                 "level": 18

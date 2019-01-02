@@ -1,0 +1,147 @@
+"id": 8,
+"name": "Orco Cacique",
+"hp_base": 134,
+"attack_base": 100,
+"defense_base": 108,
+"spAttack_base": 60,
+"spDefense_base": 98,
+"speed_base": 60,
+"primary_type": 1,
+"secondary_type": 1,
+"growth": 3,
+"attack_pool": {
+    "normalList": [{
+        "attack": 1,
+        "level": 1,
+        "hidden": false
+    }, {
+        "attack": 18,
+        "level": 4,
+        "hidden": false
+    }, {
+        "attack": 20,
+        "level": 7,
+        "hidden": false
+    }, {
+        "attack": 248,
+        "level": 10,
+        "hidden": false
+    }, {
+        "attack": 28,
+        "level": 13,
+        "hidden": false
+    }, {
+        "attack": 29,
+        "level": 16,
+        "hidden": false
+    }, {
+        "attack": 251,
+        "level": 18,
+        "hidden": false
+    }, {
+        "attack": 41,
+        "level": 20,
+        "hidden": false
+    }, {
+        "attack": 34,
+        "level": 23,
+        "hidden": false
+    }, {
+        "attack": 156,
+        "level": 23,
+        "hidden": false
+    }, {
+        "attack": 57,
+        "level": 28,
+        "hidden": false
+    }, {
+        "attack": 7,
+        "level": 32,
+        "hidden": false
+    }, {
+        "attack": 27,
+        "level": 36,
+        "hidden": false
+    }, {
+        "attack": 205,
+        "level": 42,
+        "hidden": false
+    }, {
+        "attack": 32,
+        "level": 47,
+        "hidden": false
+    }, {
+        "attack": 151,
+        "level": 52,
+        "hidden": false
+    }, {
+        "attack": 33,
+        "level": 60,
+        "hidden": false
+    }, {
+        "attack": 40,
+        "level": 72,
+        "hidden": false
+    }],
+    "hiddenList": [{
+        "attack": 15,
+        "level": 10,
+        "hidden": true
+    }, {
+        "attack": 80,
+        "level": 15,
+        "hidden": true
+    }, {
+        "attack": 26,
+        "level": 20,
+        "hidden": true
+    }, {
+        "attack": 146,
+        "level": 20,
+        "hidden": true
+    }, {
+        "attack": 16,
+        "level": 30,
+        "hidden": true
+    }, {
+        "attack": 17,
+        "level": 35,
+        "hidden": true
+    }, {
+        "attack": 97,
+        "level": 40,
+        "hidden": true
+    }, {
+        "attack": 113,
+        "level": 40,
+        "hidden": true
+    }, {
+        "attack": 119,
+        "level": 40,
+        "hidden": true
+    }, {
+        "attack": 192,
+        "level": 40,
+        "hidden": true
+    }, {
+        "attack": 36,
+        "level": 45,
+        "hidden": true
+    }, {
+        "attack": 249,
+        "level": 45,
+        "hidden": true
+    }, {
+        "attack": 11,
+        "level": 50,
+        "hidden": true
+    }, {
+        "attack": 12,
+        "level": 50,
+        "hidden": true
+    }],
+    "innate": 27
+},
+"evolutions": {
+    "evolutions": []
+}

@@ -16,6 +16,7 @@ import kp.cbs.creature.altered.AlteredStateManager;
 import kp.cbs.creature.attack.Attack;
 import kp.cbs.creature.attack.AttackManager;
 import kp.cbs.creature.attack.AttackManager.SelectedAttack;
+import kp.cbs.creature.attack.AttackSlot;
 import kp.cbs.creature.attack.effects.AIIntelligence;
 import kp.cbs.creature.elements.Effectivity;
 import kp.cbs.creature.elements.ElementalManager;
@@ -130,7 +131,7 @@ public final class Creature
     public final CreatureClass getCreatureClass() { return Formula.creatureClass(this); }
     
     public final AttackManager getAttackManager() { return attacks; }
-    public final Attack getAttack(int index) { return attacks.getAttack(index); }
+    public final Attack getAttack(AttackSlot slot) { return attacks.getAttack(slot); }
     public final SelectedAttack selectAttackByAI(FighterTurnState state, AIIntelligence intel) { return attacks.selectAttackByAI(state, intel); }
     public final void setDefaultLearnedAttacksInLevel(int level) { attacks.setDefaultLearnedAttacksInLevel(race, level); }
     public final void setDefaultLearnedAttacks() { attacks.setDefaultLearnedAttacksInLevel(race, getLevel()); }

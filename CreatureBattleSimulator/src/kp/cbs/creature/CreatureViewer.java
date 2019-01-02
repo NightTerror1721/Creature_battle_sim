@@ -16,6 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import kp.cbs.creature.attack.Attack;
+import kp.cbs.creature.attack.AttackSlot;
 import kp.cbs.creature.attack.AttackViewer;
 import kp.cbs.creature.feat.NormalStat;
 import kp.cbs.creature.feat.Stat;
@@ -121,10 +122,10 @@ public class CreatureViewer extends JDialog
     private void fillAttacks()
     {
         var atts = creature.getAttackManager();
-        for(int i=0;i<4;i++)
+        for(var slot : AttackSlot.iterable())
         {
-            Attack a = atts.getAttack(i);
-            JButton but = attackButton(i);
+            Attack a = atts.getAttack(slot);
+            JButton but = attackButton(slot);
             if(a == null)
             {
                 but.setEnabled(false);
@@ -140,15 +141,15 @@ public class CreatureViewer extends JDialog
         }
     }
     
-    private JButton attackButton(int index)
+    private JButton attackButton(AttackSlot slot)
     {
-        switch(index)
+        switch(slot)
         {
             default: throw new IllegalStateException();
-            case 0: return att1;
-            case 1: return att2;
-            case 2: return att3;
-            case 3: return att4;
+            case SLOT_1: return att1;
+            case SLOT_2: return att2;
+            case SLOT_3: return att3;
+            case SLOT_4: return att4;
         }
     }
     
@@ -972,19 +973,19 @@ public class CreatureViewer extends JDialog
     }//GEN-LAST:event_speed_addActionPerformed
 
     private void att1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_att1ActionPerformed
-        AttackViewer.open(this, creature.getAttack(0));
+        AttackViewer.open(this, creature.getAttack(AttackSlot.SLOT_1));
     }//GEN-LAST:event_att1ActionPerformed
 
     private void att2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_att2ActionPerformed
-        AttackViewer.open(this, creature.getAttack(1));
+        AttackViewer.open(this, creature.getAttack(AttackSlot.SLOT_2));
     }//GEN-LAST:event_att2ActionPerformed
 
     private void att3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_att3ActionPerformed
-        AttackViewer.open(this, creature.getAttack(2));
+        AttackViewer.open(this, creature.getAttack(AttackSlot.SLOT_3));
     }//GEN-LAST:event_att3ActionPerformed
 
     private void att4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_att4ActionPerformed
-        AttackViewer.open(this, creature.getAttack(3));
+        AttackViewer.open(this, creature.getAttack(AttackSlot.SLOT_4));
     }//GEN-LAST:event_att4ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed

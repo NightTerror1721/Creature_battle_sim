@@ -40,33 +40,33 @@ public final class AttackManager implements Iterable<Attack>
     private Attack att4;
     
     
-    public final Attack getAttack(int index)
+    public final Attack getAttack(AttackSlot slot)
     {
-        switch(index)
+        switch(slot)
         {
             default: throw new IllegalArgumentException();
-            case 0: return att1;
-            case 1: return att2;
-            case 2: return att3;
-            case 3: return att4;
+            case SLOT_1: return att1;
+            case SLOT_2: return att2;
+            case SLOT_3: return att3;
+            case SLOT_4: return att4;
         }
     }
     
-    public final void setAttack(int index, Attack attack)
+    public final void setAttack(AttackSlot slot, Attack attack)
     {
-        switch(index)
+        switch(slot)
         {
             default: throw new IllegalArgumentException();
-            case 0: att1 = Objects.requireNonNull(attack); break;
-            case 1: att2 = Objects.requireNonNull(attack); break;
-            case 2: att3 = Objects.requireNonNull(attack); break;
-            case 3: att4 = Objects.requireNonNull(attack); break;
+            case SLOT_1: att1 = Objects.requireNonNull(attack); break;
+            case SLOT_2: att2 = Objects.requireNonNull(attack); break;
+            case SLOT_3: att3 = Objects.requireNonNull(attack); break;
+            case SLOT_4: att4 = Objects.requireNonNull(attack); break;
         }
     }
     
-    public final void setAttack(int index, AttackModel attackModel)
+    public final void setAttack(AttackSlot slot, AttackModel attackModel)
     {
-        setAttack(index, AttackPool.createAttack(attackModel));
+        setAttack(slot, AttackPool.createAttack(attackModel));
     }
     
     public final boolean containsAttack(AttackModel model)
@@ -79,13 +79,13 @@ public final class AttackManager implements Iterable<Attack>
         return false;
     }
     
-    public final int getFirstEmptySlot()
+    public final AttackSlot getFirstEmptySlot()
     {
-        return att1 == null ? 0
-                : att2 == null ? 1
-                : att3 == null ? 2
-                : att4 == null ? 3
-                : -1;
+        return att1 == null ? AttackSlot.SLOT_1
+                : att2 == null ? AttackSlot.SLOT_2
+                : att3 == null ? AttackSlot.SLOT_3
+                : att4 == null ? AttackSlot.SLOT_4
+                : null;
     }
     
     @Override
@@ -93,8 +93,8 @@ public final class AttackManager implements Iterable<Attack>
     {
         return new Iterator<Attack>()
         {
-            private int it = 0;
-            @Override public final boolean hasNext() { return it < 4; }
+            private AttackSlot it = AttackSlot.SLOT_1;
+            @Override public final boolean hasNext() { return it.hasNext(); }
             @Override public final Attack next()
             {
                 Attack a = getAttack(it);
@@ -104,8 +104,8 @@ public final class AttackManager implements Iterable<Attack>
             private Iterator<Attack> toNext()
             {
                 Attack a;
-                while(it < 4 && (a = getAttack(it)) == null)
-                    it++;
+                while(it.hasNext() && (a = getAttack(it)) == null)
+                    it = it.next();
                 return this;
             }
         }.toNext();
@@ -119,12 +119,12 @@ public final class AttackManager implements Iterable<Attack>
     private SelectedAttack selectByAI(FighterTurnState state, AIIntelligence intel, AttackModel combatModel, boolean printAIs)
     {
         LinkedList<SelectedAttack> scores = new LinkedList<>();
-        for(int i=0;i<4;i++)
+        for(var slot : AttackSlot.iterable())
         {
-            var a = getAttack(i);
+            var a = getAttack(slot);
             if(a == null || !a.hasPP())
                 continue;
-            scores.add(new SelectedAttack(a, a.computeAIScore(state, intel), i));
+            scores.add(new SelectedAttack(a, a.computeAIScore(state, intel), slot));
         }
         
         if(scores.isEmpty())
@@ -133,7 +133,7 @@ public final class AttackManager implements Iterable<Attack>
         if(printAIs)
             System.out.println(scores); 
         
-        SelectedAttack combat = new SelectedAttack(AttackPool.createAttack(combatModel), combatModel.computeAIScore(state, intel), -1);
+        SelectedAttack combat = new SelectedAttack(AttackPool.createAttack(combatModel), combatModel.computeAIScore(state, intel), null);
         return scores.stream()
                 .reduce(combat, (s0, s1) -> s0.score.compareTo(s1.score) > 0 ? s0 : s1);
     }
@@ -190,18 +190,18 @@ public final class AttackManager implements Iterable<Attack>
     {
         private final Attack attack;
         private final AIScore score;
-        private final int index;
+        private final AttackSlot slot;
         
-        private SelectedAttack(Attack attack, AIScore score, int index)
+        private SelectedAttack(Attack attack, AIScore score, AttackSlot slot)
         {
             this.attack = attack;
             this.score = score;
-            this.index = index;
+            this.slot = slot;
         }
         
         public final Attack getAttack() { return attack; }
-        public final int getIndex() { return index; }
-        public final boolean isCombat() { return index < 0 || index > 3; }
+        public final AttackSlot getSlot() { return slot; }
+        public final boolean isCombat() { return slot == null; }
         
         @Override
         public final String toString() { return attack.getName() + ": " + score.getScore(); }

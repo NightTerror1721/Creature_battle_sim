@@ -22,6 +22,7 @@ import static kp.cbs.battle.TeamId.SELF;
 import kp.cbs.creature.Creature;
 import kp.cbs.creature.attack.Attack;
 import kp.cbs.creature.attack.AttackPool;
+import kp.cbs.creature.attack.AttackSlot;
 import kp.cbs.creature.elements.ElementalType;
 import kp.cbs.creature.feat.StatId;
 import kp.cbs.utils.Formula;
@@ -378,10 +379,10 @@ public class Battle extends JDialog
             break;
             case ATTACKS: {
                 var self = core.getFighter(SELF);
-                setButtonText(but1, self.getAttack(0));
-                setButtonText(but2, self.getAttack(1));
-                setButtonText(but3, self.getAttack(2));
-                setButtonText(but4, self.getAttack(3));
+                setButtonText(but1, self.getAttack(AttackSlot.SLOT_1));
+                setButtonText(but2, self.getAttack(AttackSlot.SLOT_2));
+                setButtonText(but3, self.getAttack(AttackSlot.SLOT_3));
+                setButtonText(but4, self.getAttack(AttackSlot.SLOT_4));
                 but5.setText("Atrás");
             } break;
         }
@@ -581,11 +582,11 @@ public class Battle extends JDialog
         {
             if(atts.containsAttack(att))
                 continue;
-            int slot = atts.getFirstEmptySlot();
-            if(slot < 0)
+            var slot = atts.getFirstEmptySlot();
+            if(slot == null)
             {
                 slot = LearnAttack.open(this, creature, att);
-                if(slot < 0)
+                if(slot == null)
                     continue;
             }
             atts.setAttack(slot, att);
@@ -1081,7 +1082,7 @@ public class Battle extends JDialog
         switch(butState)
         {
             case MAIN: setButtonsState(ButtonsMenuState.ATTACKS); break;
-            case ATTACKS: executeRound(BattleAction.attackAction(core.getFighter(SELF).getAttack(0))); break;
+            case ATTACKS: executeRound(BattleAction.attackAction(core.getFighter(SELF).getAttack(AttackSlot.SLOT_1))); break;
         }
     }//GEN-LAST:event_but1ActionPerformed
 
@@ -1089,7 +1090,7 @@ public class Battle extends JDialog
         switch(butState)
         {
             case MAIN: executeRound(BattleAction.combatAction(core.getFighter(SELF))); break;
-            case ATTACKS: executeRound(BattleAction.attackAction(core.getFighter(SELF).getAttack(1))); break;
+            case ATTACKS: executeRound(BattleAction.attackAction(core.getFighter(SELF).getAttack(AttackSlot.SLOT_2))); break;
         }
     }//GEN-LAST:event_but2ActionPerformed
 
@@ -1100,7 +1101,7 @@ public class Battle extends JDialog
                 if(core.prepareChange(SELF))
                     executeRound(BattleAction.changeAction());
             } break;
-            case ATTACKS: executeRound(BattleAction.attackAction(core.getFighter(SELF).getAttack(2))); break;
+            case ATTACKS: executeRound(BattleAction.attackAction(core.getFighter(SELF).getAttack(AttackSlot.SLOT_3))); break;
         }
     }//GEN-LAST:event_but3ActionPerformed
 
@@ -1108,7 +1109,7 @@ public class Battle extends JDialog
         switch(butState)
         {
             case MAIN: executeRound(BattleAction.catchAction()); break;
-            case ATTACKS: executeRound(BattleAction.attackAction(core.getFighter(SELF).getAttack(3))); break;
+            case ATTACKS: executeRound(BattleAction.attackAction(core.getFighter(SELF).getAttack(AttackSlot.SLOT_4))); break;
         }
     }//GEN-LAST:event_but4ActionPerformed
 

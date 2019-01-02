@@ -1,0 +1,159 @@
+"id": 11,
+"name": "Elfo Oscuro Mayor",
+"hp_base": 76,
+"attack_base": 99,
+"defense_base": 81,
+"spAttack_base": 99,
+"spDefense_base": 81,
+"speed_base": 124,
+"primary_type": 5,
+"secondary_type": 5,
+"growth": 3,
+"attack_pool": {
+    "normalList": [{
+        "attack": 4,
+        "level": 1,
+        "hidden": false
+    }, {
+        "attack": 246,
+        "level": 4,
+        "hidden": false
+    }, {
+        "attack": 247,
+        "level": 7,
+        "hidden": false
+    }, {
+        "attack": 89,
+        "level": 10,
+        "hidden": false
+    }, {
+        "attack": 212,
+        "level": 13,
+        "hidden": false
+    }, {
+        "attack": 29,
+        "level": 16,
+        "hidden": false
+    }, {
+        "attack": 82,
+        "level": 18,
+        "hidden": false
+    }, {
+        "attack": 217,
+        "level": 20,
+        "hidden": false
+    }, {
+        "attack": 179,
+        "level": 22,
+        "hidden": false
+    }, {
+        "attack": 53,
+        "level": 24,
+        "hidden": false
+    }, {
+        "attack": 88,
+        "level": 28,
+        "hidden": false
+    }, {
+        "attack": 59,
+        "level": 32,
+        "hidden": false
+    }, {
+        "attack": 83,
+        "level": 36,
+        "hidden": false
+    }, {
+        "attack": 187,
+        "level": 38,
+        "hidden": false
+    }, {
+        "attack": 215,
+        "level": 40,
+        "hidden": false
+    }, {
+        "attack": 87,
+        "level": 44,
+        "hidden": false
+    }, {
+        "attack": 90,
+        "level": 47,
+        "hidden": false
+    }, {
+        "attack": 10,
+        "level": 53,
+        "hidden": false
+    }, {
+        "attack": 221,
+        "level": 60,
+        "hidden": false
+    }],
+    "hiddenList": [{
+        "attack": 80,
+        "level": 10,
+        "hidden": true
+    }, {
+        "attack": 138,
+        "level": 15,
+        "hidden": true
+    }, {
+        "attack": 222,
+        "level": 15,
+        "hidden": true
+    }, {
+        "attack": 137,
+        "level": 20,
+        "hidden": true
+    }, {
+        "attack": 46,
+        "level": 25,
+        "hidden": true
+    }, {
+        "attack": 81,
+        "level": 25,
+        "hidden": true
+    }, {
+        "attack": 220,
+        "level": 25,
+        "hidden": true
+    }, {
+        "attack": 54,
+        "level": 30,
+        "hidden": true
+    }, {
+        "attack": 172,
+        "level": 30,
+        "hidden": true
+    }, {
+        "attack": 117,
+        "level": 40,
+        "hidden": true
+    }, {
+        "attack": 181,
+        "level": 40,
+        "hidden": true
+    }, {
+        "attack": 197,
+        "level": 40,
+        "hidden": true
+    }, {
+        "attack": 69,
+        "level": 45,
+        "hidden": true
+    }, {
+        "attack": 107,
+        "level": 45,
+        "hidden": true
+    }, {
+        "attack": 11,
+        "level": 50,
+        "hidden": true
+    }, {
+        "attack": 12,
+        "level": 50,
+        "hidden": true
+    }],
+    "innate": 83
+},
+"evolutions": {
+    "evolutions": []
+}

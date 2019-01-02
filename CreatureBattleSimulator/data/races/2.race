@@ -1,0 +1,127 @@
+"id": 2,
+"name": "Humano Superior",
+"hp_base": 96,
+"attack_base": 132,
+"defense_base": 100,
+"spAttack_base": 60,
+"spDefense_base": 70,
+"speed_base": 102,
+"primary_type": 0,
+"secondary_type": 0,
+"growth": 3,
+"attack_pool": {
+    "normalList": [{
+        "attack": 2,
+        "level": 1,
+        "hidden": false
+    }, {
+        "attack": 19,
+        "level": 4,
+        "hidden": false
+    }, {
+        "attack": 21,
+        "level": 7,
+        "hidden": false
+    }, {
+        "attack": 248,
+        "level": 10,
+        "hidden": false
+    }, {
+        "attack": 3,
+        "level": 13,
+        "hidden": false
+    }, {
+        "attack": 18,
+        "level": 16,
+        "hidden": false
+    }, {
+        "attack": 9,
+        "level": 18,
+        "hidden": false
+    }, {
+        "attack": 15,
+        "level": 23,
+        "hidden": false
+    }, {
+        "attack": 146,
+        "level": 28,
+        "hidden": false
+    }, {
+        "attack": 6,
+        "level": 32,
+        "hidden": false
+    }, {
+        "attack": 7,
+        "level": 36,
+        "hidden": false
+    }, {
+        "attack": 251,
+        "level": 39,
+        "hidden": false
+    }, {
+        "attack": 249,
+        "level": 44,
+        "hidden": false
+    }, {
+        "attack": 51,
+        "level": 48,
+        "hidden": false
+    }, {
+        "attack": 269,
+        "level": 52,
+        "hidden": false
+    }, {
+        "attack": 13,
+        "level": 61,
+        "hidden": false
+    }],
+    "hiddenList": [{
+        "attack": 247,
+        "level": 10,
+        "hidden": true
+    }, {
+        "attack": 250,
+        "level": 15,
+        "hidden": true
+    }, {
+        "attack": 211,
+        "level": 20,
+        "hidden": true
+    }, {
+        "attack": 16,
+        "level": 30,
+        "hidden": true
+    }, {
+        "attack": 82,
+        "level": 35,
+        "hidden": true
+    }, {
+        "attack": 97,
+        "level": 40,
+        "hidden": true
+    }, {
+        "attack": 113,
+        "level": 40,
+        "hidden": true
+    }, {
+        "attack": 192,
+        "level": 40,
+        "hidden": true
+    }, {
+        "attack": 17,
+        "level": 45,
+        "hidden": true
+    }, {
+        "attack": 11,
+        "level": 50,
+        "hidden": true
+    }, {
+        "attack": 12,
+        "level": 50,
+        "hidden": true
+    }],
+    "innate": 7
+},
+"evolutions": {
+    "evolutions": []
+}

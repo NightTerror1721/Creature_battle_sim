@@ -1,0 +1,111 @@
+"id": 4,
+"name": "Elfo de Luz",
+"hp_base": 81,
+"attack_base": 49,
+"defense_base": 52,
+"spAttack_base": 84,
+"spDefense_base": 75,
+"speed_base": 79,
+"primary_type": 0,
+"secondary_type": 2,
+"growth": 3,
+"attack_pool": {
+    "normalList": [{
+        "attack": 0,
+        "level": 1,
+        "hidden": false
+    }, {
+        "attack": 19,
+        "level": 4,
+        "hidden": false
+    }, {
+        "attack": 270,
+        "level": 6,
+        "hidden": false
+    }, {
+        "attack": 95,
+        "level": 10,
+        "hidden": false
+    }, {
+        "attack": 246,
+        "level": 13,
+        "hidden": false
+    }, {
+        "attack": 43,
+        "level": 18,
+        "hidden": false
+    }, {
+        "attack": 48,
+        "level": 20,
+        "hidden": false
+    }, {
+        "attack": 264,
+        "level": 23,
+        "hidden": false
+    }, {
+        "attack": 46,
+        "level": 25,
+        "hidden": false
+    }, {
+        "attack": 44,
+        "level": 28,
+        "hidden": false
+    }, {
+        "attack": 50,
+        "level": 32,
+        "hidden": false
+    }, {
+        "attack": 45,
+        "level": 40,
+        "hidden": false
+    }, {
+        "attack": 164,
+        "level": 50,
+        "hidden": false
+    }],
+    "hiddenList": [{
+        "attack": 70,
+        "level": 10,
+        "hidden": true
+    }, {
+        "attack": 121,
+        "level": 15,
+        "hidden": true
+    }, {
+        "attack": 197,
+        "level": 25,
+        "hidden": true
+    }, {
+        "attack": 254,
+        "level": 30,
+        "hidden": true
+    }, {
+        "attack": 171,
+        "level": 35,
+        "hidden": true
+    }, {
+        "attack": 24,
+        "level": 40,
+        "hidden": true
+    }, {
+        "attack": 11,
+        "level": 60,
+        "hidden": true
+    }, {
+        "attack": 12,
+        "level": 60,
+        "hidden": true
+    }],
+    "innate": 43
+},
+"evolutions": {
+    "evolutions": [{
+        "raceToEvolve": 5,
+        "conditions": [{
+            "condition": {
+                "level": 36
+            },
+            "type": 0
+        }]
+    }]
+}

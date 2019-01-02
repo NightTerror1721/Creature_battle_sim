@@ -49,7 +49,7 @@ public class RaceEditor extends JDialog
     
     private void init()
     {
-        setResizable(true);
+        setResizable(false);
         Utils.focus(this);
         
         type1.setModel(new DefaultComboBoxModel<>(ElementalType.getAllElementalTypes()));
@@ -91,6 +91,11 @@ public class RaceEditor extends JDialog
     
     private void createCondition(Evolution.EvolutionConditionType type)
     {
+        var sel = evolves.getSelectedIndex();
+        if(sel < 0)
+            return;
+        var evo = (Evolution) evolves.getSelectedItem();
+        
         EvolveCondition cond = null;
         switch(type)
         {
@@ -104,6 +109,7 @@ public class RaceEditor extends JDialog
         {
             editCondition(cond);
             conditionsModel().addElement(cond);
+            evo.addCondition(cond);
             conditions.repaint();
         }
     }
@@ -200,6 +206,17 @@ public class RaceEditor extends JDialog
         }
         else JOptionPane.showMessageDialog(this, "Ha habido un fallo al guardar la raza.",
                 "Guardar Raza", JOptionPane.ERROR_MESSAGE);
+    }
+    
+    private void createCloned()
+    {
+        if(loaded != null)
+        {
+            JOptionPane.showMessageDialog(this, "¡Se ha clonado la raza!",
+                    "Clonar Raza", JOptionPane.INFORMATION_MESSAGE);
+            loaded = null;
+            updateTitle();
+        }
     }
     
     private void expandRace(Race race)
@@ -369,6 +386,7 @@ public class RaceEditor extends JDialog
         mod_level = new javax.swing.JComboBox<>();
         jButton5 = new javax.swing.JButton();
         mod_hidden = new javax.swing.JCheckBox();
+        jButton15 = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jButton6 = new javax.swing.JButton();
         jButton7 = new javax.swing.JButton();
@@ -386,6 +404,7 @@ public class RaceEditor extends JDialog
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
+        jButton14 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Editor de Razas");
@@ -554,7 +573,7 @@ public class RaceEditor extends JDialog
 
         mod_level.setBorder(javax.swing.BorderFactory.createTitledBorder("Nivel"));
 
-        jButton5.setText("Aplicar Cambios");
+        jButton5.setText("Modificar");
         jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton5ActionPerformed(evt);
@@ -563,6 +582,13 @@ public class RaceEditor extends JDialog
 
         mod_hidden.setText("Oculto");
 
+        jButton15.setText("Eliminar");
+        jButton15.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton15ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
@@ -570,12 +596,15 @@ public class RaceEditor extends JDialog
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(mod_attack, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+                    .addGroup(jPanel6Layout.createSequentialGroup()
                         .addComponent(mod_level, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(mod_hidden, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(mod_hidden, javax.swing.GroupLayout.DEFAULT_SIZE, 102, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+                        .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton15)))
                 .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
@@ -587,7 +616,9 @@ public class RaceEditor extends JDialog
                     .addComponent(mod_level, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
                     .addComponent(mod_hidden, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton5)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton5)
+                    .addComponent(jButton15))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -778,6 +809,13 @@ public class RaceEditor extends JDialog
             }
         });
 
+        jButton14.setText("Clonar");
+        jButton14.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton14ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -786,6 +824,8 @@ public class RaceEditor extends JDialog
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jButton3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton14)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButton2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -800,7 +840,8 @@ public class RaceEditor extends JDialog
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton2)
-                    .addComponent(jButton3))
+                    .addComponent(jButton3)
+                    .addComponent(jButton14))
                 .addContainerGap())
         );
 
@@ -916,11 +957,17 @@ public class RaceEditor extends JDialog
     }//GEN-LAST:event_jButton11ActionPerformed
 
     private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
-        int sel = conditions.getSelectedIndex();
+        int sel = evolves.getSelectedIndex();
+        if(sel < 0)
+            return;
+        var evo = (Evolution) evolves.getSelectedItem();
+        
+        sel = conditions.getSelectedIndex();
         if(sel < 0)
             return;
         
         conditionsModel().remove(sel);
+        evo.removeCondition(sel);
         conditions.repaint();
     }//GEN-LAST:event_jButton13ActionPerformed
 
@@ -958,6 +1005,17 @@ public class RaceEditor extends JDialog
         store();
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
+        createCloned();
+    }//GEN-LAST:event_jButton14ActionPerformed
+
+    private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
+        var sel = attacks.getSelectedIndex();
+        if(sel < 0)
+            return;
+        attacksModel().removeElementAt(sel);
+    }//GEN-LAST:event_jButton15ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<AttackModel> add_attack;
@@ -976,6 +1034,8 @@ public class RaceEditor extends JDialog
     private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton12;
     private javax.swing.JButton jButton13;
+    private javax.swing.JButton jButton14;
+    private javax.swing.JButton jButton15;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;

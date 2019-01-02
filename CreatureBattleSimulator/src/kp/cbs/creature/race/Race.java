@@ -129,6 +129,23 @@ public final class Race implements IdentifierObject
     @Override
     public final String toString() { return Objects.toString(getName()); }
     
+    public final boolean equals(Race race) { return id == race.id; }
+    
+    @Override
+    public final boolean equals(Object o)
+    {
+        return o instanceof Race &&
+                id == ((Race) o).id;
+    }
+
+    @Override
+    public final int hashCode()
+    {
+        int hash = 7;
+        hash = 23 * hash + this.id;
+        return hash;
+    }
+    
     
     
     public static final AutowiredSerializer<Race> SERIALIZER = new IdentifierSerializer<>(Race.class)

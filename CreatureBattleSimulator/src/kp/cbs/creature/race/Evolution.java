@@ -42,31 +42,6 @@ public final class Evolution
     public final String toString() { return raceToEvolve.getName(); }
     
     
-    public static final AutowiredSerializer<EvolveCondition> EVO_COND_SERIALIZER = new AutowiredSerializer<>(EvolveCondition.class)
-    {
-        @Override
-        public final UDLValue serialize(EvolveCondition value)
-        {
-            return new UDLObject()
-                    .set("type", UDLValue.valueOf(value.getType().ordinal()))
-                    .set("condition", Serializer.extract(value));
-        }
-        
-        @Override
-        public final EvolveCondition unserialize(UDLValue value)
-        {
-            var type = EvolutionConditionType.decode(value.getInt("type"));
-            switch(type)
-            {
-                case LEVEL: return Serializer.inject(value.get("condition"), LevelEvolveCondition.class);
-                case STAT_GREATER_THAN: return Serializer.inject(value.get("condition"), GreaterStatEvolveCondition.class);
-                case STAT_EQUALS_TO: return Serializer.inject(value.get("condition"), EqualsStatEvolveCondition.class);
-                case LEARNED_ATTACK: return Serializer.inject(value.get("condition"), LearnedAttackEvolveCondition.class);
-                default: return new LevelEvolveCondition();
-            }
-        }
-    };
-    
     public static abstract class EvolveCondition
     {
         public abstract EvolutionConditionType getType();
@@ -172,5 +147,42 @@ public final class Evolution
                 case 3: return LEARNED_ATTACK;
             }
         }
+    }
+    
+    
+    public static final class ConditionSerializer<C extends EvolveCondition> extends AutowiredSerializer<C>
+    {
+        private ConditionSerializer(Class<C> jclass) { super(jclass); }
+        
+        @Override
+        public final UDLValue serialize(EvolveCondition value)
+        {
+            return new UDLObject()
+                    .set("type", UDLValue.valueOf(value.getType().ordinal()))
+                    .set("condition", Serializer.rawExtract(value));
+        }
+        
+        @Override
+        public final C unserialize(UDLValue value)
+        {
+            var type = EvolutionConditionType.decode(value.getInt("type"));
+            switch(type)
+            {
+                case LEVEL: return (C) Serializer.rawInject(value.get("condition"), LevelEvolveCondition.class);
+                case STAT_GREATER_THAN: return (C) Serializer.rawInject(value.get("condition"), GreaterStatEvolveCondition.class);
+                case STAT_EQUALS_TO: return (C) Serializer.rawInject(value.get("condition"), EqualsStatEvolveCondition.class);
+                case LEARNED_ATTACK: return (C) Serializer.rawInject(value.get("condition"), LearnedAttackEvolveCondition.class);
+                default: return (C) new LevelEvolveCondition();
+            }
+        }
+    };
+    
+    public static final void registerSerializers()
+    {
+        Serializer.registerSerializer(new ConditionSerializer<>(EvolveCondition.class));
+        Serializer.registerSerializer(new ConditionSerializer<>(LevelEvolveCondition.class));
+        Serializer.registerSerializer(new ConditionSerializer<>(GreaterStatEvolveCondition.class));
+        Serializer.registerSerializer(new ConditionSerializer<>(EqualsStatEvolveCondition.class));
+        Serializer.registerSerializer(new ConditionSerializer<>(LearnedAttackEvolveCondition.class));
     }
 }
