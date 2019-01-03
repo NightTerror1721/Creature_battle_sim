@@ -1,0 +1,91 @@
+"id": 16,
+"name": "Rata Terrible",
+"hp_base": 65,
+"attack_base": 81,
+"defense_base": 71,
+"spAttack_base": 54,
+"spDefense_base": 79,
+"speed_base": 92,
+"primary_type": 0,
+"secondary_type": 0,
+"growth": 0,
+"attack_pool": {
+    "normalList": [{
+        "attack": 1,
+        "level": 1,
+        "hidden": false
+    }, {
+        "attack": 19,
+        "level": 2,
+        "hidden": false
+    }, {
+        "attack": 3,
+        "level": 5,
+        "hidden": false
+    }, {
+        "attack": 24,
+        "level": 7,
+        "hidden": false
+    }, {
+        "attack": 80,
+        "level": 10,
+        "hidden": false
+    }, {
+        "attack": 82,
+        "level": 14,
+        "hidden": false
+    }, {
+        "attack": 271,
+        "level": 16,
+        "hidden": false
+    }, {
+        "attack": 81,
+        "level": 20,
+        "hidden": false
+    }, {
+        "attack": 272,
+        "level": 25,
+        "hidden": false
+    }, {
+        "attack": 22,
+        "level": 29,
+        "hidden": false
+    }, {
+        "attack": 6,
+        "level": 33,
+        "hidden": false
+    }, {
+        "attack": 13,
+        "level": 40,
+        "hidden": false
+    }, {
+        "attack": 12,
+        "level": 53,
+        "hidden": false
+    }],
+    "hiddenList": [{
+        "attack": 247,
+        "level": 10,
+        "hidden": true
+    }, {
+        "attack": 92,
+        "level": 20,
+        "hidden": true
+    }, {
+        "attack": 5,
+        "level": 30,
+        "hidden": true
+    }, {
+        "attack": 25,
+        "level": 40,
+        "hidden": true
+    }, {
+        "attack": 249,
+        "level": 50,
+        "hidden": true
+    }],
+    "innate": 81
+},
+"evolutions": {
+    "evolutions": []
+}

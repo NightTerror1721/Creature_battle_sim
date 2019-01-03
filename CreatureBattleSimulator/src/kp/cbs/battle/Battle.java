@@ -669,6 +669,8 @@ public class Battle extends JDialog
                 case RUN: applyRun(state); break;
             }
             
+            core.updateCurrentCreatures();
+            
             updateCreatureInterface(currentTeam);
             updateCreatureInterface(currentTeam.invert());
             state.setTurnToEnd();
@@ -706,15 +708,18 @@ public class Battle extends JDialog
         if(core.isCurrentAlive(SELF))
         {
             core.updateAlterations(selfState);
+            core.updateCurrentCreature(SELF);
             updateCreatureInterface(SELF);
         }
         if(core.isCurrentAlive(ENEMY))
         {
             core.updateAlterations(enemyState);
+            core.updateCurrentCreature(ENEMY);
             updateCreatureInterface(ENEMY);
         }
         
         core.updateWeather();
+        core.updateCurrentCreatures();
         updateCreatureInterface(SELF);
         updateCreatureInterface(ENEMY);
         

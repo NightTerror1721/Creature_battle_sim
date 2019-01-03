@@ -109,6 +109,18 @@ public final class BattleCore
         return new FighterTurnState(cself, cenemy, bcm, rng, false, wid);
     }
     
+    public final void updateCurrentCreature(TeamId team)
+    {
+        var creature = getFighter(team);
+        if(creature != null)
+            creature.updateAll();
+    }
+    public final void updateCurrentCreatures()
+    {
+        updateCurrentCreature(TeamId.SELF);
+        updateCurrentCreature(TeamId.ENEMY);
+    }
+    
     public final void goFirstCreature(TeamId team)
     {
         battle.clearText();

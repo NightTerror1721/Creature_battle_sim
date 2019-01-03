@@ -1,0 +1,75 @@
+"id": 15,
+"name": "Rata",
+"hp_base": 40,
+"attack_base": 47,
+"defense_base": 44,
+"spAttack_base": 41,
+"spDefense_base": 38,
+"speed_base": 48,
+"primary_type": 0,
+"secondary_type": 0,
+"growth": 0,
+"attack_pool": {
+    "normalList": [{
+        "attack": 19,
+        "level": 2,
+        "hidden": false
+    }, {
+        "attack": 3,
+        "level": 5,
+        "hidden": false
+    }, {
+        "attack": 24,
+        "level": 7,
+        "hidden": false
+    }, {
+        "attack": 80,
+        "level": 10,
+        "hidden": false
+    }, {
+        "attack": 82,
+        "level": 14,
+        "hidden": false
+    }, {
+        "attack": 271,
+        "level": 16,
+        "hidden": false
+    }, {
+        "attack": 81,
+        "level": 22,
+        "hidden": false
+    }, {
+        "attack": 6,
+        "level": 29,
+        "hidden": false
+    }, {
+        "attack": 13,
+        "level": 36,
+        "hidden": false
+    }],
+    "hiddenList": [{
+        "attack": 247,
+        "level": 10,
+        "hidden": true
+    }, {
+        "attack": 5,
+        "level": 30,
+        "hidden": true
+    }, {
+        "attack": 25,
+        "level": 50,
+        "hidden": true
+    }],
+    "innate": 1
+},
+"evolutions": {
+    "evolutions": [{
+        "raceToEvolve": 16,
+        "conditions": [{
+            "condition": {
+                "level": 20
+            },
+            "type": 0
+        }]
+    }]
+}

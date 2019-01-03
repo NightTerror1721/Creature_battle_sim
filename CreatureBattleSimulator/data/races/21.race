@@ -1,0 +1,139 @@
+"id": 21,
+"name": "Can Anciano",
+"hp_base": 70,
+"attack_base": 113,
+"defense_base": 75,
+"spAttack_base": 45,
+"spDefense_base": 75,
+"speed_base": 102,
+"primary_type": 0,
+"secondary_type": 5,
+"growth": 0,
+"attack_pool": {
+    "normalList": [{
+        "attack": 1,
+        "level": 1,
+        "hidden": false
+    }, {
+        "attack": 274,
+        "level": 4,
+        "hidden": false
+    }, {
+        "attack": 134,
+        "level": 7,
+        "hidden": false
+    }, {
+        "attack": 80,
+        "level": 10,
+        "hidden": false
+    }, {
+        "attack": 19,
+        "level": 13,
+        "hidden": false
+    }, {
+        "attack": 248,
+        "level": 15,
+        "hidden": false
+    }, {
+        "attack": 279,
+        "level": 16,
+        "hidden": false
+    }, {
+        "attack": 92,
+        "level": 20,
+        "hidden": false
+    }, {
+        "attack": 275,
+        "level": 24,
+        "hidden": false
+    }, {
+        "attack": 81,
+        "level": 28,
+        "hidden": false
+    }, {
+        "attack": 41,
+        "level": 32,
+        "hidden": false
+    }, {
+        "attack": 91,
+        "level": 34,
+        "hidden": false
+    }, {
+        "attack": 272,
+        "level": 37,
+        "hidden": false
+    }, {
+        "attack": 7,
+        "level": 41,
+        "hidden": false
+    }, {
+        "attack": 6,
+        "level": 46,
+        "hidden": false
+    }, {
+        "attack": 12,
+        "level": 59,
+        "hidden": false
+    }],
+    "hiddenList": [{
+        "attack": 250,
+        "level": 10,
+        "hidden": true
+    }, {
+        "attack": 28,
+        "level": 20,
+        "hidden": true
+    }, {
+        "attack": 271,
+        "level": 25,
+        "hidden": true
+    }, {
+        "attack": 82,
+        "level": 30,
+        "hidden": true
+    }, {
+        "attack": 276,
+        "level": 30,
+        "hidden": true
+    }, {
+        "attack": 277,
+        "level": 30,
+        "hidden": true
+    }, {
+        "attack": 278,
+        "level": 30,
+        "hidden": true
+    }, {
+        "attack": 90,
+        "level": 35,
+        "hidden": true
+    }, {
+        "attack": 51,
+        "level": 40,
+        "hidden": true
+    }, {
+        "attack": 147,
+        "level": 40,
+        "hidden": true
+    }, {
+        "attack": 205,
+        "level": 40,
+        "hidden": true
+    }, {
+        "attack": 13,
+        "level": 45,
+        "hidden": true
+    }, {
+        "attack": 33,
+        "level": 50,
+        "hidden": true
+    }, {
+        "attack": 25,
+        "level": 55,
+        "hidden": true
+    }],
+    "innate": 91
+},
+"evolutions": {
+    "evolutions": []
+}

@@ -50,7 +50,7 @@ public final class Formula
         if(levels > 0)
             return points * (Math.min(6, levels) + 2) / 2;
         else if(levels < 0)
-            return 2 / (points * Math.min(6, -levels));
+            return points * 2 / (Math.min(6, -levels) + 2);
         return points;
     }
     

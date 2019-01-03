@@ -8,7 +8,6 @@ package kp.cbs.creature.attack;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import kp.cbs.utils.Utils;
@@ -89,16 +88,16 @@ public final class RaceAttackPool
                 .collect(Collectors.toList());
     }
     
-    public final Set<AttackModel> getAttacksUntilLevel(int level)
+    public final List<AttackModel> getAttacksUntilLevel(boolean hidden, int level)
     {
-        var set = Stream.concat(normalList.stream(), hiddenList.stream())
+        var list = (hidden ? hiddenList.stream() : normalList.stream())
                 .filter(ra -> ra.level <= level)
                 .sorted(RaceAttack::compareTo)
                 .map(RaceAttack::getAttackModel)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
         if(innate != null)
-            set.add(innate);
-        return set;
+            list.add(innate);
+        return list;
     }
     
     public final AttackModel[] getDefaultLearnedInLevel(int level)

@@ -1,0 +1,111 @@
+"id": 13,
+"name": "Gnomo",
+"hp_base": 65,
+"attack_base": 45,
+"defense_base": 68,
+"spAttack_base": 92,
+"spDefense_base": 70,
+"speed_base": 80,
+"primary_type": 0,
+"secondary_type": 3,
+"growth": 3,
+"attack_pool": {
+    "normalList": [{
+        "attack": 0,
+        "level": 1,
+        "hidden": false
+    }, {
+        "attack": 270,
+        "level": 4,
+        "hidden": false
+    }, {
+        "attack": 247,
+        "level": 7,
+        "hidden": false
+    }, {
+        "attack": 70,
+        "level": 10,
+        "hidden": false
+    }, {
+        "attack": 95,
+        "level": 13,
+        "hidden": false
+    }, {
+        "attack": 255,
+        "level": 16,
+        "hidden": false
+    }, {
+        "attack": 71,
+        "level": 18,
+        "hidden": false
+    }, {
+        "attack": 43,
+        "level": 21,
+        "hidden": false
+    }, {
+        "attack": 76,
+        "level": 23,
+        "hidden": false
+    }, {
+        "attack": 264,
+        "level": 26,
+        "hidden": false
+    }, {
+        "attack": 254,
+        "level": 29,
+        "hidden": false
+    }, {
+        "attack": 117,
+        "level": 32,
+        "hidden": false
+    }, {
+        "attack": 45,
+        "level": 40,
+        "hidden": false
+    }, {
+        "attack": 79,
+        "level": 47,
+        "hidden": false
+    }],
+    "hiddenList": [{
+        "attack": 24,
+        "level": 10,
+        "hidden": true
+    }, {
+        "attack": 48,
+        "level": 15,
+        "hidden": true
+    }, {
+        "attack": 59,
+        "level": 20,
+        "hidden": true
+    }, {
+        "attack": 72,
+        "level": 30,
+        "hidden": true
+    }, {
+        "attack": 73,
+        "level": 30,
+        "hidden": true
+    }, {
+        "attack": 197,
+        "level": 35,
+        "hidden": true
+    }, {
+        "attack": 62,
+        "level": 40,
+        "hidden": true
+    }, {
+        "attack": 11,
+        "level": 60,
+        "hidden": true
+    }, {
+        "attack": 12,
+        "level": 60,
+        "hidden": true
+    }],
+    "innate": 71
+},
+"evolutions": {
+    "evolutions": []
+}

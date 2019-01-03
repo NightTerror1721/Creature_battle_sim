@@ -1,0 +1,75 @@
+"id": 17,
+"name": "Oso Pardo",
+"hp_base": 82,
+"attack_base": 91,
+"defense_base": 78,
+"spAttack_base": 30,
+"spDefense_base": 73,
+"speed_base": 36,
+"primary_type": 0,
+"secondary_type": 0,
+"growth": 0,
+"attack_pool": {
+    "normalList": [{
+        "attack": 18,
+        "level": 1,
+        "hidden": false
+    }, {
+        "attack": 19,
+        "level": 3,
+        "hidden": false
+    }, {
+        "attack": 80,
+        "level": 8,
+        "hidden": false
+    }, {
+        "attack": 248,
+        "level": 12,
+        "hidden": false
+    }, {
+        "attack": 41,
+        "level": 15,
+        "hidden": false
+    }, {
+        "attack": 250,
+        "level": 19,
+        "hidden": false
+    }, {
+        "attack": 81,
+        "level": 23,
+        "hidden": false
+    }, {
+        "attack": 5,
+        "level": 28,
+        "hidden": false
+    }, {
+        "attack": 13,
+        "level": 34,
+        "hidden": false
+    }, {
+        "attack": 33,
+        "level": 40,
+        "hidden": false
+    }],
+    "hiddenList": [{
+        "attack": 92,
+        "level": 20,
+        "hidden": true
+    }, {
+        "attack": 60,
+        "level": 25,
+        "hidden": true
+    }, {
+        "attack": 51,
+        "level": 30,
+        "hidden": true
+    }, {
+        "attack": 271,
+        "level": 35,
+        "hidden": true
+    }],
+    "innate": 4
+},
+"evolutions": {
+    "evolutions": []
+}

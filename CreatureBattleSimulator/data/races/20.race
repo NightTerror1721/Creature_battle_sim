@@ -1,162 +1,138 @@
-"id": 11,
-"name": "Elfo Oscuro Mayor",
-"hp_base": 76,
-"attack_base": 99,
-"defense_base": 81,
-"spAttack_base": 99,
-"spDefense_base": 81,
-"speed_base": 124,
-"primary_type": 5,
+"id": 20,
+"name": "Can Terrible",
+"hp_base": 70,
+"attack_base": 113,
+"defense_base": 75,
+"spAttack_base": 45,
+"spDefense_base": 75,
+"speed_base": 102,
+"primary_type": 0,
 "secondary_type": 5,
-"growth": 3,
+"growth": 0,
 "attack_pool": {
     "normalList": [{
-        "attack": 4,
+        "attack": 1,
         "level": 1,
         "hidden": false
     }, {
-        "attack": 246,
+        "attack": 274,
         "level": 4,
         "hidden": false
     }, {
-        "attack": 247,
+        "attack": 134,
         "level": 7,
         "hidden": false
     }, {
-        "attack": 89,
+        "attack": 80,
         "level": 10,
         "hidden": false
     }, {
-        "attack": 212,
+        "attack": 19,
         "level": 13,
         "hidden": false
     }, {
-        "attack": 29,
+        "attack": 248,
+        "level": 15,
+        "hidden": false
+    }, {
+        "attack": 279,
         "level": 16,
         "hidden": false
     }, {
-        "attack": 82,
-        "level": 18,
-        "hidden": false
-    }, {
-        "attack": 217,
+        "attack": 92,
         "level": 20,
         "hidden": false
     }, {
-        "attack": 179,
-        "level": 22,
-        "hidden": false
-    }, {
-        "attack": 53,
+        "attack": 275,
         "level": 24,
         "hidden": false
     }, {
-        "attack": 88,
+        "attack": 81,
         "level": 28,
         "hidden": false
     }, {
-        "attack": 59,
+        "attack": 41,
         "level": 32,
         "hidden": false
     }, {
-        "attack": 83,
-        "level": 36,
+        "attack": 91,
+        "level": 34,
         "hidden": false
     }, {
-        "attack": 187,
-        "level": 38,
+        "attack": 272,
+        "level": 37,
         "hidden": false
     }, {
-        "attack": 215,
-        "level": 40,
+        "attack": 7,
+        "level": 41,
         "hidden": false
     }, {
-        "attack": 87,
-        "level": 44,
+        "attack": 6,
+        "level": 46,
         "hidden": false
     }, {
-        "attack": 90,
-        "level": 47,
-        "hidden": false
-    }, {
-        "attack": 10,
-        "level": 53,
-        "hidden": false
-    }, {
-        "attack": 221,
-        "level": 60,
+        "attack": 12,
+        "level": 59,
         "hidden": false
     }],
     "hiddenList": [{
-        "attack": 80,
+        "attack": 250,
         "level": 10,
         "hidden": true
     }, {
-        "attack": 138,
-        "level": 15,
-        "hidden": true
-    }, {
-        "attack": 222,
-        "level": 15,
-        "hidden": true
-    }, {
-        "attack": 137,
+        "attack": 28,
         "level": 20,
         "hidden": true
     }, {
-        "attack": 46,
+        "attack": 271,
         "level": 25,
         "hidden": true
     }, {
-        "attack": 81,
-        "level": 25,
-        "hidden": true
-    }, {
-        "attack": 220,
-        "level": 25,
-        "hidden": true
-    }, {
-        "attack": 54,
+        "attack": 276,
         "level": 30,
         "hidden": true
     }, {
-        "attack": 172,
+        "attack": 277,
         "level": 30,
         "hidden": true
     }, {
-        "attack": 214,
+        "attack": 278,
+        "level": 30,
+        "hidden": true
+    }, {
+        "attack": 90,
         "level": 35,
         "hidden": true
     }, {
-        "attack": 117,
+        "attack": 51,
         "level": 40,
         "hidden": true
     }, {
-        "attack": 181,
+        "attack": 147,
         "level": 40,
         "hidden": true
     }, {
-        "attack": 197,
+        "attack": 205,
         "level": 40,
         "hidden": true
     }, {
-        "attack": 69,
+        "attack": 13,
         "level": 45,
         "hidden": true
     }, {
-        "attack": 107,
+        "attack": 31,
         "level": 45,
         "hidden": true
     }, {
-        "attack": 11,
+        "attack": 33,
         "level": 50,
         "hidden": true
     }, {
-        "attack": 12,
-        "level": 50,
+        "attack": 25,
+        "level": 55,
         "hidden": true
     }],
-    "innate": 83
+    "innate": 91
 },
 "evolutions": {
     "evolutions": []

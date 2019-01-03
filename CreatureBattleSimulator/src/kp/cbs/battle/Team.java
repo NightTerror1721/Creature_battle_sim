@@ -125,7 +125,7 @@ public final class Team
     
     
     public enum SearchFirstBehabior { FIRST, RANDOM_WITHOUT_LAST, RANDOM }
-    public enum SearchNextBehabior { ORDERED, SEARCH_WITHOUT_LAST, SEARCH }
+    public enum SearchNextBehabior { SEARCH, SEARCH_WITHOUT_LAST, ORDERED }
     
     private final class CreatureSelected
     {

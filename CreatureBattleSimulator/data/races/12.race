@@ -1,0 +1,71 @@
+"id": 12,
+"name": "Gnomo Joven",
+"hp_base": 40,
+"attack_base": 30,
+"defense_base": 44,
+"spAttack_base": 60,
+"spDefense_base": 57,
+"speed_base": 49,
+"primary_type": 0,
+"secondary_type": 0,
+"growth": 3,
+"attack_pool": {
+    "normalList": [{
+        "attack": 270,
+        "level": 4,
+        "hidden": false
+    }, {
+        "attack": 247,
+        "level": 7,
+        "hidden": false
+    }, {
+        "attack": 70,
+        "level": 10,
+        "hidden": false
+    }, {
+        "attack": 95,
+        "level": 13,
+        "hidden": false
+    }, {
+        "attack": 255,
+        "level": 16,
+        "hidden": false
+    }, {
+        "attack": 43,
+        "level": 20,
+        "hidden": false
+    }, {
+        "attack": 117,
+        "level": 25,
+        "hidden": false
+    }, {
+        "attack": 79,
+        "level": 30,
+        "hidden": false
+    }],
+    "hiddenList": [{
+        "attack": 24,
+        "level": 10,
+        "hidden": true
+    }, {
+        "attack": 48,
+        "level": 20,
+        "hidden": true
+    }, {
+        "attack": 59,
+        "level": 30,
+        "hidden": true
+    }],
+    "innate": 0
+},
+"evolutions": {
+    "evolutions": [{
+        "raceToEvolve": 13,
+        "conditions": [{
+            "condition": {
+                "level": 18
+            },
+            "type": 0
+        }]
+    }]
+}

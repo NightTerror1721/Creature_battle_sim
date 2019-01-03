@@ -1,0 +1,119 @@
+"id": 26,
+"name": "Topo Terrible",
+"hp_base": 35,
+"attack_base": 100,
+"defense_base": 75,
+"spAttack_base": 60,
+"spDefense_base": 75,
+"speed_base": 120,
+"primary_type": 9,
+"secondary_type": 9,
+"growth": 1,
+"attack_pool": {
+    "normalList": [{
+        "attack": 4,
+        "level": 1,
+        "hidden": false
+    }, {
+        "attack": 134,
+        "level": 1,
+        "hidden": false
+    }, {
+        "attack": 19,
+        "level": 4,
+        "hidden": false
+    }, {
+        "attack": 258,
+        "level": 7,
+        "hidden": false
+    }, {
+        "attack": 144,
+        "level": 11,
+        "hidden": false
+    }, {
+        "attack": 159,
+        "level": 14,
+        "hidden": false
+    }, {
+        "attack": 139,
+        "level": 18,
+        "hidden": false
+    }, {
+        "attack": 5,
+        "level": 24,
+        "hidden": false
+    }, {
+        "attack": 84,
+        "level": 27,
+        "hidden": false
+    }, {
+        "attack": 141,
+        "level": 30,
+        "hidden": false
+    }, {
+        "attack": 32,
+        "level": 38,
+        "hidden": false
+    }, {
+        "attack": 135,
+        "level": 45,
+        "hidden": false
+    }, {
+        "attack": 140,
+        "level": 60,
+        "hidden": false
+    }, {
+        "attack": 10,
+        "level": 75,
+        "hidden": false
+    }],
+    "hiddenList": [{
+        "attack": 247,
+        "level": 10,
+        "hidden": true
+    }, {
+        "attack": 3,
+        "level": 15,
+        "hidden": true
+    }, {
+        "attack": 137,
+        "level": 20,
+        "hidden": true
+    }, {
+        "attack": 82,
+        "level": 25,
+        "hidden": true
+    }, {
+        "attack": 267,
+        "level": 30,
+        "hidden": true
+    }, {
+        "attack": 272,
+        "level": 35,
+        "hidden": true
+    }, {
+        "attack": 13,
+        "level": 40,
+        "hidden": true
+    }, {
+        "attack": 142,
+        "level": 40,
+        "hidden": true
+    }, {
+        "attack": 145,
+        "level": 45,
+        "hidden": true
+    }, {
+        "attack": 11,
+        "level": 50,
+        "hidden": true
+    }, {
+        "attack": 12,
+        "level": 50,
+        "hidden": true
+    }],
+    "innate": 84
+},
+"evolutions": {
+    "evolutions": []
+}

@@ -18,7 +18,6 @@ public final class Encounter
 {
     private final Team selfTeam = new Team();
     private final Team enemyTeam = new Team();
-    private int money;
     private float expBonus = 1f;
     private String music = "trainer";
     
@@ -34,9 +33,6 @@ public final class Encounter
     
     public final void setIntelligence(AIIntelligence intel) { enemyTeam.setIntelligence(intel); }
     public final AIIntelligence getIntelligence() { return enemyTeam.getIntelligence(); }
-    
-    public final void setMoney(int money) { this.money = Math.max(0, money); }
-    public final int getMoney() { return money; }
     
     public final void setExperienceBonus(float bonus) { this.expBonus = Math.max(1f, bonus); }
     public final float getExperienceBonus() { return expBonus; }

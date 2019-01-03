@@ -5,6 +5,7 @@
  */
 package kp.cbs.battle.prop;
 
+import java.util.Arrays;
 import java.util.Objects;
 import kp.cbs.creature.Creature;
 import kp.cbs.creature.Nature;
@@ -44,6 +45,8 @@ public final class CreatureProperties
     
     
     @Property private boolean levelAttacks;
+    
+    @Property private int maxHiddenAttacks;
     
     @Property private AttackModel att1;
     @Property private AttackModel att2;
@@ -167,6 +170,9 @@ public final class CreatureProperties
     public void setLevelAttacks(boolean levelAttacks) {
         this.levelAttacks = levelAttacks;
     }
+    
+    public final int getMaxHiddenAttacks() { return maxHiddenAttacks; }
+    public final void setMaxHiddenAttacks(int number) { this.maxHiddenAttacks = Utils.range(0, 4, number); }
 
     public AttackModel getAttack(AttackSlot slot) {
         switch(slot)
@@ -324,7 +330,7 @@ public final class CreatureProperties
         }
         
         if(isLevelAttacks())
-            creature.getAttackManager().setDefaultLearnedAttacksInLevel(race, creature.getLevel());
+            fillLevelAttacks(creature, rng);
         else for(var slot : AttackSlot.iterable())
         {
             var att = getAttack(slot);
@@ -334,6 +340,33 @@ public final class CreatureProperties
         
         creature.clearAll();
         return creature;
+    }
+    
+    private void fillLevelAttacks(Creature creature, RNG rng)
+    {
+        var hidden = Utils.range(0, 4, maxHiddenAttacks);
+        if(hidden > 0)
+            hidden = rng.d(hidden + 1);
+        if(hidden > 0 && hidden <= 4)
+        {
+            var hiddenAtts = race.getAttackPool().getAttacksUntilLevel(true, creature.getLevel());
+            var normalAtts = Arrays.asList(race.getAttackPool().getDefaultLearnedInLevel(creature.getLevel()));
+            var slot = AttackSlot.SLOT_1;
+            
+            while(slot != null && hidden > 0 && !hiddenAtts.isEmpty())
+            {
+                creature.getAttackManager().setAttack(slot, hiddenAtts.remove(rng.d(hiddenAtts.size())));
+                slot = slot.next();
+                hidden--;
+            }
+            
+            while(slot != null && !normalAtts.isEmpty())
+            {
+                creature.getAttackManager().setAttack(slot, normalAtts.remove(normalAtts.size()));
+                slot = slot.next();
+            }
+        }
+        else creature.getAttackManager().setDefaultLearnedAttacksInLevel(race, creature.getLevel());
     }
     
 }

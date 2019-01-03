@@ -1,0 +1,135 @@
+"id": 24,
+"name": "Muricélago Vampiro",
+"hp_base": 85,
+"attack_base": 90,
+"defense_base": 80,
+"spAttack_base": 70,
+"spDefense_base": 70,
+"speed_base": 130,
+"primary_type": 15,
+"secondary_type": 12,
+"growth": 0,
+"attack_pool": {
+    "normalList": [{
+        "attack": 161,
+        "level": 1,
+        "hidden": false
+    }, {
+        "attack": 280,
+        "level": 5,
+        "hidden": false
+    }, {
+        "attack": 258,
+        "level": 8,
+        "hidden": false
+    }, {
+        "attack": 80,
+        "level": 11,
+        "hidden": false
+    }, {
+        "attack": 59,
+        "level": 14,
+        "hidden": false
+    }, {
+        "attack": 281,
+        "level": 19,
+        "hidden": false
+    }, {
+        "attack": 81,
+        "level": 23,
+        "hidden": false
+    }, {
+        "attack": 220,
+        "level": 28,
+        "hidden": false
+    }, {
+        "attack": 177,
+        "level": 32,
+        "hidden": false
+    }, {
+        "attack": 216,
+        "level": 36,
+        "hidden": false
+    }, {
+        "attack": 282,
+        "level": 36,
+        "hidden": false
+    }, {
+        "attack": 185,
+        "level": 42,
+        "hidden": false
+    }, {
+        "attack": 260,
+        "level": 45,
+        "hidden": false
+    }, {
+        "attack": 218,
+        "level": 49,
+        "hidden": false
+    }, {
+        "attack": 178,
+        "level": 58,
+        "hidden": false
+    }],
+    "hiddenList": [{
+        "attack": 176,
+        "level": 10,
+        "hidden": true
+    }, {
+        "attack": 3,
+        "level": 15,
+        "hidden": true
+    }, {
+        "attack": 212,
+        "level": 15,
+        "hidden": true
+    }, {
+        "attack": 53,
+        "level": 20,
+        "hidden": true
+    }, {
+        "attack": 179,
+        "level": 25,
+        "hidden": true
+    }, {
+        "attack": 214,
+        "level": 30,
+        "hidden": true
+    }, {
+        "attack": 271,
+        "level": 30,
+        "hidden": true
+    }, {
+        "attack": 28,
+        "level": 35,
+        "hidden": true
+    }, {
+        "attack": 92,
+        "level": 35,
+        "hidden": true
+    }, {
+        "attack": 276,
+        "level": 40,
+        "hidden": true
+    }, {
+        "attack": 277,
+        "level": 40,
+        "hidden": true
+    }, {
+        "attack": 278,
+        "level": 40,
+        "hidden": true
+    }, {
+        "attack": 11,
+        "level": 50,
+        "hidden": true
+    }, {
+        "attack": 12,
+        "level": 50,
+        "hidden": true
+    }],
+    "innate": 282
+},
+"evolutions": {
+    "evolutions": []
+}

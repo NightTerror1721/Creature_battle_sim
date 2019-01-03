@@ -1,19 +1,19 @@
 "pp": 10,
-"precision": 100,
-"name": "Bomba Lodo",
-"id": 215,
-"power": 90,
-"priority": 0,
-"type": 15,
+"precision": 90,
+"name": "Golpe Bajo",
+"id": 272,
+"power": 70,
+"priority": -1,
+"type": 5,
 "turns": [{
     "min_hits": 1,
     "secondary_effects": [{
         "effect": {
-            "probability": 30,
+            "probability": 40,
             "confusion": false,
             "paralysis": false,
             "burn": false,
-            "poisoning": true,
+            "poisoning": false,
             "intoxication": false,
             "sleep": false,
             "sleepinees": false,
@@ -21,11 +21,24 @@
             "curse": false,
             "nightmare": false,
             "critical_hit": false,
-            "intimidated": false,
+            "intimidated": true,
             "resting": false,
             "selfTarget": false
         },
         "id": 3
+    }, {
+        "effect": {
+            "probability": 40,
+            "attackLevels": 0,
+            "defenseLevels": -1,
+            "spAttackLevels": 0,
+            "spDefenseLevels": 0,
+            "speedLevels": 0,
+            "accuracyLevels": 0,
+            "evasionLevels": 0,
+            "selfTarget": false
+        },
+        "id": 1
     }],
     "max_hits": 1,
     "damage_effect": {
@@ -34,13 +47,13 @@
             "attackValue": 0,
             "defenseValue": 0,
             "backwardOrAbsorbDamage": 0,
-            "special": true,
+            "special": false,
             "selfTarget": false,
             "selfElementalTypeUsed": false,
             "probCriticalHit": false
         },
         "id": 1
     },
-    "id": 215,
+    "id": 272,
     "message": ""
 }]

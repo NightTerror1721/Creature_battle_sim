@@ -128,7 +128,7 @@ public final class NormalDamageEffect extends DamageEffect
     {
         if(isDefenseValueCustom())
             return defenseValue;
-        Creature creature = isDefenseValueToSelf() ? self(state) : enemy(state);
+        Creature creature = isDefenseValueToSelf() ? enemy(state) : self(state);
         return isSpecialEnabled()
                 ? creature.getSpecialDefense().getValue()
                 : creature.getDefense().getValue();

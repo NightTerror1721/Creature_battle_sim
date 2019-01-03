@@ -1,0 +1,79 @@
+"id": 27,
+"name": "Hierbajo",
+"hp_base": 50,
+"attack_base": 50,
+"defense_base": 55,
+"spAttack_base": 75,
+"spDefense_base": 65,
+"speed_base": 35,
+"primary_type": 11,
+"secondary_type": 11,
+"growth": 0,
+"attack_pool": {
+    "normalList": [{
+        "attack": 283,
+        "level": 1,
+        "hidden": false
+    }, {
+        "attack": 247,
+        "level": 4,
+        "hidden": false
+    }, {
+        "attack": 212,
+        "level": 8,
+        "hidden": false
+    }, {
+        "attack": 168,
+        "level": 12,
+        "hidden": false
+    }, {
+        "attack": 166,
+        "level": 13,
+        "hidden": false
+    }, {
+        "attack": 167,
+        "level": 14,
+        "hidden": false
+    }, {
+        "attack": 162,
+        "level": 19,
+        "hidden": false
+    }, {
+        "attack": 165,
+        "level": 25,
+        "hidden": false
+    }, {
+        "attack": 284,
+        "level": 30,
+        "hidden": false
+    }, {
+        "attack": 163,
+        "level": 40,
+        "hidden": false
+    }],
+    "hiddenList": [{
+        "attack": 70,
+        "level": 10,
+        "hidden": true
+    }, {
+        "attack": 138,
+        "level": 20,
+        "hidden": true
+    }, {
+        "attack": 82,
+        "level": 30,
+        "hidden": true
+    }],
+    "innate": 161
+},
+"evolutions": {
+    "evolutions": [{
+        "raceToEvolve": 28,
+        "conditions": [{
+            "condition": {
+                "level": 21
+            },
+            "type": 0
+        }]
+    }]
+}

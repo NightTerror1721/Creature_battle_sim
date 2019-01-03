@@ -1,0 +1,112 @@
+"id": 23,
+"name": "Muricélago Terrible",
+"hp_base": 75,
+"attack_base": 80,
+"defense_base": 70,
+"spAttack_base": 65,
+"spDefense_base": 60,
+"speed_base": 90,
+"primary_type": 15,
+"secondary_type": 12,
+"growth": 0,
+"attack_pool": {
+    "normalList": [{
+        "attack": 161,
+        "level": 1,
+        "hidden": false
+    }, {
+        "attack": 280,
+        "level": 5,
+        "hidden": false
+    }, {
+        "attack": 258,
+        "level": 8,
+        "hidden": false
+    }, {
+        "attack": 80,
+        "level": 11,
+        "hidden": false
+    }, {
+        "attack": 59,
+        "level": 14,
+        "hidden": false
+    }, {
+        "attack": 281,
+        "level": 19,
+        "hidden": false
+    }, {
+        "attack": 81,
+        "level": 23,
+        "hidden": false
+    }, {
+        "attack": 220,
+        "level": 28,
+        "hidden": false
+    }, {
+        "attack": 177,
+        "level": 32,
+        "hidden": false
+    }, {
+        "attack": 216,
+        "level": 38,
+        "hidden": false
+    }, {
+        "attack": 185,
+        "level": 42,
+        "hidden": false
+    }, {
+        "attack": 260,
+        "level": 45,
+        "hidden": false
+    }],
+    "hiddenList": [{
+        "attack": 176,
+        "level": 10,
+        "hidden": true
+    }, {
+        "attack": 3,
+        "level": 15,
+        "hidden": true
+    }, {
+        "attack": 212,
+        "level": 15,
+        "hidden": true
+    }, {
+        "attack": 53,
+        "level": 20,
+        "hidden": true
+    }, {
+        "attack": 179,
+        "level": 25,
+        "hidden": true
+    }, {
+        "attack": 214,
+        "level": 30,
+        "hidden": true
+    }, {
+        "attack": 271,
+        "level": 30,
+        "hidden": true
+    }, {
+        "attack": 92,
+        "level": 35,
+        "hidden": true
+    }],
+    "innate": 81
+},
+"evolutions": {
+    "evolutions": [{
+        "raceToEvolve": 24,
+        "conditions": [{
+            "condition": {
+                "level": 36
+            },
+            "type": 0
+        }, {
+            "condition": {
+                "attack": 216
+            },
+            "type": 3
+        }]
+    }]
+}

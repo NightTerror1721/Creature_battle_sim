@@ -1,15 +1,15 @@
-"pp": 10,
+"pp": 20,
 "precision": 100,
-"name": "Bomba Lodo",
-"id": 215,
-"power": 90,
+"name": "Corte Cruzado Venenoso",
+"id": 282,
+"power": 70,
 "priority": 0,
 "type": 15,
 "turns": [{
     "min_hits": 1,
     "secondary_effects": [{
         "effect": {
-            "probability": 30,
+            "probability": 10,
             "confusion": false,
             "paralysis": false,
             "burn": false,
@@ -34,13 +34,13 @@
             "attackValue": 0,
             "defenseValue": 0,
             "backwardOrAbsorbDamage": 0,
-            "special": true,
+            "special": false,
             "selfTarget": false,
             "selfElementalTypeUsed": false,
-            "probCriticalHit": false
+            "probCriticalHit": true
         },
         "id": 1
     },
-    "id": 215,
+    "id": 282,
     "message": ""
 }]

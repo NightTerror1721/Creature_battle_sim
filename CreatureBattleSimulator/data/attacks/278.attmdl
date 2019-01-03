@@ -1,19 +1,19 @@
-"pp": 10,
-"precision": 100,
-"name": "Bomba Lodo",
-"id": 215,
-"power": 90,
+"pp": 15,
+"precision": 95,
+"name": "Colmillo Rayo",
+"id": 278,
+"power": 70,
 "priority": 0,
-"type": 15,
+"type": 13,
 "turns": [{
     "min_hits": 1,
     "secondary_effects": [{
         "effect": {
-            "probability": 30,
+            "probability": 10,
             "confusion": false,
-            "paralysis": false,
+            "paralysis": true,
             "burn": false,
-            "poisoning": true,
+            "poisoning": false,
             "intoxication": false,
             "sleep": false,
             "sleepinees": false,
@@ -26,6 +26,25 @@
             "selfTarget": false
         },
         "id": 3
+    }, {
+        "effect": {
+            "probability": 10,
+            "confusion": false,
+            "paralysis": false,
+            "burn": false,
+            "poisoning": false,
+            "intoxication": false,
+            "sleep": false,
+            "sleepinees": false,
+            "freezing": false,
+            "curse": false,
+            "nightmare": false,
+            "critical_hit": false,
+            "intimidated": true,
+            "resting": false,
+            "selfTarget": false
+        },
+        "id": 3
     }],
     "max_hits": 1,
     "damage_effect": {
@@ -34,13 +53,13 @@
             "attackValue": 0,
             "defenseValue": 0,
             "backwardOrAbsorbDamage": 0,
-            "special": true,
+            "special": false,
             "selfTarget": false,
             "selfElementalTypeUsed": false,
             "probCriticalHit": false
         },
         "id": 1
     },
-    "id": 215,
+    "id": 278,
     "message": ""
 }]

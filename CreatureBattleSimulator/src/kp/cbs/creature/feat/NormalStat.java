@@ -42,7 +42,7 @@ public abstract class NormalStat extends Stat
         }
         else if(levels < 0)
         {
-            if(modifLevel < 6)
+            if(modifLevel > -6)
             {
                 modifLevel = Math.max(-6, modifLevel + levels);
                 return true;

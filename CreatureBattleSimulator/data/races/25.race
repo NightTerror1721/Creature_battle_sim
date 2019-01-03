@@ -1,0 +1,91 @@
+"id": 25,
+"name": "Topo",
+"hp_base": 15,
+"attack_base": 75,
+"defense_base": 70,
+"spAttack_base": 65,
+"spDefense_base": 70,
+"speed_base": 95,
+"primary_type": 9,
+"secondary_type": 9,
+"growth": 1,
+"attack_pool": {
+    "normalList": [{
+        "attack": 134,
+        "level": 1,
+        "hidden": false
+    }, {
+        "attack": 19,
+        "level": 4,
+        "hidden": false
+    }, {
+        "attack": 258,
+        "level": 7,
+        "hidden": false
+    }, {
+        "attack": 144,
+        "level": 11,
+        "hidden": false
+    }, {
+        "attack": 159,
+        "level": 14,
+        "hidden": false
+    }, {
+        "attack": 139,
+        "level": 18,
+        "hidden": false
+    }, {
+        "attack": 5,
+        "level": 24,
+        "hidden": false
+    }, {
+        "attack": 141,
+        "level": 30,
+        "hidden": false
+    }, {
+        "attack": 135,
+        "level": 40,
+        "hidden": false
+    }, {
+        "attack": 140,
+        "level": 50,
+        "hidden": false
+    }],
+    "hiddenList": [{
+        "attack": 247,
+        "level": 10,
+        "hidden": true
+    }, {
+        "attack": 3,
+        "level": 15,
+        "hidden": true
+    }, {
+        "attack": 137,
+        "level": 20,
+        "hidden": true
+    }, {
+        "attack": 82,
+        "level": 25,
+        "hidden": true
+    }, {
+        "attack": 267,
+        "level": 30,
+        "hidden": true
+    }, {
+        "attack": 272,
+        "level": 35,
+        "hidden": true
+    }],
+    "innate": 4
+},
+"evolutions": {
+    "evolutions": [{
+        "raceToEvolve": 26,
+        "conditions": [{
+            "condition": {
+                "level": 27
+            },
+            "type": 0
+        }]
+    }]
+}

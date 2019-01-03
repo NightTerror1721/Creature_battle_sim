@@ -1,0 +1,103 @@
+"id": 18,
+"name": "Oso Pardo Terrible",
+"hp_base": 112,
+"attack_base": 116,
+"defense_base": 98,
+"spAttack_base": 40,
+"spDefense_base": 93,
+"speed_base": 51,
+"primary_type": 0,
+"secondary_type": 0,
+"growth": 0,
+"attack_pool": {
+    "normalList": [{
+        "attack": 4,
+        "level": 1,
+        "hidden": false
+    }, {
+        "attack": 18,
+        "level": 1,
+        "hidden": false
+    }, {
+        "attack": 19,
+        "level": 3,
+        "hidden": false
+    }, {
+        "attack": 80,
+        "level": 8,
+        "hidden": false
+    }, {
+        "attack": 248,
+        "level": 12,
+        "hidden": false
+    }, {
+        "attack": 41,
+        "level": 15,
+        "hidden": false
+    }, {
+        "attack": 250,
+        "level": 19,
+        "hidden": false
+    }, {
+        "attack": 81,
+        "level": 23,
+        "hidden": false
+    }, {
+        "attack": 5,
+        "level": 26,
+        "hidden": false
+    }, {
+        "attack": 273,
+        "level": 30,
+        "hidden": false
+    }, {
+        "attack": 205,
+        "level": 36,
+        "hidden": false
+    }, {
+        "attack": 13,
+        "level": 40,
+        "hidden": false
+    }, {
+        "attack": 7,
+        "level": 46,
+        "hidden": false
+    }, {
+        "attack": 33,
+        "level": 54,
+        "hidden": false
+    }],
+    "hiddenList": [{
+        "attack": 92,
+        "level": 20,
+        "hidden": true
+    }, {
+        "attack": 60,
+        "level": 25,
+        "hidden": true
+    }, {
+        "attack": 51,
+        "level": 30,
+        "hidden": true
+    }, {
+        "attack": 147,
+        "level": 35,
+        "hidden": true
+    }, {
+        "attack": 271,
+        "level": 35,
+        "hidden": true
+    }, {
+        "attack": 135,
+        "level": 40,
+        "hidden": true
+    }, {
+        "attack": 12,
+        "level": 55,
+        "hidden": true
+    }],
+    "innate": 5
+},
+"evolutions": {
+    "evolutions": []
+}

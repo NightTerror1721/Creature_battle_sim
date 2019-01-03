@@ -1,0 +1,75 @@
+"id": 19,
+"name": "Can",
+"hp_base": 35,
+"attack_base": 58,
+"defense_base": 40,
+"spAttack_base": 30,
+"spDefense_base": 40,
+"speed_base": 52,
+"primary_type": 0,
+"secondary_type": 0,
+"growth": 0,
+"attack_pool": {
+    "normalList": [{
+        "attack": 274,
+        "level": 4,
+        "hidden": false
+    }, {
+        "attack": 134,
+        "level": 7,
+        "hidden": false
+    }, {
+        "attack": 80,
+        "level": 10,
+        "hidden": false
+    }, {
+        "attack": 19,
+        "level": 13,
+        "hidden": false
+    }, {
+        "attack": 248,
+        "level": 15,
+        "hidden": false
+    }, {
+        "attack": 81,
+        "level": 24,
+        "hidden": false
+    }, {
+        "attack": 275,
+        "level": 28,
+        "hidden": false
+    }, {
+        "attack": 272,
+        "level": 33,
+        "hidden": false
+    }, {
+        "attack": 12,
+        "level": 45,
+        "hidden": false
+    }],
+    "hiddenList": [{
+        "attack": 250,
+        "level": 10,
+        "hidden": true
+    }, {
+        "attack": 28,
+        "level": 20,
+        "hidden": true
+    }, {
+        "attack": 271,
+        "level": 30,
+        "hidden": true
+    }],
+    "innate": 1
+},
+"evolutions": {
+    "evolutions": [{
+        "raceToEvolve": 20,
+        "conditions": [{
+            "condition": {
+                "level": 16
+            },
+            "type": 0
+        }]
+    }]
+}

@@ -1,19 +1,38 @@
-"pp": 10,
-"precision": 100,
-"name": "Bomba Lodo",
-"id": 215,
-"power": 90,
+"pp": 15,
+"precision": 95,
+"name": "Colmillo Hielo",
+"id": 277,
+"power": 70,
 "priority": 0,
-"type": 15,
+"type": 7,
 "turns": [{
     "min_hits": 1,
     "secondary_effects": [{
         "effect": {
-            "probability": 30,
+            "probability": 10,
             "confusion": false,
             "paralysis": false,
             "burn": false,
-            "poisoning": true,
+            "poisoning": false,
+            "intoxication": false,
+            "sleep": false,
+            "sleepinees": false,
+            "freezing": true,
+            "curse": false,
+            "nightmare": false,
+            "critical_hit": false,
+            "intimidated": false,
+            "resting": false,
+            "selfTarget": false
+        },
+        "id": 3
+    }, {
+        "effect": {
+            "probability": 10,
+            "confusion": false,
+            "paralysis": false,
+            "burn": false,
+            "poisoning": false,
             "intoxication": false,
             "sleep": false,
             "sleepinees": false,
@@ -21,7 +40,7 @@
             "curse": false,
             "nightmare": false,
             "critical_hit": false,
-            "intimidated": false,
+            "intimidated": true,
             "resting": false,
             "selfTarget": false
         },
@@ -34,13 +53,13 @@
             "attackValue": 0,
             "defenseValue": 0,
             "backwardOrAbsorbDamage": 0,
-            "special": true,
+            "special": false,
             "selfTarget": false,
             "selfElementalTypeUsed": false,
             "probCriticalHit": false
         },
         "id": 1
     },
-    "id": 215,
+    "id": 277,
     "message": ""
 }]

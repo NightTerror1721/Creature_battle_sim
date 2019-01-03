@@ -1,19 +1,19 @@
-"pp": 10,
-"precision": 100,
-"name": "Bomba Lodo",
-"id": 215,
-"power": 90,
+"pp": 20,
+"precision": 55,
+"name": "Supersónico",
+"id": 280,
+"power": 0,
 "priority": 0,
-"type": 15,
+"type": 0,
 "turns": [{
     "min_hits": 1,
     "secondary_effects": [{
         "effect": {
-            "probability": 30,
-            "confusion": false,
+            "probability": 100,
+            "confusion": true,
             "paralysis": false,
             "burn": false,
-            "poisoning": true,
+            "poisoning": false,
             "intoxication": false,
             "sleep": false,
             "sleepinees": false,
@@ -29,18 +29,8 @@
     }],
     "max_hits": 1,
     "damage_effect": {
-        "effect": {
-            "powerValue": 0,
-            "attackValue": 0,
-            "defenseValue": 0,
-            "backwardOrAbsorbDamage": 0,
-            "special": true,
-            "selfTarget": false,
-            "selfElementalTypeUsed": false,
-            "probCriticalHit": false
-        },
-        "id": 1
+        "id": 0
     },
-    "id": 215,
+    "id": 280,
     "message": ""
 }]

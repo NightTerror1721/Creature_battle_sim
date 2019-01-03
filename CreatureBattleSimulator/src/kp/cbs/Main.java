@@ -9,12 +9,7 @@ import java.awt.EventQueue;
 import java.io.IOException;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import kp.cbs.battle.Battle;
-import kp.cbs.battle.Encounter;
-import kp.cbs.creature.Creature;
-import kp.cbs.creature.attack.effects.AIIntelligence;
 import kp.cbs.editor.MainMenuEditor;
-import kp.cbs.utils.RNG;
 import kp.cbs.utils.SoundManager;
 
 /**
@@ -38,19 +33,19 @@ public final class Main
         
         RacePool.getAllRaces(false);*/
         
-        executeGame();
+        /*executeGame();
         
         var encounter = new Encounter();
         var rng = new RNG();
         
-        encounter.getSelfTeam().addCreature(Creature.createWild(5, 100, rng));
-        encounter.getEnemyTeam().addCreature(Creature.createWild(11, 100, rng));
+        encounter.getSelfTeam().addCreature(Creature.createWild(14, 100, rng));
+        encounter.getEnemyTeam().addCreature(Creature.createWild(8, 100, rng));
         
         encounter.setIntelligence(AIIntelligence.create(255));
         
-        Battle.initiate(null, encounter);
+        Battle.initiate(null, encounter);*/
         
-        //executeEditor();
+        executeEditor();
     }
     
     private static void executeEditor()
