@@ -7,8 +7,14 @@ package kp.cbs.battle.prop;
 
 import java.util.LinkedList;
 import java.util.Objects;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import kp.cbs.battle.Encounter;
 import kp.cbs.battle.Team.SearchFirstBehabior;
 import kp.cbs.battle.Team.SearchNextBehabior;
+import kp.cbs.creature.Creature;
+import kp.cbs.creature.attack.effects.AIIntelligence;
+import kp.cbs.utils.RNG;
 import kp.cbs.utils.Utils;
 import kp.udl.autowired.Property;
 
@@ -50,10 +56,21 @@ public final class BattleProperties
     public final SearchNextBehabior getSearchNextBehabior() { return nextBehabior; }
     
     
-    /*public final Encounter createEncounter()
+    public final Encounter createEncounter(int currentElo, int minElo, int maxElo)
     {
-        var encounter = new Encounter();
+        return createEncounter(
+                (templates, rng) -> templates.generateCreature(rng, currentElo, minElo, maxElo),
+                (props, rng) -> props.generateCreature(rng, currentElo, minElo, maxElo));
+    }
+    public final Encounter createEncounter()
+    {
+        return createEncounter(TemplateList::generateCreature, CreatureProperties::generateCreature);
+    }
+    
+    private Encounter createEncounter(BiFunction<TemplateList, RNG, Creature> tempGenerator, BiFunction<CreatureProperties, RNG, Creature> generator)
+    {
         var rng = new RNG();
+        var encounter = new Encounter();
         
         encounter.setMusic(music);
         encounter.setIntelligence(AIIntelligence.create(intelligence));
@@ -63,12 +80,22 @@ public final class BattleProperties
         if(nextBehabior != null)
             encounter.setSearchNextBehabior(nextBehabior);
         
+        var templates = new TemplateList();
         var minTeam = Math.min(Math.min(1, minTeamLen), Math.min(1, maxTeamLen));
         var maxTeam = Math.max(Math.min(1, minTeamLen), Math.min(1, maxTeamLen));
         var teamSize = minTeam == maxTeam ? maxTeam : rng.d(maxTeam - minTeam + 1) + minTeam;
         
+        for(int i = 0; !templates.isEmpty() && i < teamSize; i++)
+        {
+            var creature = tempGenerator.apply(templates, rng);
+            encounter.getEnemyTeam().addCreature(creature);
+        }
         
-    }*/
+        for(var tem : required)
+            encounter.getEnemyTeam().addCreature(generator.apply(tem, rng));
+        
+        return encounter;
+    }
     
     
     
@@ -77,13 +104,9 @@ public final class BattleProperties
     
     public static final class CreatureEntry
     {
-        @Property(set = "setMinElo")        private int minElo = 0;
         @Property(set = "setProbability")   private int probability = 1;
         @Property                           private boolean unique;
         @Property                           private CreatureProperties creature;
-        
-        public final void setMinElo(int elo) { this.minElo = Math.max(0, elo); }
-        public final int getMinElo() { return minElo; }
         
         public final void setProbability(int prob) { this.probability = Math.max(1, prob); }
         public final int getProbability() { return probability; }
@@ -93,5 +116,60 @@ public final class BattleProperties
         
         public final void setCreatureProperties(CreatureProperties creature) { this.creature = creature; }
         public final CreatureProperties getCreatureProperties() { return creature; }
+    }
+    
+    private final class TemplateList
+    {
+        private final LinkedList<CreatureEntry> templates;
+        private int len;
+        
+        private TemplateList()
+        {
+            templates = new LinkedList<>(entries);
+            computeLen();
+        }
+        
+        private void computeLen()
+        {
+            len = 0;
+            for(var entry : templates)
+                len += entry.probability;
+        }
+        
+        public final boolean isEmpty() { return templates.isEmpty(); }
+        
+        public final Creature generateCreature(RNG rng, int currentElo, int minElo, int maxElo)
+        {
+            return generateCreature(rng, tem -> tem.generateCreature(rng, currentElo, minElo, maxElo));
+        }
+        public final Creature generateCreature(RNG rng)
+        {
+            return generateCreature(rng, tem -> tem.generateCreature(rng));
+        }
+        
+        private Creature generateCreature(RNG rng, Function<CreatureProperties, Creature> generator)
+        {
+            if(templates.isEmpty())
+                return null;
+            var value = rng.d(len);
+            for(var it = templates.listIterator(); it.hasNext();)
+            {
+                var tem = it.next();
+                if(value < tem.probability)
+                {
+                    if(tem.isUnique())
+                    {
+                        it.remove();
+                        computeLen();
+                    }
+                    return generator.apply(tem.getCreatureProperties());
+                }
+            }
+            value = rng.d(templates.size());
+            var tem = templates.get(value);
+            if(tem.isUnique())
+                templates.remove(value);
+            return generator.apply(tem.getCreatureProperties());
+        }
     }
 }

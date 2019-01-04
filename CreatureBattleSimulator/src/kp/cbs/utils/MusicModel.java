@@ -60,4 +60,16 @@ public final class MusicModel
     {
         return MODELS.getOrDefault(name, null);
     }
+    
+    public static final String[] getAllModelNames(boolean sorted)
+    {
+        return sorted
+                ?MODELS.values().stream()
+                        .map(MusicModel::getName)
+                        .sorted(String::compareTo)
+                        .toArray(String[]::new)
+                : MODELS.values().stream()
+                        .map(MusicModel::getName)
+                        .toArray(String[]::new);
+    }
 }

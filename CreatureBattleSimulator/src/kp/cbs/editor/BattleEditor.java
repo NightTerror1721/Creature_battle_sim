@@ -5,7 +5,14 @@
  */
 package kp.cbs.editor;
 
+import java.util.Objects;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JDialog;
+import kp.cbs.battle.Team.SearchFirstBehabior;
+import kp.cbs.battle.Team.SearchNextBehabior;
+import kp.cbs.battle.prop.CreatureProperties;
+import static kp.cbs.editor.AttackEditor.generateIntegerRange;
+import kp.cbs.utils.MusicModel;
 import kp.cbs.utils.Utils;
 
 /**
@@ -31,7 +38,47 @@ public final class BattleEditor extends JDialog
     {
         setResizable(false);
         Utils.focus(this);
+        
+        minTeam.setModel(new DefaultComboBoxModel<>(generateIntegerRange(1, 12, 1)));
+        maxTeam.setModel(new DefaultComboBoxModel<>(generateIntegerRange(1, 12, 1)));
+        
+        behabiorFirst.setModel(new DefaultComboBoxModel<>(SearchFirstBehabior.values()));
+        behabiorNext.setModel(new DefaultComboBoxModel<>(SearchNextBehabior.values()));
+        
+        music.setModel(new DefaultComboBoxModel<>(MusicModel.getAllModelNames(true)));
+        intelligence.setModel(new DefaultComboBoxModel<>(generateIntegerRange(0, 255, 1)));
     }
+    
+    
+    public static final class CreatureTemplate
+    {
+        private final CreatureProperties props = new CreatureProperties();
+        private int probability = 1;
+        private TemplateType type = TemplateType.NORMAL;
+        
+        public final CreatureProperties getProperties() { return props; }
+        
+        public final void setProbability(int probabilty) { this.probability = Math.max(1, probability); }
+        public final int getProbability() { return probability; }
+        
+        public final void setType(TemplateType type) { this.type = Objects.requireNonNullElse(type, TemplateType.NORMAL); }
+        public final TemplateType getType() { return type; }
+        
+        @Override
+        public final String toString()
+        {
+            String t;
+            switch(type)
+            {
+                default:
+                case NORMAL: t = "[N] "; break;
+                case UNIQUE: t = "[U] "; break;
+                case REQUIRED: t = "[R] "; break;
+            }
+        }
+    }
+    
+    public enum TemplateType { NORMAL, UNIQUE, REQUIRED; }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -41,48 +88,209 @@ public final class BattleEditor extends JDialog
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
+        name = new javax.swing.JTextField();
+        minTeam = new javax.swing.JComboBox<>();
+        maxTeam = new javax.swing.JComboBox<>();
+        behabiorFirst = new javax.swing.JComboBox<>();
+        behabiorNext = new javax.swing.JComboBox<>();
+        music = new javax.swing.JComboBox<>();
+        intelligence = new javax.swing.JComboBox<>();
         jPanel2 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        creatures = new javax.swing.JList<>();
+        jPanel3 = new javax.swing.JPanel();
+        jComboBox1 = new javax.swing.JComboBox<>();
+        jComboBox2 = new javax.swing.JComboBox<>();
+        jButton4 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
+        jPanel4 = new javax.swing.JPanel();
+        jButton6 = new javax.swing.JButton();
+        jButton7 = new javax.swing.JButton();
+        jButton8 = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 398, Short.MAX_VALUE)
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 274, Short.MAX_VALUE)
-        );
+        jPanel1.setLayout(new java.awt.GridBagLayout());
+
+        name.setBorder(javax.swing.BorderFactory.createTitledBorder("Nombre"));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.weighty = 0.1;
+        jPanel1.add(name, gridBagConstraints);
+
+        minTeam.setBorder(javax.swing.BorderFactory.createTitledBorder("Tamaño mínimo equipo"));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.weighty = 0.1;
+        jPanel1.add(minTeam, gridBagConstraints);
+
+        maxTeam.setBorder(javax.swing.BorderFactory.createTitledBorder("Tamaño máximo equipo"));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.weighty = 0.1;
+        jPanel1.add(maxTeam, gridBagConstraints);
+
+        behabiorFirst.setBorder(javax.swing.BorderFactory.createTitledBorder("Comportamiento primero"));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.weighty = 0.1;
+        jPanel1.add(behabiorFirst, gridBagConstraints);
+
+        behabiorNext.setBorder(javax.swing.BorderFactory.createTitledBorder("Comportamiento siguiente"));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.weighty = 0.1;
+        jPanel1.add(behabiorNext, gridBagConstraints);
+
+        music.setBorder(javax.swing.BorderFactory.createTitledBorder("BGM"));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.weighty = 0.1;
+        jPanel1.add(music, gridBagConstraints);
+
+        intelligence.setBorder(javax.swing.BorderFactory.createTitledBorder("Inteligencia"));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.weighty = 0.1;
+        jPanel1.add(intelligence, gridBagConstraints);
 
         jTabbedPane1.addTab("Principal", jPanel1);
+
+        creatures.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jScrollPane1.setViewportView(creatures);
+
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Propiedades"));
+        jPanel3.setLayout(new java.awt.GridLayout(2, 2));
+
+        jComboBox1.setBorder(javax.swing.BorderFactory.createTitledBorder("Probabilidad"));
+        jPanel3.add(jComboBox1);
+
+        jPanel3.add(jComboBox2);
+
+        jButton4.setText("Editar");
+        jPanel3.add(jButton4);
+
+        jButton5.setText("Eliminar");
+        jPanel3.add(jButton5);
+
+        jPanel4.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel4.setLayout(new java.awt.GridBagLayout());
+
+        jButton6.setText("Crear");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.weighty = 0.1;
+        jPanel4.add(jButton6, gridBagConstraints);
+
+        jButton7.setText("Subir");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.weighty = 0.1;
+        jPanel4.add(jButton7, gridBagConstraints);
+
+        jButton8.setText("Bajar");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.weighty = 0.1;
+        jPanel4.add(jButton8, gridBagConstraints);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 398, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 274, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("Luchadores", jPanel2);
+
+        jButton1.setText("Guardar");
+
+        jButton2.setText("Cargar");
+
+        jButton3.setText("Nueva");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jTabbedPane1)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jButton3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton1)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jTabbedPane1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(jButton2)
+                    .addComponent(jButton3))
+                .addContainerGap())
         );
 
         pack();
@@ -90,8 +298,29 @@ public final class BattleEditor extends JDialog
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<SearchFirstBehabior> behabiorFirst;
+    private javax.swing.JComboBox<SearchNextBehabior> behabiorNext;
+    private javax.swing.JList<CreatureTemplate> creatures;
+    private javax.swing.JComboBox<Integer> intelligence;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
+    private javax.swing.JButton jButton8;
+    private javax.swing.JComboBox<Integer> jComboBox1;
+    private javax.swing.JComboBox<TemplateType> jComboBox2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JComboBox<Integer> maxTeam;
+    private javax.swing.JComboBox<Integer> minTeam;
+    private javax.swing.JComboBox<String> music;
+    private javax.swing.JTextField name;
     // End of variables declaration//GEN-END:variables
 }

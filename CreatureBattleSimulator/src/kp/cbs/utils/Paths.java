@@ -21,6 +21,7 @@ public final class Paths
     public static final Path SOUND = initDir("data", "audio", "sound");
     public static final Path ATTACKS = initDir("data", "attacks");
     public static final Path RACES = initDir("data", "races");
+    public static final Path BATTLES = initDir("data", "battles");
     
     
     public static final Path get(String path, String... more) { return java.nio.file.Paths.get(path, more); }
