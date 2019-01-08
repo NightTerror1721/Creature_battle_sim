@@ -1,11 +1,11 @@
 "id": 20,
 "name": "Can Terrible",
-"hp_base": 70,
-"attack_base": 113,
-"defense_base": 75,
-"spAttack_base": 45,
-"spDefense_base": 75,
-"speed_base": 102,
+"hp_base": 67,
+"attack_base": 88,
+"defense_base": 64,
+"spAttack_base": 43,
+"spDefense_base": 64,
+"speed_base": 89,
 "primary_type": 0,
 "secondary_type": 5,
 "growth": 0,
@@ -55,24 +55,20 @@
         "level": 32,
         "hidden": false
     }, {
-        "attack": 91,
+        "attack": 272,
         "level": 34,
         "hidden": false
     }, {
-        "attack": 272,
+        "attack": 7,
         "level": 37,
         "hidden": false
     }, {
-        "attack": 7,
-        "level": 41,
-        "hidden": false
-    }, {
         "attack": 6,
-        "level": 46,
+        "level": 40,
         "hidden": false
     }, {
         "attack": 12,
-        "level": 59,
+        "level": 50,
         "hidden": false
     }],
     "hiddenList": [{
@@ -88,52 +84,48 @@
         "level": 25,
         "hidden": true
     }, {
-        "attack": 276,
-        "level": 30,
-        "hidden": true
-    }, {
-        "attack": 277,
-        "level": 30,
-        "hidden": true
-    }, {
-        "attack": 278,
-        "level": 30,
-        "hidden": true
-    }, {
         "attack": 90,
         "level": 35,
-        "hidden": true
-    }, {
-        "attack": 51,
-        "level": 40,
-        "hidden": true
-    }, {
-        "attack": 147,
-        "level": 40,
         "hidden": true
     }, {
         "attack": 205,
         "level": 40,
         "hidden": true
     }, {
-        "attack": 13,
+        "attack": 276,
+        "level": 40,
+        "hidden": true
+    }, {
+        "attack": 277,
+        "level": 40,
+        "hidden": true
+    }, {
+        "attack": 278,
+        "level": 40,
+        "hidden": true
+    }, {
+        "attack": 147,
         "level": 45,
+        "hidden": true
+    }, {
+        "attack": 13,
+        "level": 55,
         "hidden": true
     }, {
         "attack": 31,
-        "level": 45,
-        "hidden": true
-    }, {
-        "attack": 33,
-        "level": 50,
-        "hidden": true
-    }, {
-        "attack": 25,
         "level": 55,
         "hidden": true
     }],
-    "innate": 91
+    "innate": 279
 },
 "evolutions": {
-    "evolutions": []
+    "evolutions": [{
+        "raceToEvolve": 21,
+        "conditions": [{
+            "condition": {
+                "level": 32
+            },
+            "type": 0
+        }]
+    }]
 }

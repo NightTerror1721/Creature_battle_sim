@@ -5,6 +5,7 @@
  */
 package kp.cbs.creature;
 
+import java.util.Arrays;
 import kp.cbs.creature.feat.StatId;
 import static kp.cbs.creature.feat.StatId.*;
 import kp.cbs.utils.RNG;
@@ -39,7 +40,8 @@ public enum Nature
     GENTILE("Amable", SPECIAL_DEFENSE, DEFENSE),
     SASSY("Grosera", SPECIAL_DEFENSE, SPEED),
     CAREFUL("Cauta", SPECIAL_DEFENSE, SPECIAL_ATTACK),
-    QUIRKY("Rara", SPECIAL_DEFENSE, SPECIAL_DEFENSE);
+    QUIRKY("Rara", SPECIAL_DEFENSE, SPECIAL_DEFENSE),
+    UNDEFINED("No definida", null, null);
     
     private final String name;
     private final StatId up;
@@ -56,15 +58,24 @@ public enum Nature
     
     public final float getStatModificator(StatId stat)
     {
-        if(up == down)
+        if(up == down || this == UNDEFINED)
             return 1f;
         return stat == up ? 1.1f : stat == down ? 0.9f : 1f;
     }
     
-    private static final Nature[] VALUES = values();
+    @Override
+    public final String toString() { return name; }
+    
+    private static final Nature[] VALUES = generateNormalNatures();
     
     public static final Nature random(RNG rng)
     {
         return VALUES[rng.d(VALUES.length)];
+    }
+    
+    private static Nature[] generateNormalNatures()
+    {
+        var all = values();
+        return Arrays.copyOf(all, all.length - 1);
     }
 }

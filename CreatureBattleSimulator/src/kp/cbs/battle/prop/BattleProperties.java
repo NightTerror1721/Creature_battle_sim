@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.stream.Stream;
 import kp.cbs.battle.Encounter;
 import kp.cbs.battle.Team.SearchFirstBehabior;
 import kp.cbs.battle.Team.SearchNextBehabior;
@@ -54,6 +55,22 @@ public final class BattleProperties
     
     public final void setSearchNextBehabior(SearchNextBehabior behabior) { this.nextBehabior = Objects.requireNonNullElse(behabior, SearchNextBehabior.SEARCH); }
     public final SearchNextBehabior getSearchNextBehabior() { return nextBehabior; }
+    
+    public final void addCreature(CreatureProperties creature, int probabilities, boolean unique, boolean required)
+    {
+        if(required)
+            this.required.add(Objects.requireNonNull(creature));
+        else
+        {
+            var entry = new CreatureEntry();
+            entry.setCreatureProperties(creature);
+            entry.setUnique(unique);
+            entry.setProbability(probabilities);
+            entries.add(entry);
+        }
+    }
+    public final Stream<CreatureEntry> streamNormalCreatures() { return entries.stream(); }
+    public final Stream<CreatureProperties> streamRequiredCreatures() { return required.stream(); }
     
     
     public final Encounter createEncounter(int currentElo, int minElo, int maxElo)

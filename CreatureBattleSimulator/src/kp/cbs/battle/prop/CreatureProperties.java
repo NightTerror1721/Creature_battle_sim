@@ -11,6 +11,7 @@ import kp.cbs.creature.Creature;
 import kp.cbs.creature.Nature;
 import kp.cbs.creature.attack.AttackModel;
 import kp.cbs.creature.attack.AttackSlot;
+import kp.cbs.creature.attack.RaceAttackPool.RaceAttack;
 import kp.cbs.creature.feat.StatId;
 import kp.cbs.creature.race.Race;
 import kp.cbs.utils.RNG;
@@ -25,16 +26,16 @@ public final class CreatureProperties
 {
     @Property private Race race;
     
-    @Property private String name;
+    @Property private String name = " ";
     
-    @Property private int minLevel;
+    @Property private int minLevel = 1;
     
-    @Property private int maxLevel;
+    @Property private int maxLevel = 1;
     
-    @Property private Nature nature;
+    @Property private Nature nature = Nature.UNDEFINED;
     
     
-    @Property private boolean randomGenetic;
+    @Property private boolean randomGenetic = true;
     
     @Property private int hpGen;
     @Property private int attackGen;
@@ -44,7 +45,7 @@ public final class CreatureProperties
     @Property private int speedGen;
     
     
-    @Property private boolean levelAttacks;
+    @Property private boolean levelAttacks = true;
     
     @Property private int maxHiddenAttacks;
     
@@ -54,7 +55,7 @@ public final class CreatureProperties
     @Property private AttackModel att4;
     
     
-    @Property private int uniqueAb;
+    @Property private int uniqueAb = 0;
     
     @Property private int hpAb;
     @Property private int attackAb;
@@ -98,14 +99,12 @@ public final class CreatureProperties
     }
     
     public void setNature(Nature nature) {
-        this.nature = nature;
+        this.nature = Objects.requireNonNullElse(nature, Nature.UNDEFINED);
     }
     
     public Nature getNature() {
         return nature;
     }
-    
-    public final boolean hasRandomNature() { return nature == null; }
 
     public boolean isRandomGenetic() {
         return randomGenetic;
@@ -127,7 +126,7 @@ public final class CreatureProperties
         return attackGen;
     }
 
-    public void setAttackGen(int attackGen) {
+    public void setAttackGenetic(int attackGen) {
         this.attackGen = attackGen;
     }
 
@@ -143,7 +142,7 @@ public final class CreatureProperties
         return spAttackGen;
     }
 
-    public void setSpeialAttackGenetic(int spAttackGen) {
+    public void setSpecialAttackGenetic(int spAttackGen) {
         this.spAttackGen = spAttackGen;
     }
 
@@ -184,8 +183,14 @@ public final class CreatureProperties
             case SLOT_4: return att4;
         }
     }
+    public RaceAttack getRaceAttack(AttackSlot slot) {
+        if(race == null)
+            return null;
+        var model = getAttack(slot);
+        return race.getAttackPool().findRaceAttack(model);
+    }
 
-    public void setAttack1(AttackSlot slot, AttackModel att) {
+    public void setAttack(AttackSlot slot, AttackModel att) {
         switch(slot)
         {
             default: throw new IllegalStateException();
@@ -196,7 +201,7 @@ public final class CreatureProperties
         }
     }
     
-    public final boolean hasUniqueAbility() { return uniqueAb < 0; }
+    public final boolean hasUniqueAbility() { return uniqueAb >= 0; }
     public final void dissableUniqueAbility() { uniqueAb = -1; }
 
     public int getUniqueAbilityValue() {
@@ -300,7 +305,7 @@ public final class CreatureProperties
     {
         creature.setName(name.isBlank() ? race.getName() : name);
         
-        if(hasRandomNature())
+        if(nature == null || nature == Nature.UNDEFINED)
             creature.setNature(Nature.random(rng));
         else creature.setNature(nature);
         

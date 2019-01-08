@@ -19,7 +19,7 @@ public final class BattlePropertiesPool
 {
     private BattlePropertiesPool() {}
     
-    public static final BattlePropertiesPool load(String name)
+    public static final BattleProperties load(String name)
     {
         var path = Paths.concat(Paths.BATTLES, name + ".bprops");
         if(!Files.isReadable(path))
@@ -27,7 +27,7 @@ public final class BattlePropertiesPool
         try
         {
             var base = Serializer.read(path);
-            return Serializer.inject(base, BattlePropertiesPool.class); 
+            return Serializer.inject(base, BattleProperties.class); 
         }
         catch(IOException | UDLException ex)
         {
@@ -36,7 +36,24 @@ public final class BattlePropertiesPool
         }
     }
     
-    public static final boolean store(String name, BattlePropertiesPool props)
+    public static final String[] getAllNames()
+    {
+        try
+        {
+            return Files.list(Paths.BATTLES)
+                .map(p -> p.getFileName().toString())
+                .filter(p -> p.endsWith(".bprops"))
+                .sorted(String::compareTo)
+                .toArray(String[]::new);
+        }
+        catch(IOException ex)
+        {
+            ex.printStackTrace(System.err);
+            return new String[] {};
+        }
+    }
+    
+    public static final boolean store(String name, BattleProperties props)
     {
         var path = Paths.concat(Paths.BATTLES, name + ".bprops");
         try

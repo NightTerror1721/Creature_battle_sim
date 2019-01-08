@@ -43,7 +43,7 @@ public final class RaceAttackPool
     
     public final void registerAttack(int level, AttackModel attack, boolean hidden)
     {
-        RaceAttack ra = new RaceAttack(level, attack, hidden);
+        RaceAttack ra = new RaceAttack(level, attack, hidden, false);
         var list = hidden ? hiddenList : normalList;
         if(!list.contains(ra))
             list.add(ra);
@@ -51,7 +51,7 @@ public final class RaceAttackPool
     
     public final void removeAttack(int level, AttackModel attack, boolean hidden)
     {
-        RaceAttack ra = new RaceAttack(level, attack, hidden);
+        RaceAttack ra = new RaceAttack(level, attack, hidden, false);
         var list = hidden ? hiddenList : normalList;
         list.remove(ra);
     }
@@ -74,10 +74,16 @@ public final class RaceAttackPool
     {
         return Stream.concat(normalList.stream(), hiddenList.stream());
     }
-    public final List<AttackModel> getAllAttacks()
+    public final List<RaceAttack> getAllAttacks()
     {
-        return streamAllAttacks().map(RaceAttack::getAttackModel)
-                .collect(Collectors.toList());
+        return streamAllAttacks().collect(Collectors.toList());
+    }
+    public final RaceAttack[] getAllAttacksInArray()
+    {
+        var stream = innate == null
+                ? streamAllAttacks()
+                : Stream.concat(Stream.of(new RaceAttack(1, innate, false, true)), streamAllAttacks());
+        return stream.toArray(RaceAttack[]::new);
     }
     
     public final List<AttackModel> getNormalAttacksInLevel(int level)
@@ -124,6 +130,13 @@ public final class RaceAttackPool
         return result;
     }
     
+    public final RaceAttack findRaceAttack(AttackModel model)
+    {
+        if(model == null || (innate != null && model.equals(innate)))
+            return new RaceAttack(1, innate, false, true);
+        return streamAllAttacks().filter(a -> a.equals(model)).findFirst().orElse(null);
+    }
+    
     
     public static final class RaceAttack implements Comparable<RaceAttack>
     {
@@ -139,12 +152,15 @@ public final class RaceAttackPool
         @Property
         private boolean hidden;
         
+        private boolean innate;
+        
         public RaceAttack() {}
-        private RaceAttack(int level, AttackModel attack, boolean hidden)
+        private RaceAttack(int level, AttackModel attack, boolean hidden, boolean innate)
         {
             this.level = Utils.range(1, 100, level);
             this.attack = Objects.requireNonNull(attack);
             this.hidden = hidden;
+            this.innate = innate;
         }
         
         public final void setLevel(int level) { this.level = Utils.range(1, 100, level); }
@@ -154,6 +170,8 @@ public final class RaceAttackPool
         public final AttackModel getAttackModel() { return attack == null ? new AttackModel() : attack; }
         
         public final boolean isHidden() { return hidden; }
+        
+        public final boolean isInnate() { return innate; }
         
         private AttackModel loadModel(UDLValue value)
         {
@@ -194,6 +212,16 @@ public final class RaceAttackPool
             hash = 53 * hash + Objects.hashCode(this.attack);
             hash = 53 * hash + this.level;
             return hash;
+        }
+        
+        @Override
+        public final String toString()
+        {
+            if(isInnate())
+                return "[Innato]: " + attack.getName();
+            return isHidden()
+                    ? "[Oculto] " + level + ": " + attack.getName()
+                    : level + ": " + attack.getName();
         }
     }
 }
