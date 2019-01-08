@@ -43,6 +43,7 @@ public final class BattlePropertiesPool
             return Files.list(Paths.BATTLES)
                 .map(p -> p.getFileName().toString())
                 .filter(p -> p.endsWith(".bprops"))
+                .map(n -> n.substring(0, n.length() - 7))
                 .sorted(String::compareTo)
                 .toArray(String[]::new);
         }

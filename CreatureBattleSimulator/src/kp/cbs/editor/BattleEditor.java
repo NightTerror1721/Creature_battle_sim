@@ -201,7 +201,7 @@ public final class BattleEditor extends JDialog
         
         private CreatureTemplate(CreatureEntry entry)
         {
-            if(entry == null)
+            if(entry != null)
             {
                 this.props = entry.getCreatureProperties();
                 setProbability(entry.getProbability());
@@ -211,7 +211,7 @@ public final class BattleEditor extends JDialog
         }
         private CreatureTemplate(CreatureProperties properties)
         {
-            if(properties == null)
+            if(properties != null)
             {
                 this.props = properties;
                 setProbability(1);
