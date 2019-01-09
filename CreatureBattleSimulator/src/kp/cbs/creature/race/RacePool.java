@@ -77,6 +77,28 @@ public final class RacePool
         return true;
     }
     
+    public static final Race[] getInitialRaces()
+    {
+        try
+        {
+            var initPath = Paths.concat(Paths.DATA, "initial_races.udl");
+            var raceIds = Serializer.read(initPath).getList("races");
+            var list = new LinkedList<Race>();
+            for(var id : raceIds)
+            {
+                var race = getRace(id.getInt());
+                list.add(race);
+            }
+            
+            return list.toArray(Race[]::new);
+        }
+        catch(IOException | UDLException ex)
+        {
+            ex.printStackTrace(System.err);
+            return new Race[] {};
+        }
+    }
+    
     private static Race loadRace(int id)
     {
         Path raceFile = Paths.concat(Paths.RACES, generateFilename(id));

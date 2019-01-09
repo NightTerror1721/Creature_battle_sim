@@ -9,10 +9,7 @@ import java.awt.EventQueue;
 import java.io.IOException;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import kp.cbs.creature.Creature;
 import kp.cbs.editor.MainMenuEditor;
-import kp.cbs.place.Place;
-import kp.cbs.utils.RNG;
 import kp.cbs.utils.SoundManager;
 
 /**
@@ -50,14 +47,14 @@ public final class Main
         
         executeGame();
         
-        PlayerGame game = new PlayerGame();
+        /*PlayerGame game = new PlayerGame();
         
         var rng = new RNG();
         
         var c1 = Creature.createWild(0, 5, rng);
         
         var place = Place.load("Pueblo Khalm");
-        place.startWildBattle(null, game, c1);
+        place.startWildBattle(null, game, c1);*/
         
         //executeEditor();
     }
@@ -97,5 +94,7 @@ public final class Main
         {
             ex.printStackTrace(System.err);
         }
+        
+        MainGameInterface.start();
     }
 }

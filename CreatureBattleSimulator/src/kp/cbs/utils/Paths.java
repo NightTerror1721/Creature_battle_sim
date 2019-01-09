@@ -25,6 +25,7 @@ public final class Paths
     public static final Path LEAGES = initDir("data", "leages");
     public static final Path PLACES = initDir("data", "places");
     public static final Path SAVES = initDir("saves");
+    public static final Path DATA = initDir("data");
     
     
     public static final Path get(String path, String... more) { return java.nio.file.Paths.get(path, more); }
