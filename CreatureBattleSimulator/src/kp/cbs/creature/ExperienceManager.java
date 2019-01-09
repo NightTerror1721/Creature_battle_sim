@@ -60,7 +60,7 @@ public final class ExperienceManager
     
     private void checkExp()
     {
-        while(level < 100 && exp > maxExp)
+        while(level < 100 && exp >= maxExp)
         {
             level++;
             if(level == 100)

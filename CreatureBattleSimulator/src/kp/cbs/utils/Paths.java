@@ -22,6 +22,9 @@ public final class Paths
     public static final Path ATTACKS = initDir("data", "attacks");
     public static final Path RACES = initDir("data", "races");
     public static final Path BATTLES = initDir("data", "battles");
+    public static final Path LEAGES = initDir("data", "leages");
+    public static final Path PLACES = initDir("data", "places");
+    public static final Path SAVES = initDir("saves");
     
     
     public static final Path get(String path, String... more) { return java.nio.file.Paths.get(path, more); }

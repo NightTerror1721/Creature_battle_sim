@@ -20,6 +20,7 @@ public final class Encounter
     private final Team enemyTeam = new Team();
     private float expBonus = 1f;
     private String music = "trainer";
+    private boolean wildBattle;
     
     
     public final Team getSelfTeam() { return selfTeam; }
@@ -39,4 +40,7 @@ public final class Encounter
     
     public final void setMusic(String music) { this.music = Objects.requireNonNull(music); }
     public final String getMusic() { return music; }
+    
+    public final void setWildBattle(boolean flag) { this.wildBattle = flag; }
+    public final boolean isWildBattle() { return wildBattle; }
 }

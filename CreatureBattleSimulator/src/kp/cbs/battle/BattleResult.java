@@ -5,6 +5,8 @@
  */
 package kp.cbs.battle;
 
+import java.util.Objects;
+import kp.cbs.creature.Creature;
 import kp.cbs.utils.RNG;
 
 /**
@@ -13,8 +15,10 @@ import kp.cbs.utils.RNG;
  */
 public final class BattleResult
 {
+    private final boolean selfWinner;
     private final int money;
     private final int elo;
+    private final Creature cached;
     
     public BattleResult(Team self, Team enemy, RNG rng)
     {
@@ -28,6 +32,15 @@ public final class BattleResult
             this.money = -computeMoney(self, rng);
             this.elo = Math.min(0, -computeElo(enemy, self));
         }
+        this.selfWinner = self.hasAnyAlive() && !enemy.hasAnyAlive();
+        this.cached = null;
+    }
+    public BattleResult(Creature cached)
+    {
+        this.money = 0;
+        this.elo = 0;
+        this.selfWinner = true;
+        this.cached = Objects.requireNonNull(cached);
     }
     
     private static int computeMoney(Team team, RNG rng)
@@ -57,4 +70,9 @@ public final class BattleResult
     public final int getMoney() { return money; }
     
     public final int getElo() { return elo; }
+    
+    public final boolean isSelfWinner() { return selfWinner; }
+    
+    public final boolean hasCached() { return cached != null; }
+    public final Creature getCached() { return cached; }
 }

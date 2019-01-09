@@ -39,6 +39,7 @@ public final class Serializer
         
         Serializer.registerSerializer(new ColorSerializer());
         Serializer.registerSerializer(new ElementalTypeSerializer());
+        Serializer.registerSerializer(new UUIDSerializer());
         Serializer.registerSerializer(Race.SERIALIZER);
         Serializer.registerSerializer(Attack.SERIALIZER);
         Serializer.registerSerializer(AttackModel.SERIALIZER);

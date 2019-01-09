@@ -133,6 +133,9 @@ public final class AttackManager implements Iterable<Attack>
         if(printAIs)
             System.out.println(scores); 
         
+        if(intel.isDummy())
+            return scores.stream().sorted().findFirst().orElse(null);
+        
         SelectedAttack combat = new SelectedAttack(AttackPool.createAttack(combatModel), combatModel.computeAIScore(state, intel), null);
         return scores.stream()
                 .reduce(combat, (s0, s1) -> s0.score.compareTo(s1.score) > 0 ? s0 : s1);
@@ -186,7 +189,7 @@ public final class AttackManager implements Iterable<Attack>
     }
     
     
-    public static final class SelectedAttack
+    public static final class SelectedAttack implements Comparable<SelectedAttack>
     {
         private final Attack attack;
         private final AIScore score;
@@ -205,5 +208,11 @@ public final class AttackManager implements Iterable<Attack>
         
         @Override
         public final String toString() { return attack.getName() + ": " + score.getScore(); }
+
+        @Override
+        public final int compareTo(SelectedAttack o)
+        {
+            return score.compareTo(o.score);
+        }
     }
 }

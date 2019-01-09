@@ -7,6 +7,7 @@ package kp.cbs.creature;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import kp.cbs.battle.FighterTurnState;
 import kp.cbs.battle.TeamId;
 import kp.cbs.battle.cmd.BattleCommandManager;
@@ -40,9 +41,12 @@ import kp.udl.autowired.Property;
  *
  * @author Asus
  */
-@InjectOptions(builder = "injector", afterBuild = "clearAll")
-public final class Creature
+@InjectOptions(builder = "injector", afterBuild = "afterInject")
+public final class Creature implements Comparable<Creature>
 {
+    @Property
+    private UUID id;
+    
     @Property(set = "setName")
     private String name = "";
     
@@ -77,6 +81,7 @@ public final class Creature
     public static final Creature create(Race race, int level)
     {
         Creature c = new Creature();
+        c.id = UUID.randomUUID();
         c.race = Objects.requireNonNull(race);
         c.feats = FeatureManager.create();
         c.exp = new ExperienceManager();
@@ -89,6 +94,8 @@ public final class Creature
         return c;
     }
     public static final Creature create(int raceId, int level) { return create(RacePool.getRace(raceId), level); }
+    
+    public final UUID getId() { return id; }
     
     public final void setName(String name) { this.name = Objects.requireNonNull(name); }
     public final String getName() { return name; }
@@ -244,10 +251,46 @@ public final class Creature
     }
     
     
+    public final boolean equals(Creature c)
+    {
+        return id.equals(c.id);
+    }
+    
+    @Override
+    public final boolean equals(Object o)
+    {
+        return o instanceof Creature &&
+                id.equals(((Creature) o).id);
+    }
+
+    @Override
+    public final int hashCode()
+    {
+        int hash = 7;
+        hash = 11 * hash + Objects.hashCode(this.id);
+        return hash;
+    }
+    
+    @Override
+    public final int compareTo(Creature o)
+    {
+        var n0 = name == null ? race.getName() : name;
+        var n1 = o.name == null ? o.race.getName() : o.name;
+        return n0.compareTo(n1);
+    }
+    
+    
     
     
     private static Creature injector()
     {
         return new Creature();
+    }
+    
+    private void afterInject()
+    {
+        if(id == null)
+            id = UUID.randomUUID();
+        clearAll();
     }
 }

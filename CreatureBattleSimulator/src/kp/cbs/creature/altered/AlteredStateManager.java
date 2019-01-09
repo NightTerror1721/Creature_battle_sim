@@ -40,6 +40,16 @@ public final class AlteredStateManager implements BattleUpdater
         return true;
     }
     
+    public final void rawDeleteAlterationState(AlteredStateId alteredState)
+    {
+        states[alteredState.ordinal()] = null;
+    }
+    public final void rawDeleteAllAlterationStates()
+    {
+        for(int i = 0; i < states.length; i++)
+            states[i] = null;
+    }
+    
     public final boolean isAlteredStateEnabled(AlteredStateId alteredState)
     {
         int id = alteredState.ordinal();

@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.border.LineBorder;
 import javax.swing.text.BadLocationException;
+import kp.cbs.PlayerGame;
 import static kp.cbs.battle.TeamId.ENEMY;
 import static kp.cbs.battle.TeamId.SELF;
 import kp.cbs.creature.Creature;
@@ -40,6 +41,7 @@ import kuusisto.tinysound.Sound;
 public class Battle extends JDialog
 {
     private final BattleCore core;
+    private final PlayerGame game;
     
     private final Semaphore sem = new Semaphore(1);
     private final Semaphore round = new Semaphore(1);
@@ -60,18 +62,20 @@ public class Battle extends JDialog
     
     private BattleResult result;
     
-    private Battle(Frame parent, BattleCore core)
+    private Battle(Frame parent, BattleCore core, PlayerGame game)
     {
         super(parent, true);
         this.core = Objects.requireNonNull(core);
+        this.game = Objects.requireNonNull(game);
         initComponents();
         init();
     }
     
-    private Battle(Dialog parent, BattleCore core)
+    private Battle(Dialog parent, BattleCore core, PlayerGame game)
     {
         super(parent, true);
         this.core = Objects.requireNonNull(core);
+        this.game = Objects.requireNonNull(game);
         initComponents();
         init();
     }
@@ -84,15 +88,15 @@ public class Battle extends JDialog
         core.setBattle(this);
     }
     
-    public static final void initiate(Window parent, Encounter encounter)
+    public static final BattleResult initiate(Window parent, PlayerGame game, Encounter encounter)
     {
         var bcore = new BattleCore(encounter.getSelfTeam(), encounter.getEnemyTeam());
         
         Battle battle;
         if(parent == null || parent instanceof Frame)
-            battle = new Battle((Frame) parent, bcore);
+            battle = new Battle((Frame) parent, bcore, game);
         else if(parent instanceof Dialog)
-            battle = new Battle((Dialog) parent, bcore);
+            battle = new Battle((Dialog) parent, bcore, game);
         else throw new IllegalStateException();
         
         battle.expBonus = encounter.getExperienceBonus();
@@ -100,6 +104,8 @@ public class Battle extends JDialog
         battle.music = SoundManager.loadMusic(encounter.getMusic());
         
         battle.start();
+        
+        return battle.result;
     }
     
     
