@@ -279,6 +279,9 @@ public final class Creature implements Comparable<Creature>
         return n0.compareTo(n1);
     }
     
+    @Override
+    public final String toString() { return name == null || name.isBlank() ? race.getName() : name; }
+    
     
     
     

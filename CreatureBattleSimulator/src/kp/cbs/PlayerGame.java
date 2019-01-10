@@ -12,14 +12,17 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Stream;
+import kp.cbs.TeamManager.TeamSlot;
 import kp.cbs.creature.Creature;
 import kp.cbs.utils.Pair;
 import kp.cbs.utils.Paths;
 import kp.cbs.utils.Serializer;
+import kp.udl.autowired.InjectOptions;
 import kp.udl.autowired.Property;
 import kp.udl.exception.UDLException;
 
@@ -27,29 +30,34 @@ import kp.udl.exception.UDLException;
  *
  * @author Asus
  */
+@InjectOptions(afterBuild = "check")
 public final class PlayerGame
 {
     private String name = "default_slot";
     
-    @Property private LinkedHashSet<Creature> creatures = new LinkedHashSet<>();
+    @Property private LinkedHashMap<UUID, Creature> creatures = new LinkedHashMap<>();
     @Property private HashSet<String> passedIds = new HashSet<>();
     @Property private HashMap<String, Integer> leageElos = new HashMap<>();
     @Property private HashMap<ItemId, Integer> items = new HashMap<>();
+    
+    @Property private UUID slot1, slot2, slot3, slot4, slot5, slot6;
     
     public final void setName(String name) { this.name = Objects.requireNonNullElse(name, "default_slot"); }
     public final String getName() { return name; }
     
     public final void addCreature(Creature creature)
     {
-        creatures.add(Objects.requireNonNull(creature));
+        creatures.put(creature.getId(), Objects.requireNonNull(creature));
     }
     public final int getCreatureCount() { return creatures.size(); }
+    public final Creature getCreature(UUID id) { return creatures.getOrDefault(id, null); }
     public final List<Creature> getAllCreatures()
     {
-        return new ArrayList<>(creatures);
+        return new ArrayList<>(creatures.values());
     }
-    public final Stream<Creature> creatureStream() { return creatures.stream(); }
-    public final void removeCreature(Creature creature) { creatures.remove(creature); }
+    public final Stream<Creature> creatureStream() { return creatures.values().stream(); }
+    public final void removeCreature(Creature creature) { creatures.remove(creature.getId()); }
+    public final void removeCreature(UUID creatureId) { creatures.remove(creatureId); }
     
     public final void addPassedId(String id) { passedIds.add(Objects.requireNonNull(id)); }
     public final boolean isIdPassed(String id) { return passedIds.contains(Objects.requireNonNull(id)); }
@@ -84,6 +92,85 @@ public final class PlayerGame
                 .filter(this::isItemAvailable)
                 .map(i -> new Pair<>(i, getItemAmount(i)));
     }
+    
+    public final UUID getCreatureIdInSlot(TeamSlot slot)
+    {
+        switch(slot)
+        {
+            case SLOT_1: return slot1;
+            case SLOT_2: return slot2;
+            case SLOT_3: return slot3;
+            case SLOT_4: return slot4;
+            case SLOT_5: return slot5;
+            case SLOT_6: return slot6;
+            default: return null;
+        }
+    }
+    public final Creature getCreatureInSlot(TeamSlot slot)
+    {
+        UUID id;
+        switch(slot)
+        {
+            case SLOT_1: id = slot1; break;
+            case SLOT_2: id = slot2; break;
+            case SLOT_3: id = slot3; break;
+            case SLOT_4: id = slot4; break;
+            case SLOT_5: id = slot5; break;
+            case SLOT_6: id = slot6; break;
+            default: return null;
+        }
+        
+        if(id == null)
+            return null;
+        return getCreature(id);
+    }
+    public final boolean setCreatureInSlot(TeamSlot slot, Creature creature)
+    {
+        if(getCreature(creature.getId()) == null)
+            return false;
+        
+        switch(slot)
+        {
+            case SLOT_1: slot1 = creature.getId(); return true;
+            case SLOT_2: slot2 = creature.getId(); return true;
+            case SLOT_3: slot3 = creature.getId(); return true;
+            case SLOT_4: slot4 = creature.getId(); return true;
+            case SLOT_5: slot5 = creature.getId(); return true;
+            case SLOT_6: slot6 = creature.getId(); return true;
+            default: return false;
+        }
+    }
+    
+    public final void removeCreatureInSlot(TeamSlot slot)
+    {
+        switch(slot)
+        {
+            case SLOT_1: slot1 = null; break;
+            case SLOT_2: slot2 = null; break;
+            case SLOT_3: slot3 = null; break;
+            case SLOT_4: slot4 = null; break;
+            case SLOT_5: slot5 = null; break;
+            case SLOT_6: slot6 = null; break;
+        }
+    }
+    
+    private void check()
+    {
+        checkSlot(TeamSlot.SLOT_1);
+        checkSlot(TeamSlot.SLOT_2);
+        checkSlot(TeamSlot.SLOT_3);
+        checkSlot(TeamSlot.SLOT_4);
+        checkSlot(TeamSlot.SLOT_5);
+        checkSlot(TeamSlot.SLOT_6);
+    }
+    private void checkSlot(TeamSlot slot)
+    {
+        var id = getCreatureIdInSlot(slot);
+        var creature = getCreatureInSlot(slot);
+        if(id != null && creature == null)
+            removeCreatureInSlot(slot);
+    }
+    
     
     
     

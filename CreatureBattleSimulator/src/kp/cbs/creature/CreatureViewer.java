@@ -13,6 +13,7 @@ import java.util.Objects;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import kp.cbs.creature.attack.Attack;
@@ -72,6 +73,9 @@ public class CreatureViewer extends JDialog
         race.setText("Raza: " + creature.getRace().getName());
         types.setText("Tipo: " + creature.getElementalTypeNames());
         cclass.setText("Clase: " + creature.getCreatureClass());
+        
+        change_name.setEnabled(modifyAbilities);
+        change_name.setVisible(modifyAbilities);
         
         psBar.setMinimum(0);
         psBar.setMaximum(creature.getHealthPoints().getMaxHealthPoints());
@@ -264,6 +268,7 @@ public class CreatureViewer extends JDialog
         level = new javax.swing.JLabel();
         expBar = new javax.swing.JProgressBar();
         nextLevelExp = new javax.swing.JLabel();
+        change_name = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         att1 = new javax.swing.JButton();
@@ -407,26 +412,35 @@ public class CreatureViewer extends JDialog
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        change_name.setText("Cambiar Nombre");
+        change_name.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                change_nameActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel14, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel15, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(name)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(cclass))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(race)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(types)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(nature)))
+                        .addComponent(nature))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(race)
+                            .addComponent(change_name))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -446,7 +460,9 @@ public class CreatureViewer extends JDialog
                 .addComponent(jPanel14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel15, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(68, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(change_name)
+                .addContainerGap(30, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Básico", jPanel1);
@@ -992,6 +1008,14 @@ public class CreatureViewer extends JDialog
         dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void change_nameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_change_nameActionPerformed
+        var obj = JOptionPane.showInputDialog(this, "Escribe un nombre para el luchador.", creature.getName());
+        if(obj == null || obj.isBlank())
+            return;
+        creature.setName(obj);
+        name.setText("Nombre: " + creature.getName());
+    }//GEN-LAST:event_change_nameActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel ab_points;
@@ -1013,6 +1037,7 @@ public class CreatureViewer extends JDialog
     private javax.swing.JProgressBar base_ps;
     private javax.swing.JProgressBar base_speed;
     private javax.swing.JLabel cclass;
+    private javax.swing.JButton change_name;
     private javax.swing.JTextField defense;
     private javax.swing.JLabel defenseSp_ab;
     private javax.swing.JButton defenseSp_add;
