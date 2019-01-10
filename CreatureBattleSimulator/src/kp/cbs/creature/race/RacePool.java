@@ -14,6 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import kp.cbs.utils.Config;
 import kp.cbs.utils.Paths;
 import kp.cbs.utils.Serializer;
 import kp.udl.exception.UDLException;
@@ -81,18 +82,19 @@ public final class RacePool
     {
         try
         {
-            var initPath = Paths.concat(Paths.DATA, "initial_races.udl");
-            var raceIds = Serializer.read(initPath).getList("races");
+            /*var initPath = Paths.concat(Paths.DATA, "initial_races.udl");
+            var raceIds = Serializer.read(initPath).getList("races");*/
+            var raceIds = Config.getIntArray("initial_races");
             var list = new LinkedList<Race>();
             for(var id : raceIds)
             {
-                var race = getRace(id.getInt());
+                var race = getRace(id);
                 list.add(race);
             }
             
             return list.toArray(Race[]::new);
         }
-        catch(IOException | UDLException ex)
+        catch(UDLException ex)
         {
             ex.printStackTrace(System.err);
             return new Race[] {};
