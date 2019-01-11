@@ -71,6 +71,18 @@ public final class TeamManager implements Iterable<Creature>
         return stream().toArray(Creature[]::new);
     }
     
+    public final void clearTransient()
+    {
+        for(var creature : this)
+            creature.clearTransient();
+    }
+    
+    public final void clearAll()
+    {
+        for(var creature : this)
+            creature.clearAll();
+    }
+    
     @Override
     public final Iterator<Creature> iterator()
     {

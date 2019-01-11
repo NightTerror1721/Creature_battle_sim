@@ -19,6 +19,7 @@ import java.util.UUID;
 import java.util.stream.Stream;
 import kp.cbs.TeamManager.TeamSlot;
 import kp.cbs.creature.Creature;
+import kp.cbs.place.Place;
 import kp.cbs.utils.Pair;
 import kp.cbs.utils.Paths;
 import kp.cbs.utils.Serializer;
@@ -41,6 +42,10 @@ public final class PlayerGame
     @Property private HashMap<ItemId, Integer> items = new HashMap<>();
     
     @Property private UUID slot1, slot2, slot3, slot4, slot5, slot6;
+    
+    @Property private int money;
+    
+    @Property private String currentPlace = "";
     
     public final void setName(String name) { this.name = Objects.requireNonNullElse(name, "default_slot"); }
     public final String getName() { return name; }
@@ -154,6 +159,19 @@ public final class PlayerGame
         }
     }
     
+    public final void setMoney(int money) { this.money = Math.max(0, money); }
+    public final int getMoney() { return money; }
+    public final void useMoney(int amount) { setMoney(money - Math.max(0, amount)); }
+    public final void addMoney(int amount) { setMoney(money + Math.max(0, amount)); }
+    public final boolean hasEnoughMoney(int amount) { return money >= Math.max(0, amount); }
+    
+    public final void setCurrentPlace(String placeId)
+    {
+        this.currentPlace = placeId;
+    }
+    public final void setCurrentPlace(Place place) { setCurrentPlace(place.getName()); }
+    public final String getCurrentPlace() { return currentPlace; }
+    
     private void check()
     {
         checkSlot(TeamSlot.SLOT_1);
@@ -175,17 +193,37 @@ public final class PlayerGame
     
     
     
-    public static final void save(PlayerGame game)
+    public static final boolean save(PlayerGame game)
     {
         var path = Paths.concat(Paths.SAVES, game.name + ".sav");
         try
         {
             var base = Serializer.extract(game);
             Serializer.write(base, path);
+            return true;
         }
         catch(IOException | UDLException ex)
         {
             ex.printStackTrace(System.err);
+            return false;
+        }
+    }
+    
+    public static final boolean exists(String name)
+    {
+        var path = Paths.concat(Paths.SAVES, name + ".sav");
+        try
+        {
+            if(!Files.isReadable(path))
+                return false;
+            var base = Serializer.read(path);
+            Serializer.inject(base, PlayerGame.class);
+            return true;
+        }
+        catch(IOException | UDLException ex)
+        {
+            ex.printStackTrace(System.err);
+            return false;
         }
     }
     

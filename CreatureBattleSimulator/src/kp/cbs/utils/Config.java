@@ -6,6 +6,7 @@
 package kp.cbs.utils;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -137,4 +138,46 @@ public final class Config
         return get(key, defaultValue, valueToArray(UDLValue::getString, String[]::new));
     }
     public static final String[] getStringArray(String key) { return getStringArray(key, new String[] {}); }
+    
+    public static final List<UDLValue> getList(String key, List<UDLValue> defaultValue)
+    {
+        return get(key, defaultValue, UDLValue::getList);
+    }
+    public static final List<UDLValue> getList(String key) { return getList(key, Collections.emptyList()); }
+    
+    public static final <O> List<O> getList(String key, List<O> defaultValue, Class<O> jclass)
+    {
+        return get(key, defaultValue, valueToList(v -> Serializer.inject(v, jclass)));
+    }
+    public static final <O> List<O> getList(String key, Class<O> jclass) { return getList(key, Collections.emptyList(), jclass); }
+    
+    public static final List<Integer> getIntList(String key, List<Integer> defaultValue)
+    {
+        return get(key, defaultValue, valueToList(UDLValue::getInt));
+    }
+    public static final List<Integer> getIntList(String key) { return getIntList(key, Collections.emptyList()); }
+    
+    public static final List<Long> getLongList(String key, List<Long> defaultValue)
+    {
+        return get(key, defaultValue, valueToList(UDLValue::getLong));
+    }
+    public static final List<Long> getLongList(String key) { return getLongList(key, Collections.emptyList()); }
+    
+    public static final List<Float> getFloatList(String key, List<Float> defaultValue)
+    {
+        return get(key, defaultValue, valueToList(UDLValue::getFloat));
+    }
+    public static final List<Float> getFloatList(String key) { return getFloatList(key, Collections.emptyList()); }
+    
+    public static final List<Double> getDoubleList(String key, List<Double> defaultValue)
+    {
+        return get(key, defaultValue, valueToList(UDLValue::getDouble));
+    }
+    public static final List<Double> getDoubleList(String key) { return getDoubleList(key, Collections.emptyList()); }
+    
+    public static final List<String> getStringList(String key, List<String> defaultValue)
+    {
+        return get(key, defaultValue, valueToList(UDLValue::getString));
+    }
+    public static final List<String> getStringList(String key) { return getStringList(key, Collections.emptyList()); }
 }

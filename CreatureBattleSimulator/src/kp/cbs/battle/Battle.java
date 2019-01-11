@@ -807,6 +807,17 @@ public class Battle extends JDialog
         sleep(2000);
         dispose();
     }
+    
+    @Override
+    public final void dispose()
+    {
+        if(music != null && music.playing())
+        {
+            music.stop();
+            music = null;
+        }
+        super.dispose();
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.

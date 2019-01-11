@@ -70,6 +70,14 @@ public final class AlteredStateManager implements BattleUpdater
                 joiner.add(astate.getId().getAbbreviation());
         return joiner.toString();
     }
+    
+    public final void clearTransientAlterations()
+    {
+        states[AlteredStateId.CONFUSION.ordinal()] = null;
+        states[AlteredStateId.CURSE.ordinal()] = null;
+        states[AlteredStateId.NIGHTMARE.ordinal()] = null;
+        states[AlteredStateId.SLEEPINESS.ordinal()] = null;
+    }
 
     @Override
     public final void battleUpdate(FighterTurnState state)

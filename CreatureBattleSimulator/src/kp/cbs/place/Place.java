@@ -9,15 +9,17 @@ import java.awt.Window;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
 import kp.cbs.PlayerGame;
 import kp.cbs.battle.Battle;
 import kp.cbs.battle.Encounter;
 import kp.cbs.battle.prop.BattleProperties;
 import kp.cbs.battle.prop.BattlePropertiesPool;
 import kp.cbs.creature.Creature;
-import kp.cbs.utils.GlobalId;
 import kp.cbs.utils.Paths;
 import kp.cbs.utils.Serializer;
 import kp.udl.autowired.Property;
@@ -27,21 +29,40 @@ import kp.udl.exception.UDLException;
  *
  * @author Asus
  */
-public final class Place extends GlobalId
+public final class Place
 {
     private String name;
     
     @Property private String wildBattle = "";
     @Property private String trainerBattle = "";
     @Property private LinkedList<Challenge> challenges = new LinkedList<>();
+    @Property private LinkedHashMap<String, String[]> travels;
     
     private BattleProperties wildCache;
     private BattleProperties trainerCache;
+    
+    public final String getName() { return name; }
     
     public final int getChallengeCount() { return challenges.size(); }
     public final List<Challenge> getAllChallenges() { return Collections.unmodifiableList(challenges); }
     
     public final boolean hasTrainerBattle() { return trainerBattle != null && !trainerBattle.isBlank(); }
+    public final boolean hasWildBattle() { return wildBattle != null && !wildBattle.isBlank(); }
+    
+    public final Stream<String> streamAvailableTravels(PlayerGame game)
+    {
+        return travels.entrySet().stream()
+                .filter(e -> game.isIdsPassed(e.getValue()))
+                .map(Map.Entry::getKey);
+    }
+    public final String[] getAvailableTravels(PlayerGame game)
+    {
+        return streamAvailableTravels(game).sorted().toArray(String[]::new);
+    }
+    public final int getAvailableTravelsCount(PlayerGame game)
+    {
+        return (int) streamAvailableTravels(game).count();
+    }
     
     private Encounter generateWildEncounter()
     {
@@ -67,6 +88,9 @@ public final class Place extends GlobalId
     
     public final Creature startWildBattle(Window parent, PlayerGame game, Creature... selfCreatures)
     {
+        if(!hasWildBattle())
+            return null;
+        
         if(selfCreatures == null || selfCreatures.length < 1)
                 throw new IllegalStateException();
         
@@ -118,11 +142,13 @@ public final class Place extends GlobalId
     
     public static final Place load(String name)
     {
+        if(name == null || name.isBlank())
+            return null;
         var path = Paths.concat(Paths.PLACES, name + ".place");
         try
         {
             if(!Files.isReadable(path))
-                return new Place();
+                return null;
             var base = Serializer.read(path);
             var game = Serializer.inject(base, Place.class);
             game.name = name;
@@ -131,7 +157,7 @@ public final class Place extends GlobalId
         catch(IOException | UDLException ex)
         {
             ex.printStackTrace(System.err);
-            return new Place();
+            return null;
         }
     }
     

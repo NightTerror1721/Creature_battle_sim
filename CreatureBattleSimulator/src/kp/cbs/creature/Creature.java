@@ -235,6 +235,14 @@ public final class Creature implements Comparable<Creature>
         feats.getHealthPoints().fullHeal();
     }
     
+    public final void clearTransient()
+    {
+        feats.clearAllAlterations();
+        state.clearAllStates();
+        altered.clearTransientAlterations();
+        updateAll();
+    }
+    
     
     public static final Creature createWild(Race race, int level, RNG rng)
     {

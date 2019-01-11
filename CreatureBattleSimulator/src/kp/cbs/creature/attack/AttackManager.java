@@ -88,6 +88,12 @@ public final class AttackManager implements Iterable<Attack>
                 : null;
     }
     
+    public final void restoreAllPPs()
+    {
+        for(var att : this)
+            att.restoreAllPP();
+    }
+    
     @Override
     public final Iterator<Attack> iterator()
     {
