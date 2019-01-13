@@ -8,7 +8,7 @@
                 "base": 46,
                 "genetic": 21,
                 "ability": 0,
-                "current": 455
+                "current": 498
             },
             "attack": {
                 "base": 47,
@@ -38,14 +38,14 @@
         },
         "exp": {
             "growth": 3,
-            "level": 6,
-            "experience": 186
+            "level": 7,
+            "experience": 279
         },
         "nature": 0,
         "attacks": {
             "att1": 2,
             "att2": 19,
-            "att3": null,
+            "att3": 21,
             "att4": null
         },
         "abilityPoints": 0

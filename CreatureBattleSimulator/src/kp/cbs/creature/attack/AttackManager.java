@@ -100,21 +100,29 @@ public final class AttackManager implements Iterable<Attack>
         return new Iterator<Attack>()
         {
             private AttackSlot it = AttackSlot.SLOT_1;
-            @Override public final boolean hasNext() { return it.hasNext(); }
+            @Override public final boolean hasNext() { return it != null; }
             @Override public final Attack next()
             {
                 Attack a = getAttack(it);
                 toNext();
                 return a;
             }
-            private Iterator<Attack> toNext()
+            private void toNext()
             {
-                Attack a;
-                while(it.hasNext() && (a = getAttack(it)) == null)
-                    it = it.next();
+                if(it != null)
+                {
+                    do { it = it.next(); }
+                    while(it != null && getAttack(it) == null);
+                }
+            }
+            private Iterator<Attack> init()
+            {
+                it = AttackSlot.SLOT_1;
+                if(getAttack(it) == null)
+                    toNext();
                 return this;
             }
-        }.toNext();
+        }.init();
     }
     
     public final Stream<Attack> stream()
