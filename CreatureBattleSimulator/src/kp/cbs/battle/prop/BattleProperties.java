@@ -98,8 +98,8 @@ public final class BattleProperties
             encounter.setSearchNextBehabior(nextBehabior);
         
         var templates = new TemplateList();
-        var minTeam = Math.min(Math.min(1, minTeamLen), Math.min(1, maxTeamLen));
-        var maxTeam = Math.max(Math.min(1, minTeamLen), Math.min(1, maxTeamLen));
+        var minTeam = Math.min(Math.max(1, minTeamLen), Math.max(1, maxTeamLen));
+        var maxTeam = Math.max(Math.max(1, minTeamLen), Math.max(1, maxTeamLen));
         var teamSize = minTeam == maxTeam ? maxTeam : rng.d(maxTeam - minTeam + 1) + minTeam;
         
         for(int i = 0; !templates.isEmpty() && i < teamSize; i++)

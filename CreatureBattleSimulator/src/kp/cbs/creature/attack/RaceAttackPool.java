@@ -86,12 +86,16 @@ public final class RaceAttackPool
         return stream.toArray(RaceAttack[]::new);
     }
     
-    public final List<AttackModel> getNormalAttacksInLevel(int level)
+    public final List<AttackModel> getNormalAttacksInLevel(int level, boolean includeInnate)
     {
-        return normalList.stream()
+        var list = normalList.stream()
                 .filter(ra -> ra.level == level)
                 .map(RaceAttack::getAttackModel)
                 .collect(Collectors.toList());
+        
+        if(includeInnate && innate != null && !list.contains(innate))
+            list.add(innate);
+        return list;
     }
     
     public final List<AttackModel> getAttacksUntilLevel(boolean hidden, int level)

@@ -16,6 +16,7 @@ import kp.cbs.TeamManager.TeamSlot;
 import kp.cbs.creature.Creature;
 import kp.cbs.creature.race.Race;
 import kp.cbs.creature.race.RacePool;
+import kp.cbs.place.Leage;
 import kp.cbs.place.Place;
 import kp.cbs.utils.Config;
 import kp.cbs.utils.RNG;
@@ -30,6 +31,7 @@ public class MainGameInterface extends JFrame
     private final PlayerGame game;
     private final TeamManager team;
     private Place currentPlace;
+    private Leage currentLeage;
     
     public MainGameInterface(PlayerGame game)
     {
@@ -40,6 +42,7 @@ public class MainGameInterface extends JFrame
     }
     
     public final PlayerGame getPlayerGame() { return game; }
+    public final TeamManager getTeam() { return team; }
     
     public static final void start()
     {
@@ -62,6 +65,7 @@ public class MainGameInterface extends JFrame
         
         updateMoney();
         updateCurrentPlace();
+        updateCurrentLeage();
     }
     
     private void updateTitle()
@@ -107,6 +111,40 @@ public class MainGameInterface extends JFrame
             challenges.setEnabled(currentPlace.getChallengeCount() > 0);
             trainerBattle.setEnabled(currentPlace.hasTrainerBattle());
             wildBattle.setEnabled(currentPlace.hasWildBattle());
+        }
+    }
+    
+    private void updateCurrentLeage()
+    {
+        currentLeage = Leage.load(game.getCurrentLeage());
+        updateLeageElements();
+    }
+    
+    private void updateLeageElements()
+    {
+        if(currentLeage == null)
+        {
+            leageName.setText("");
+            leageElo.setText("");
+            
+            leageName.setEnabled(false);
+            leageElo.setEnabled(false);
+            changeLeage.setEnabled(true);
+            playLeage.setEnabled(false);
+            playLeader.setEnabled(false);
+        }
+        else
+        {
+            var elo = game.getLeageElo(currentLeage.getId());
+            
+            leageName.setText(currentLeage.getName() + (game.isIdPassed(currentLeage.getId()) ? " (Completada)" : ""));
+            leageElo.setText(Integer.toString(elo));
+            
+            leageName.setEnabled(true);
+            leageElo.setEnabled(true);
+            changeLeage.setEnabled(true);
+            playLeage.setEnabled(true);
+            playLeader.setEnabled(game.isIdPassed(currentLeage.getId()) || currentLeage.isFinalBattleEnabled(elo));
         }
     }
     
@@ -219,11 +257,11 @@ public class MainGameInterface extends JFrame
         trainerBattle = new javax.swing.JButton();
         challenges = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
-        jTextField3 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
-        jButton7 = new javax.swing.JButton();
-        jButton8 = new javax.swing.JButton();
-        jButton9 = new javax.swing.JButton();
+        leageName = new javax.swing.JTextField();
+        leageElo = new javax.swing.JTextField();
+        changeLeage = new javax.swing.JButton();
+        playLeage = new javax.swing.JButton();
+        playLeader = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -345,6 +383,11 @@ public class MainGameInterface extends JFrame
         jPanel4.add(trainerBattle, gridBagConstraints);
 
         challenges.setText("Ver Desafios");
+        challenges.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                challengesActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -359,8 +402,8 @@ public class MainGameInterface extends JFrame
         jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Liga"));
         jPanel5.setLayout(new java.awt.GridBagLayout());
 
-        jTextField3.setEditable(false);
-        jTextField3.setBorder(javax.swing.BorderFactory.createTitledBorder("Liga Actual"));
+        leageName.setEditable(false);
+        leageName.setBorder(javax.swing.BorderFactory.createTitledBorder("Liga Actual"));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -368,45 +411,60 @@ public class MainGameInterface extends JFrame
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 0.1;
         gridBagConstraints.weighty = 0.1;
-        jPanel5.add(jTextField3, gridBagConstraints);
+        jPanel5.add(leageName, gridBagConstraints);
 
-        jTextField4.setEditable(false);
-        jTextField4.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField4.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "ELO", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
+        leageElo.setEditable(false);
+        leageElo.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        leageElo.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "ELO", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 0.1;
         gridBagConstraints.weighty = 0.1;
-        jPanel5.add(jTextField4, gridBagConstraints);
+        jPanel5.add(leageElo, gridBagConstraints);
 
-        jButton7.setText("Cambiar de liga");
+        changeLeage.setText("Cambiar de liga");
+        changeLeage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                changeLeageActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 0.1;
         gridBagConstraints.weighty = 0.1;
-        jPanel5.add(jButton7, gridBagConstraints);
+        jPanel5.add(changeLeage, gridBagConstraints);
 
-        jButton8.setText("Participar");
+        playLeage.setText("Participar");
+        playLeage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                playLeageActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 0.1;
         gridBagConstraints.weighty = 0.1;
-        jPanel5.add(jButton8, gridBagConstraints);
+        jPanel5.add(playLeage, gridBagConstraints);
 
-        jButton9.setText("Desafiar al Lider");
+        playLeader.setText("Desafiar al Lider");
+        playLeader.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                playLeaderActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 0.1;
         gridBagConstraints.weighty = 0.1;
-        jPanel5.add(jButton9, gridBagConstraints);
+        jPanel5.add(playLeader, gridBagConstraints);
 
         jPanel3.add(jPanel5);
 
@@ -495,15 +553,80 @@ public class MainGameInterface extends JFrame
         JOptionPane.showMessageDialog(this, "¡Has capturado a un " + creature.getRace().getName() + "! Se guardará con el resto de luchadores.");
     }//GEN-LAST:event_wildBattleActionPerformed
 
+    private void changeLeageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeLeageActionPerformed
+        var all = Leage.getAvailableLeageNames(game);
+        if(all.length < 1)
+            return;
+        
+        var obj = JOptionPane.showInputDialog(this, "¿Que liga quieres escoger?", "Ligas", JOptionPane.QUESTION_MESSAGE, null, all, all[0]);
+        if(obj == null || !(obj instanceof String))
+            return;
+        
+        game.setCurrentLeage(obj.toString());
+        updateCurrentLeage();
+    }//GEN-LAST:event_changeLeageActionPerformed
+
+    private void playLeageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_playLeageActionPerformed
+        if(currentLeage == null)
+            return;
+        
+        var elo = game.getLeageElo(currentLeage.getId());
+        var money = game.getMoney();
+        var stage = currentLeage.createStage(elo);
+        SequencedBattleMenu.execute(this, stage);
+        team.clearAll();
+        
+        game.setLeageElo(currentLeage.getId(), elo + stage.getAccumulatedElo());
+        game.setMoney(money + stage.getAccumulatedMoney());
+        
+        updateCurrentLeage();
+        updateTeam();
+    }//GEN-LAST:event_playLeageActionPerformed
+
+    private void playLeaderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_playLeaderActionPerformed
+        if(currentLeage == null)
+            return;
+        
+        var elo = game.getLeageElo(currentLeage.getId());
+        if(!currentLeage.isFinalBattleEnabled(elo))
+            return;
+        
+        var money = game.getMoney();
+        var result = currentLeage.startFinalBattle(this, game, team.getTeamCreatures());
+        team.clearAll();
+        
+        if(result.isSelfWinner())
+            game.addPassedId(currentLeage.getId());
+        
+        game.setMoney(money + result.getMoney());
+        
+        updateCurrentLeage();
+        updateTeam();
+        updateMoney();
+    }//GEN-LAST:event_playLeaderActionPerformed
+
+    private void challengesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_challengesActionPerformed
+        if(currentPlace == null)
+            return;
+        
+        var list = currentPlace.getAllChallenges();
+        if(list == null || list.isEmpty())
+            return;
+        
+        ChallengeSelector.open(this, list, stage -> {
+            var money = game.getMoney();
+            game.setMoney(money + stage.getAccumulatedMoney());
+            updateMoney();
+        });
+    }//GEN-LAST:event_challengesActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton challenges;
+    private javax.swing.JButton changeLeage;
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
-    private javax.swing.JButton jButton8;
-    private javax.swing.JButton jButton9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -511,10 +634,12 @@ public class MainGameInterface extends JFrame
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
+    private javax.swing.JTextField leageElo;
+    private javax.swing.JTextField leageName;
     private javax.swing.JTextField money;
     private javax.swing.JTextField placeName;
+    private javax.swing.JButton playLeader;
+    private javax.swing.JButton playLeage;
     private javax.swing.JButton trainerBattle;
     private javax.swing.JButton travel;
     private javax.swing.JButton wildBattle;

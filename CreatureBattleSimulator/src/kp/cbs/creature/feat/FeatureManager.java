@@ -94,6 +94,12 @@ public final class FeatureManager
         return Formula.creatureExpBase(sum);
     }
     
+    public final int computeAbilityPointsBase()
+    {
+        var sum = getStatSum();
+        return Formula.creatureStatAbilityBase(sum);
+    }
+    
     public final int getAbilityPointsCount()
     {
         return hp.ab + attack.ab + defense.ab + specialAttack.ab + specialDefense.ab + speed.ab;
@@ -101,7 +107,7 @@ public final class FeatureManager
     
     public final boolean hasMaxAbilityPoints()
     {
-        return getAbilityPointsCount() < Formula.MAX_ABILITY_POINTS;
+        return getAbilityPointsCount() >= Formula.MAX_ABILITY_POINTS;
     }
     
     public final String getPowerupAbbreviations()

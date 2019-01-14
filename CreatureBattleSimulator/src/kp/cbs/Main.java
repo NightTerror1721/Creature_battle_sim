@@ -20,43 +20,9 @@ public final class Main
 {
     public static void main(String[] args) throws IOException
     {
-        /*for(int i=1;i<=100;i++)
-            System.out.println("Experience gained in level " + i + ": " + Formula.experienceGained(i, i, 210, 1.5f));*/
-        
-        /*Creature c = Creature.create(0, 100);
-        Serializer.write(Serializer.extract(c), "testCreature.udl");
-        
-        Serializer.inject(Serializer.read("testCreature.udl"), Creature.class);
-        
-        for(ElementalType e : ElementalType.allIterable())
-            System.out.println(e);
-        
-        RacePool.getAllRaces(false);*/
-        
-        /*executeGame();
-        
-        var encounter = new Encounter();
-        var rng = new RNG();
-        
-        encounter.getSelfTeam().addCreature(Creature.createWild(14, 100, rng));
-        encounter.getEnemyTeam().addCreature(Creature.createWild(8, 100, rng));
-        
-        encounter.setIntelligence(AIIntelligence.create(255));
-        
-        Battle.initiate(null, encounter);*/
-        
-        executeGame();
-        
-        /*PlayerGame game = new PlayerGame();
-        
-        var rng = new RNG();
-        
-        var c1 = Creature.createWild(0, 5, rng);
-        
-        var place = Place.load("Pueblo Khalm");
-        place.startWildBattle(null, game, c1);*/
-        
-        //executeEditor();
+        if(args.length > 0 && args[0].equals("editors"))
+            executeEditor();
+        else executeGame();
     }
     
     private static void executeEditor()

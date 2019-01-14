@@ -1,0 +1,8 @@
+"id": "leage_bronce",
+"battlesPerStage": 3,
+"finalBattle": "",
+"stages": [{
+	"minElo": 0,
+	"maxElo": 50,
+	"battle": "leage_bronce_1"
+}]

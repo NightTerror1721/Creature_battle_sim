@@ -1,0 +1,6 @@
+Bronce,
+Plata,
+Oro,
+Platino,
+Diamante,
+Maestra

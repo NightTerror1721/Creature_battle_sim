@@ -67,6 +67,10 @@ public class CreatureViewer extends JDialog
         setResizable(false);
         Utils.focus(this);
         
+        restart();
+    }
+    private void restart()
+    {
         setTitle("Visor de Criatura - " + creature.getName());
         
         name.setText("Nombre: " + creature.getName());
@@ -104,6 +108,7 @@ public class CreatureViewer extends JDialog
         fillAttacks();
         fillAbilityPoints();
         fillRaceBases();
+        fillEvos();
     }
     
     private void setStat(JTextField label, Stat stat)
@@ -115,10 +120,10 @@ public class CreatureViewer extends JDialog
         label.setText(value + sufix);
         if(stat.getStatId() != StatId.HEALTH_POINTS)
         {
-            float nature = creature.getNature().getStatModificator(stat.getStatId());
-            if(nature < 1f)
+            float nat = creature.getNature().getStatModificator(stat.getStatId());
+            if(nat < 1f)
                 label.setForeground(Color.BLUE);
-            else if(nature > 1f)
+            else if(nat > 1f)
                 label.setForeground(Color.RED);
         }
     }
@@ -192,6 +197,44 @@ public class CreatureViewer extends JDialog
         setStat(crace.getSpecialAttackBase(), base_attackSp, sp_attack_p);
         setStat(crace.getSpecialDefenseBase(), base_defenseSp, sp_defense_p);
         setStat(crace.getSpeedBase(), base_speed, speed_p);
+    }
+    
+    private void fillEvos()
+    {
+        evosPanel.removeAll();
+        if(!modifyAbilities)
+        {
+            evosPanel.setEnabled(false);
+            return;
+        }
+        
+        evosPanel.setEnabled(true);
+        var evos = creature.getRace().getEvolutions();
+        var len = evos.getEvolutionCount();
+        for(var i = 0; i < len; i++)
+        {
+            final var evo = evos.getEvolution(i);
+            var button = new JButton();
+            if(evo.check(creature))
+            {
+                button.setText(evo.getRaceToEvolve().getName());
+                button.addActionListener(e -> {
+                    var targetRace = evo.getRaceToEvolve();
+                    JOptionPane.showMessageDialog(CreatureViewer.this, creature.getName() + " ha evolucionado de la raza " +
+                            creature.getRace().getName() + " a " + targetRace.getName());
+                    creature.evolve(CreatureViewer.this, evo);
+                    restart();
+                });
+            }
+            else
+            {
+                final var text = evo.getRemainingConditionsToCheck(creature);
+                button.setText("?????");
+                button.addActionListener(e -> JOptionPane.showMessageDialog(CreatureViewer.this, text,
+                        "Condiciones de evolución", JOptionPane.INFORMATION_MESSAGE));
+            }
+            evosPanel.add(button);
+        }
     }
     
     private static void setStat(int stat, JProgressBar bar, JLabel label)
@@ -329,6 +372,8 @@ public class CreatureViewer extends JDialog
         speed_p = new javax.swing.JLabel();
         sp_attack_p = new javax.swing.JLabel();
         sp_defense_p = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        evosPanel = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -859,7 +904,7 @@ public class CreatureViewer extends JDialog
                     .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(base_attackSp, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 112, Short.MAX_VALUE)
+                    .addComponent(base_attackSp, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 131, Short.MAX_VALUE)
                     .addComponent(base_speed, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addComponent(base_defense, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addComponent(base_attack, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
@@ -916,13 +961,20 @@ public class CreatureViewer extends JDialog
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder("Evoluciones"));
+
+        evosPanel.setLayout(new java.awt.GridLayout(0, 1));
+        jScrollPane1.setViewportView(evosPanel);
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1))
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -930,7 +982,9 @@ public class CreatureViewer extends JDialog
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(97, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("Raza", jPanel4);
@@ -1044,6 +1098,7 @@ public class CreatureViewer extends JDialog
     private javax.swing.JLabel defense_ab;
     private javax.swing.JButton defense_add;
     private javax.swing.JLabel defense_p;
+    private javax.swing.JPanel evosPanel;
     private javax.swing.JLabel exp;
     private javax.swing.JProgressBar expBar;
     private javax.swing.JTextField hp;
@@ -1077,6 +1132,7 @@ public class CreatureViewer extends JDialog
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel level;
     private javax.swing.JLabel name;

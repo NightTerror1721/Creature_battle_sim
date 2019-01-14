@@ -6,6 +6,7 @@
 package kp.cbs.battle;
 
 import java.util.ArrayList;
+import kp.cbs.battle.cmd.BattleCommandManager;
 import kp.cbs.battle.weather.WeatherId;
 import kp.cbs.creature.Creature;
 import kp.cbs.creature.CreatureClass;
@@ -77,7 +78,7 @@ public final class Team
             case RANDOM_WITHOUT_LAST:
                 return creatures.get(rng.d(creatures.size() - 1));
             case RANDOM:
-                creatures.get(rng.d(creatures.size()));
+                return creatures.get(rng.d(creatures.size()));
         }
         return null;
     }
@@ -135,7 +136,7 @@ public final class Team
         private CreatureSelected(Creature creature, Creature enemy, RNG rng, WeatherId weather)
         {
             this.creature = creature;
-            FighterTurnState state = new FighterTurnState(creature, enemy, null, rng, true, weather);
+            FighterTurnState state = new FighterTurnState(creature, enemy, new BattleCommandManager(), rng, true, weather);
             this.score = creature.getAttackManager().selectScoreByAI(state, intel);
         }
     }

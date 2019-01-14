@@ -67,6 +67,10 @@ public final class BattleCore
     
     private Weather weather;
     
+    private Creature catched;
+    
+    private boolean forcedGameOver;
+    
     public BattleCore(Team self, Team enemy)
     {
         this.selfTeam = Objects.requireNonNull(self);
@@ -86,7 +90,12 @@ public final class BattleCore
     
     public final AIIntelligence getEnemyIntelligence() { return enemyTeam.getIntelligence(); }
     
-    public final BattleResult createResult() { return new BattleResult(selfTeam, enemyTeam, coreRng); }
+    public final BattleResult createResult()
+    {
+        return catched == null
+                ? new BattleResult(selfTeam, enemyTeam, coreRng)
+                : new BattleResult(catched);
+    }
     
     public final boolean isCurrentAlive(TeamId team)
     {
@@ -98,6 +107,11 @@ public final class BattleCore
     {
         var base = enemyCreature.getFeaturesManager().computeExperienceBase();
         return Formula.experienceGained(selfCreature.getLevel(), enemyCreature.getLevel(), base, bonus);
+    }
+    
+    public final int getAbilityPointsGained()
+    {
+        return enemyCreature.getFeaturesManager().computeAbilityPointsBase();
     }
     
     public final FighterTurnState generateFighterState(TeamId team)
@@ -170,10 +184,12 @@ public final class BattleCore
                     removeAttackInProgress(TeamId.SELF);
                     battle.updateCreatureInterface(TeamId.SELF);
                     battle.sleep(1500);
+                    battle.insertMessage("¡El enemigo saca a luchar a " + enemyCreature.getName() + "!");
                 }
             }
+            else battle.insertMessage("¡El enemigo saca a luchar a " + enemyCreature.getName() + "!");
             
-            battle.insertMessage("¡El enemigo saca a luchar a " + enemyCreature.getName() + "!");
+            battle.sleep(1000);
             enemyCreature.setFighterId(team);
         }
         removeAttackInProgress(team);
@@ -503,9 +519,13 @@ public final class BattleCore
         return state.rng.d100(pre);
     }
     
+    public final void setCached(Creature catched) { this.catched = catched; }
+    
+    public final void forceGameOver() { this.forcedGameOver = true; }
+    
     public final boolean isGameOver()
     {
-        return !selfTeam.hasAnyAlive() || !enemyTeam.hasAnyAlive();
+        return forcedGameOver || !selfTeam.hasAnyAlive() || !enemyTeam.hasAnyAlive();
     }
     
     public final void checkChanges()

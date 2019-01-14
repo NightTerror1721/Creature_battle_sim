@@ -8,7 +8,10 @@ package kp.cbs.creature;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import kp.cbs.battle.FighterTurnState;
+import kp.cbs.battle.LearnAttack;
 import kp.cbs.battle.TeamId;
 import kp.cbs.battle.cmd.BattleCommandManager;
 import kp.cbs.creature.altered.AlteredState;
@@ -28,11 +31,13 @@ import kp.cbs.creature.feat.NormalStat;
 import kp.cbs.creature.feat.PercentageFeature;
 import kp.cbs.creature.feat.Stat;
 import kp.cbs.creature.feat.StatId;
+import kp.cbs.creature.race.Evolution;
 import kp.cbs.creature.race.Race;
 import kp.cbs.creature.race.RacePool;
 import kp.cbs.creature.state.StateManager;
 import kp.cbs.utils.Formula;
 import kp.cbs.utils.RNG;
+import kp.cbs.utils.SoundManager;
 import kp.cbs.utils.Utils;
 import kp.udl.autowired.InjectOptions;
 import kp.udl.autowired.Property;
@@ -215,6 +220,32 @@ public final class Creature implements Comparable<Creature>
                 remainingAbPoints--;
                 stat.addAbilityPoints(1);
             }
+        }
+    }
+    
+    public final void evolve(JDialog parent, Evolution evo)
+    {
+        race = evo.getRaceToEvolve();
+        clearAll();
+        
+        var latts = race.getAttackPool().getNormalAttacksInLevel(getLevel(), true);
+        if(latts == null || latts.isEmpty())
+            return;
+        for(var att : latts)
+        {
+            if(attacks.containsAttack(att))
+                continue;
+            var slot = attacks.getFirstEmptySlot();
+            if(slot == null)
+            {
+                slot = LearnAttack.open(parent, this, att);
+                if(slot == null)
+                    continue;
+            }
+            attacks.setAttack(slot, att);
+            JOptionPane.showMessageDialog(parent, "¡" + getName() + " ha aprendido \"" + att.getName() + "\"!",
+                    "Nuevo ataque aprendido", JOptionPane.INFORMATION_MESSAGE);
+            SoundManager.playSound("level_up");
         }
     }
     

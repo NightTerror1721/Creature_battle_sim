@@ -9,14 +9,17 @@ import java.awt.Color;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.Window;
+import java.util.List;
 import java.util.Objects;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.border.LineBorder;
 import javax.swing.text.BadLocationException;
+import kp.cbs.ItemId;
 import kp.cbs.PlayerGame;
 import static kp.cbs.battle.TeamId.ENEMY;
 import static kp.cbs.battle.TeamId.SELF;
@@ -54,9 +57,13 @@ public class Battle extends JDialog
     
     private boolean wildBattle;
     
+    private ItemId lastCatcher;
+    
     private ButtonsMenuState butState = ButtonsMenuState.DISABLED;
     
     private Music music;
+    
+    private int turn;
     
     private boolean gameOver;
     
@@ -102,6 +109,8 @@ public class Battle extends JDialog
         battle.expBonus = encounter.getExperienceBonus();
         
         battle.music = SoundManager.loadMusic(encounter.getMusic());
+        
+        battle.wildBattle = encounter.isWildBattle();
         
         battle.start();
         
@@ -355,7 +364,7 @@ public class Battle extends JDialog
         but3.setEnabled(state != ButtonsMenuState.DISABLED);
         if(wildBattle)
         {
-            but4.setEnabled(state != ButtonsMenuState.DISABLED);
+            but4.setEnabled(state != ButtonsMenuState.DISABLED && game.getAvailableCatchItems().length > 0);
             but5.setEnabled(state != ButtonsMenuState.DISABLED);
         }
         else
@@ -536,14 +545,17 @@ public class Battle extends JDialog
     }
     
     
-    final void checkExperience()
+    private void checkExperience()
     {
         if(!core.isCurrentAlive(SELF) || core.isCurrentAlive(ENEMY))
             return;
         int expGain = core.getExperieneGained(expBonus);
         if(expGain <= 0)
             return;
+        
         var creature = core.getFighter(SELF);
+        creature.giveAbilityPoints(core.getAbilityPointsGained());
+        
         var cexp = creature.getExperienceManager();
         insertMessage(creature.getName() + " gana " + expGain + " puntos de experiencia.");
         sleep(1500);
@@ -571,6 +583,7 @@ public class Battle extends JDialog
                 stats[i] = creature.getStat(StatId.decode(i - 6)).getValue();
                 stats[i - 6] = stats[i] - stats[i - 6];
             }
+            creature.getHealthPoints().heal(stats[StatId.HEALTH_POINTS.ordinal()]);
             updateCreatureInterface(SELF);
             SoundManager.playSound("level_up");
             LevelUpStatComparison.open(this,stats);
@@ -580,7 +593,7 @@ public class Battle extends JDialog
     
     private void checkLevelAttacksToLearn(Creature creature)
     {
-        var latts = creature.getRace().getAttackPool().getNormalAttacksInLevel(creature.getLevel());
+        var latts = creature.getRace().getAttackPool().getNormalAttacksInLevel(creature.getLevel(), false);
         if(latts == null || latts.isEmpty())
             return;
         var atts = creature.getAttackManager();
@@ -625,6 +638,8 @@ public class Battle extends JDialog
 
                 round(selfState, enemyState);
                 
+                turn++;
+                
                 if(!gameOver && core.hasAttackInProgress(selfState))
                 {
                     selfState = core.generateFighterState(SELF);
@@ -647,6 +662,7 @@ public class Battle extends JDialog
         updateCreatureInterface(ENEMY);
         
         var currentTeam = SELF;
+        boolean catched = false;
         
         var selfSpeed = Formula.computeRealSpeed(selfState.self, core.getWeatherId());
         var enemySpeed = Formula.computeRealSpeed(enemyState.self, core.getWeatherId());
@@ -670,7 +686,7 @@ public class Battle extends JDialog
             {
                 case ATTACK: useAttackAction(state, state.action.getAttack()); break;
                 case CONTINUE: continueAttackAction(state); break;
-                case CATCH: applyCatch(state); break;
+                case CATCH: catched = applyCatch(state, currentTeam); break;
                 case CHANGE: applyChange(state); break;
                 case RUN: applyRun(state); break;
             }
@@ -680,7 +696,7 @@ public class Battle extends JDialog
             updateCreatureInterface(currentTeam);
             updateCreatureInterface(currentTeam.invert());
             state.setTurnToEnd();
-            if(!core.isCurrentAlive(SELF) || !core.isCurrentAlive(ENEMY))
+            if(catched || !core.isCurrentAlive(SELF) || !core.isCurrentAlive(ENEMY))
             {
                 selfState.setTurnToEnd();
                 enemyState.setTurnToEnd();
@@ -689,45 +705,52 @@ public class Battle extends JDialog
             currentTeam = currentTeam.invert();
         }
         
-        if(!core.isCurrentAlive(SELF))
+        if(catched)
         {
-            clearText();
-            insertMessage(core.getFighter(SELF).getName() + " ha sido derrotado, y cae debilitado.");
-            sleep(1000);
-            SoundManager.playSound("faint");
-            sleep(250);
+            core.forceGameOver();
+        }
+        else
+        {
+            if(!core.isCurrentAlive(SELF))
+            {
+                clearText();
+                insertMessage(core.getFighter(SELF).getName() + " ha sido derrotado, y cae debilitado.");
+                sleep(1000);
+                SoundManager.playSound("faint");
+                sleep(250);
+                updateCreatureInterface(SELF);
+                sleep(1000);
+            }
+
+            if(!core.isCurrentAlive(ENEMY))
+            {
+                clearText();
+                insertMessage(core.getFighter(ENEMY).getName() + " ha sido derrotado, y cae debilitado.");
+                sleep(1000);
+                SoundManager.playSound("faint");
+                sleep(250);
+                updateCreatureInterface(ENEMY);
+                sleep(1000);
+            }
+
+            if(core.isCurrentAlive(SELF))
+            {
+                core.updateAlterations(selfState);
+                core.updateCurrentCreature(SELF);
+                updateCreatureInterface(SELF);
+            }
+            if(core.isCurrentAlive(ENEMY))
+            {
+                core.updateAlterations(enemyState);
+                core.updateCurrentCreature(ENEMY);
+                updateCreatureInterface(ENEMY);
+            }
+
+            core.updateWeather();
+            core.updateCurrentCreatures();
             updateCreatureInterface(SELF);
-            sleep(1000);
-        }
-        
-        if(!core.isCurrentAlive(ENEMY))
-        {
-            clearText();
-            insertMessage(core.getFighter(ENEMY).getName() + " ha sido derrotado, y cae debilitado.");
-            sleep(1000);
-            SoundManager.playSound("faint");
-            sleep(250);
-            updateCreatureInterface(ENEMY);
-            sleep(1000);
-        }
-        
-        if(core.isCurrentAlive(SELF))
-        {
-            core.updateAlterations(selfState);
-            core.updateCurrentCreature(SELF);
-            updateCreatureInterface(SELF);
-        }
-        if(core.isCurrentAlive(ENEMY))
-        {
-            core.updateAlterations(enemyState);
-            core.updateCurrentCreature(ENEMY);
             updateCreatureInterface(ENEMY);
         }
-        
-        core.updateWeather();
-        core.updateCurrentCreatures();
-        updateCreatureInterface(SELF);
-        updateCreatureInterface(ENEMY);
         
         checkExperience();
         
@@ -765,9 +788,21 @@ public class Battle extends JDialog
         core.applyNextTurn(state);
     }
     
-    private void applyCatch(FighterTurnState state)
+    private boolean applyCatch(FighterTurnState state, TeamId team)
     {
+        if(team != SELF)
+            return false;
         
+        var item = state.action.getItem();
+        if(item == null || !item.isCatcherItem())
+            return false;
+        
+        if(!Formula.tryCatch(lastCatcher, state.enemy, state.rng, turn))
+            return false;
+        
+        game.removeItemAmount(item, 1);
+        core.setCached(state.enemy);
+        return true;
     }
     
     private void applyChange(FighterTurnState state)
@@ -1130,7 +1165,19 @@ public class Battle extends JDialog
     private void but4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but4ActionPerformed
         switch(butState)
         {
-            case MAIN: executeRound(BattleAction.catchAction()); break;
+            case MAIN: {
+                var all = game.getAvailableCatchItems();
+                if(all.length < 1)
+                    break;
+                
+                var first = lastCatcher != null && List.of(all).contains(lastCatcher) ? lastCatcher : all[0];
+                var sel = JOptionPane.showInputDialog(this, "¿Que capturador quieres usar?", "Capturar luchador",
+                        JOptionPane.QUESTION_MESSAGE, null, all, first);
+                if(sel == null || !((ItemId) sel).isCatcherItem())
+                    break;
+                
+                executeRound(BattleAction.catchAction((ItemId) sel));
+            } break;
             case ATTACKS: executeRound(BattleAction.attackAction(core.getFighter(SELF).getAttack(AttackSlot.SLOT_4))); break;
         }
     }//GEN-LAST:event_but4ActionPerformed

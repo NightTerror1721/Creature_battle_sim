@@ -19,6 +19,7 @@ import java.util.UUID;
 import java.util.stream.Stream;
 import kp.cbs.TeamManager.TeamSlot;
 import kp.cbs.creature.Creature;
+import kp.cbs.place.Leage;
 import kp.cbs.place.Place;
 import kp.cbs.utils.Pair;
 import kp.cbs.utils.Paths;
@@ -46,6 +47,7 @@ public final class PlayerGame
     @Property private int money;
     
     @Property private String currentPlace = "";
+    @Property private String currentLeage = "";
     
     public final void setName(String name) { this.name = Objects.requireNonNullElse(name, "default_slot"); }
     public final String getName() { return name; }
@@ -96,6 +98,12 @@ public final class PlayerGame
         return Stream.of(ItemId.values())
                 .filter(this::isItemAvailable)
                 .map(i -> new Pair<>(i, getItemAmount(i)));
+    }
+    public final ItemId[] getAvailableCatchItems()
+    {
+        return Stream.of(ItemId.values())
+                .filter(i -> i.isCatcherItem() && isItemAvailable(i))
+                .toArray(ItemId[]::new);
     }
     
     public final UUID getCreatureIdInSlot(TeamSlot slot)
@@ -165,12 +173,21 @@ public final class PlayerGame
     public final void addMoney(int amount) { setMoney(money + Math.max(0, amount)); }
     public final boolean hasEnoughMoney(int amount) { return money >= Math.max(0, amount); }
     
-    public final void setCurrentPlace(String placeId)
+    public final void setCurrentPlace(String placeName)
     {
-        this.currentPlace = placeId;
+        this.currentPlace = placeName;
     }
     public final void setCurrentPlace(Place place) { setCurrentPlace(place.getName()); }
     public final String getCurrentPlace() { return currentPlace; }
+    
+    public final void setCurrentLeage(String leageName)
+    {
+        this.currentLeage = leageName;
+    }
+    public final void setCurrentLeage(Leage leage) { setCurrentLeage(leage.getName()); }
+    public final String getCurrentLeage() { return currentLeage; }
+    
+    
     
     private void check()
     {

@@ -6,6 +6,7 @@
 package kp.cbs.creature.altered;
 
 import java.util.StringJoiner;
+import java.util.stream.Stream;
 import kp.cbs.battle.BattleUpdater;
 import kp.cbs.battle.FighterTurnState;
 import kp.cbs.battle.cmd.BattleCommandManager;
@@ -40,20 +41,35 @@ public final class AlteredStateManager implements BattleUpdater
         return true;
     }
     
-    public final void rawDeleteAlterationState(AlteredStateId alteredState)
+    public final boolean rawDeleteAlterationState(AlteredStateId alteredState)
     {
+        var state = states[alteredState.ordinal()] != null;
         states[alteredState.ordinal()] = null;
+        return state;
     }
-    public final void rawDeleteAllAlterationStates()
+    public final boolean rawDeleteAllAlterationStates()
     {
+        boolean state = false;
         for(int i = 0; i < states.length; i++)
+        {
+            if(!state && states[i] != null)
+                state = true;
             states[i] = null;
+        }
+        return state;
     }
     
     public final boolean isAlteredStateEnabled(AlteredStateId alteredState)
     {
         int id = alteredState.ordinal();
         return states[id] != null && states[id].isEnabled();
+    }
+    
+    public final AlteredStateId[] getEnabledAlterations()
+    {
+        return Stream.of(AlteredStateId.values())
+                .filter(this::isAlteredStateEnabled)
+                .toArray(AlteredStateId[]::new);
     }
     
     public final void clearAllAlterations()

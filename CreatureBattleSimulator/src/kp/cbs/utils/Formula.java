@@ -6,6 +6,7 @@
 package kp.cbs.utils;
 
 import java.util.Arrays;
+import kp.cbs.ItemId;
 import kp.cbs.battle.weather.WeatherId;
 import kp.cbs.creature.Creature;
 import kp.cbs.creature.CreatureClass;
@@ -287,5 +288,66 @@ public final class Formula
                     ratio *= 0.7f;
         }
         return ratio;
+    }
+    
+    public static final float timerCatcherMultiplier(int turn)
+    {
+        if(turn <= 1)
+            return 1f;
+        if(turn > 40)
+            return 5f;
+        return 1f + ((turn - 1) / 10f);
+    }
+    
+    public static final float rapidCatcherMultiplier(int turn) { return turn == 0 ? 5f : 1f; }
+    
+    private static int computeCatchRatio(int statAmount)
+    {
+        if(statAmount <= 250)
+            return 255;
+        
+        statAmount -= 250;
+        if(statAmount >= 512)
+            return 3;
+        
+        statAmount = (int) ((512 - statAmount) / 512f * 255f);
+        return Math.max(3, statAmount);
+    }
+    
+    private static float alterationCatchMultiplier(Creature creature)
+    {
+        float mul = 1f;
+        for(var alt : creature.getAlterationManager().getEnabledAlterations())
+        {
+            switch(alt)
+            {
+                case PARALYSIS:
+                case POISONING:
+                case INTOXICATION:
+                case BURN: mul += 0.5f; break;
+                case SLEEP:
+                case FREEZING: mul += 1f; break;
+            }
+        }
+        return mul;
+    }
+    
+    public static final boolean tryCatch(ItemId catcher, Creature target, RNG rng, int turn)
+    {
+        if(catcher == ItemId.MASTER_CATCHER)
+            return true;
+        var ratio = Math.min(255, computeCatchRatio(target.getFeaturesManager().getStatSum()) * catcher.getCatchMultiplier(turn));
+        var maxHp = target.getMaxHealthPoints();
+        var currHp = Math.max(1, target.getCurrentHealthPoints());
+        var state = alterationCatchMultiplier(target);
+        
+        var x = (((maxHp * 3) - (currHp * 2)) * ratio / (maxHp * 3)) * state;
+        int y = (int) Math.floor(65536f / Math.sqrt(Math.sqrt(255f / x)));
+        
+        var a = rng.d65536();
+        var b = rng.d65536();
+        var c = rng.d65536();
+        
+        return a < y && b < y && c < y;
     }
 }

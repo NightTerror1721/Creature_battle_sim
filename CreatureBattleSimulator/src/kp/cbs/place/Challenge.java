@@ -6,11 +6,10 @@
 package kp.cbs.place;
 
 import java.awt.Window;
+import java.util.LinkedList;
 import kp.cbs.PlayerGame;
 import kp.cbs.battle.Battle;
-import kp.cbs.battle.BattleResult;
 import kp.cbs.battle.Encounter;
-import kp.cbs.battle.prop.BattleProperties;
 import kp.cbs.battle.prop.BattlePropertiesPool;
 import kp.cbs.creature.Creature;
 import kp.cbs.utils.GlobalId;
@@ -24,36 +23,90 @@ public final class Challenge extends GlobalId
 {
     @Property private String name = "";
     @Property private String description = "";
-    @Property private int battlesPerStage = 1;
-    @Property private String battle = "";
-    
-    private BattleProperties cache;
+    @Property private boolean unique;
+    @Property private String[] battles = {};
     
     public final String getName() { return name; }
     public final String getDescription() { return description; }
-    public final int getBattlesPerStage() { return battlesPerStage; }
     
-    private Encounter generateEncounter()
+    public final boolean isEnabled(PlayerGame game)
     {
+        return !unique || !isCompleted(game);
+    }
+    
+    public final boolean isCompleted(PlayerGame game) { return game.isIdPassed(getId()); }
+    
+    public final boolean isUnique() { return unique; }
+    
+    private Encounter generateEncounter(int index)
+    {
+        var cache = BattlePropertiesPool.load(battles[index]);
         if(cache == null)
-        {
-            cache = BattlePropertiesPool.load(battle);
-            if(cache == null)
-                throw new IllegalStateException("Battle " + battle + " not found");
-        }
+            return null;
         return cache.createEncounter();
     }
     
-    public final BattleResult startBattle(Window parent, PlayerGame game, Creature... selfCreatures)
+    public final ChallengeStage createStage() { return new ChallengeStage(); }
+    
+    @Override
+    public final String toString() { return getName(); }
+    
+    
+    public final class ChallengeStage implements Stage
     {
-        if(selfCreatures == null || selfCreatures.length < 1)
-                throw new IllegalStateException();
+        private final LinkedList<Encounter> encounters;
+        private int wins;
+        private int accumulatedMoney;
         
-        var encounter = generateEncounter();
-        encounter.setExperienceBonus(1.5f);
-        for(var creature : selfCreatures)
-            encounter.getSelfTeam().addCreature(creature);
+        private ChallengeStage()
+        {
+            this.encounters = new LinkedList<>();
+            for(var i = 0; i < battles.length; i++)
+            {
+                var enc = generateEncounter(i);
+                if(enc != null)
+                    encounters.add(enc);
+            }
+        }
+        
+        @Override
+        public final boolean isLeage() { return false; }
 
-        return Battle.initiate(parent, game, encounter);
+        @Override
+        public final int getWins() { return wins; }
+
+        @Override
+        public final int getAccumulatedElo() { return 0; }
+
+        @Override
+        public final int getAccumulatedMoney() { return accumulatedMoney; }
+
+        @Override
+        public final void forceLose()
+        {
+            encounters.clear();
+            wins = 0;
+            accumulatedMoney = Math.min(0, accumulatedMoney);
+        }
+        
+        @Override
+        public final int getRemainingBattles() { return encounters.size(); }
+        
+        @Override
+        public final void startNextBattle(Window parent, PlayerGame game, Creature... selfCreatures)
+        {
+            if(selfCreatures == null || selfCreatures.length < 1 || encounters.isEmpty())
+                    throw new IllegalStateException();
+
+            var encounter = encounters.removeFirst();
+            encounter.setExperienceBonus(1.5f);
+            for(var creature : selfCreatures)
+                encounter.getSelfTeam().addCreature(creature);
+
+            var result = Battle.initiate(parent, game, encounter);
+            accumulatedMoney += result.getMoney();
+            if(result.isSelfWinner())
+                wins++;
+        }
     }
 }

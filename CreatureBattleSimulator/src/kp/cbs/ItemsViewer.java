@@ -230,6 +230,7 @@ public class ItemsViewer extends JDialog
         
         game.useMoney(sel.getPrice());
         game.addItemAmount(sel, 1);
+        updateMoney();
         showItem();
     }//GEN-LAST:event_buyActionPerformed
 
@@ -243,6 +244,7 @@ public class ItemsViewer extends JDialog
         
         game.addMoney(sel.getPrice() / 2);
         game.removeItemAmount(sel, 1);
+        updateMoney();
         showItem();
     }//GEN-LAST:event_saleActionPerformed
 

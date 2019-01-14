@@ -68,7 +68,12 @@ public final class TeamManager implements Iterable<Creature>
     
     public final Creature[] getTeamCreatures()
     {
-        return stream().toArray(Creature[]::new);
+        return stream().filter(Creature::isAlive).toArray(Creature[]::new);
+    }
+    
+    public final boolean isAnyAlive()
+    {
+        return stream().anyMatch(Creature::isAlive);
     }
     
     public final void clearTransient()

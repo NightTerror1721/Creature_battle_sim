@@ -8,6 +8,7 @@ package kp.cbs.place;
 import java.awt.Window;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.LinkedList;
 import kp.cbs.PlayerGame;
 import kp.cbs.battle.Battle;
 import kp.cbs.battle.BattleResult;
@@ -15,6 +16,7 @@ import kp.cbs.battle.Encounter;
 import kp.cbs.battle.prop.BattleProperties;
 import kp.cbs.battle.prop.BattlePropertiesPool;
 import kp.cbs.creature.Creature;
+import kp.cbs.utils.Config;
 import kp.cbs.utils.GlobalId;
 import kp.cbs.utils.Paths;
 import kp.cbs.utils.Serializer;
@@ -27,7 +29,7 @@ import kp.udl.exception.UDLException;
  */
 public class Leage extends GlobalId
 {
-    private String name = "UNKNOWN_LEAGE";
+    private String name;
     
     @Property private int battlesPerStage = 1;
     @Property private String finalBattle = "";
@@ -99,13 +101,14 @@ public class Leage extends GlobalId
         }
     }
     
-    public final class LeageStage
+    public final class LeageStage implements Stage
     {
         private final LeageStageProperties stage;
         private final int currentElo;
         private int remainingBattles;
         private int wins;
         private int accumulatedElo;
+        private int accumulatedMoney;
         
         private LeageStage(LeageStageProperties stage, int currentElo)
         {
@@ -115,13 +118,32 @@ public class Leage extends GlobalId
             this.wins = 0;
         }
         
-        public final int getWins() { return wins; }
-        public final int getRemainingBattles() { return remainingBattles; }
-        public final boolean hasMoreBattles() { return remainingBattles > 0; }
+        @Override
+        public final boolean isLeage() { return true; }
         
+        @Override
+        public final int getWins() { return wins; }
+        
+        @Override
+        public final int getRemainingBattles() { return remainingBattles; }
+        
+        @Override
         public final int getAccumulatedElo() { return accumulatedElo; }
         
-        public final BattleResult startNextBattle(Window parent, PlayerGame game, Creature... selfCreatures)
+        @Override
+        public final int getAccumulatedMoney() { return accumulatedMoney; }
+        
+        @Override
+        public final void forceLose()
+        {
+            remainingBattles = 0;
+            wins = 0;
+            accumulatedElo = Math.min(0, accumulatedElo);
+            accumulatedMoney = Math.min(0, accumulatedMoney);
+        }
+        
+        @Override
+        public final void startNextBattle(Window parent, PlayerGame game, Creature... selfCreatures)
         {
             if(selfCreatures == null || selfCreatures.length < 1)
                 throw new IllegalStateException();
@@ -132,12 +154,13 @@ public class Leage extends GlobalId
                 encounter.getSelfTeam().addCreature(creature);
             
             var result = Battle.initiate(parent, game, encounter);
+            if(!result.isSelfWinner() && accumulatedElo > 0)
+                accumulatedElo = 0;
             accumulatedElo += result.getElo();
+            accumulatedMoney += result.getMoney();
             remainingBattles--;
             if(result.isSelfWinner())
                 wins++;
-            
-            return result;
         }
     }
     
@@ -165,7 +188,7 @@ public class Leage extends GlobalId
         try
         {
             if(!Files.isReadable(path))
-                return new Leage();
+                return null;
             var base = Serializer.read(path);
             var leage = Serializer.inject(base, Leage.class);
             leage.name = name;
@@ -174,11 +197,11 @@ public class Leage extends GlobalId
         catch(IOException | UDLException ex)
         {
             ex.printStackTrace(System.err);
-            return new Leage();
+            return null;
         }
     }
     
-    public static final String[] getAllLeageNames()
+    /*public static final String[] getAllLeageNames()
     {
         try
         {
@@ -194,5 +217,24 @@ public class Leage extends GlobalId
             ex.printStackTrace(System.err);
             return new String[] {};
         }
+    }*/
+    
+    public static final String[] getAvailableLeageNames(PlayerGame game)
+    {
+        var names = Config.getStringArray("leages");
+        if(names.length < 1)
+            return names;
+        
+        var list = new LinkedList<>();
+        for(var name : names)
+        {
+            var leage = load(name);
+            if(leage == null)
+                continue;
+            list.add(name);
+            if(!game.isIdPassed(leage.getId()))
+                break;
+        }
+        return list.toArray(String[]::new);
     }
 }

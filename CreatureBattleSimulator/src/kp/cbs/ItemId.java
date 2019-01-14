@@ -5,9 +5,15 @@
  */
 package kp.cbs;
 
+import java.util.LinkedList;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import kp.cbs.creature.Creature;
 import kp.cbs.creature.altered.AlteredStateId;
+import kp.cbs.creature.attack.Attack;
+import kp.cbs.creature.attack.AttackModel;
 import kp.cbs.creature.attack.AttackSlot;
+import kp.cbs.utils.Formula;
 
 /**
  *
@@ -60,6 +66,35 @@ public enum ItemId
     @Override
     public final String toString() { return name; }
     
+    public final boolean isCatcherItem()
+    {
+        switch(this)
+        {
+            case CATCHER:
+            case SUPER_CATCHER:
+            case ULTRA_CATCHER:
+            case TIMER_CATCHER:
+            case FAST_CATCHER:
+            case MASTER_CATCHER:
+                return true;
+            default: return false;
+        }
+    }
+    
+    public final float getCatchMultiplier(int turn)
+    {
+        switch(this)
+        {
+            default:
+            case CATCHER: return 1f;
+            case SUPER_CATCHER: return 1.5f;
+            case ULTRA_CATCHER: return 2f;
+            case TIMER_CATCHER: return Formula.timerCatcherMultiplier(turn);
+            case FAST_CATCHER: return Formula.rapidCatcherMultiplier(turn);
+            case MASTER_CATCHER: return 65535f;
+        }
+    }
+    
     public final String getDescription()
     {
         switch(this)
@@ -82,8 +117,8 @@ public enum ItemId
             case ELIXIR: return "Restaura 10 PP a todos los ataques.";
             case MAX_ELIXIR: return "Restaura todos los PP a todos los ataques.";
             case CATCHER: return "Captura a un luchador. Tiene ratio 1.";
-            case SUPER_CATCHER: return "Captura a un luchador. Tiene ratio 2.";
-            case ULTRA_CATCHER: return "Captura a un luchador. Tiene ratio 3.";
+            case SUPER_CATCHER: return "Captura a un luchador. Tiene ratio 1.5.";
+            case ULTRA_CATCHER: return "Captura a un luchador. Tiene ratio 2.";
             case TIMER_CATCHER: return "Captura a un luchador. Su augmenta según avanza el combate. Ratio minimo 1, máximo 5.";
             case FAST_CATCHER: return "Captura a un luchador. Su ratio es 5 en el primer turno, el resto del combate es 1.";
             case MASTER_CATCHER: return "Captura a un luchador. Nunca falla.";
@@ -91,7 +126,7 @@ public enum ItemId
         }
     }
     
-    public final boolean applyEffect(Creature creature, Object extra)
+    public final boolean applyEffect(JDialog parent, Creature creature)
     {
         switch(this)
         {
@@ -110,25 +145,24 @@ public enum ItemId
             case REVIVE: return revive(creature, false);
             case MAX_REVIVE: return revive(creature, true);
             case FULL_RESTORE: return fullRestore(creature);
-            case ETHER: return ether(creature, (AttackSlot) extra, false);
-            case MAX_ETHER: return ether(creature, (AttackSlot) extra, true);
+            case ETHER: return ether(parent, creature, false);
+            case MAX_ETHER: return ether(parent, creature, true);
             case ELIXIR: return elixir(creature, false);
             case MAX_ELIXIR: return elixir(creature, true);
             default: return false;
         }
     }
-    public final boolean applyEffect(Creature creature) { return applyEffect(creature, null); }
     
     private static boolean heal(Creature c, int points)
     {
-        if(!c.isAlive())
+        if(!c.isAlive() || c.isFullHealth())
             return false;
         c.getHealthPoints().heal(points);
         return true;
     }
     private static boolean heal(Creature c)
     {
-        if(!c.isAlive())
+        if(!c.isAlive() || c.isFullHealth())
             return false;
         c.getHealthPoints().fullHeal();
         return true;
@@ -138,24 +172,24 @@ public enum ItemId
     {
         if(!c.isAlive())
             return false;
-        c.getAlterationManager().rawDeleteAlterationState(state);
-        return true;
+        return c.getAlterationManager().rawDeleteAlterationState(state);
     }
     private static boolean cure(Creature c)
     {
         if(!c.isAlive())
             return false;
-        c.getAlterationManager().rawDeleteAllAlterationStates();
-        return true;
+        return c.getAlterationManager().rawDeleteAllAlterationStates();
     }
     
     private static boolean fullRestore(Creature c)
     {
         if(!c.isAlive())
             return false;
+        var state = c.isFullHealth();
         c.getHealthPoints().fullHeal();
-        c.getAlterationManager().rawDeleteAllAlterationStates();
-        return true;
+        if(c.getAlterationManager().rawDeleteAllAlterationStates())
+            state = true;
+        return state;
     }
     
     private static boolean revive(Creature c, boolean full)
@@ -178,6 +212,29 @@ public enum ItemId
         else attack.restorePP(10);
         return true;
     }
+    private static boolean ether(JDialog parent, Creature c, boolean full)
+    {
+        var list = new LinkedList<SelectedAttack>();
+        for(var slot = AttackSlot.SLOT_1; slot != null; slot = slot.next())
+        {
+            var attack = c.getAttack(slot);
+            if(attack != null)
+            {
+                var sel = new SelectedAttack(slot, attack);
+                list.add(sel);
+            }
+        }
+        if(list.isEmpty())
+            return false;
+        
+        var array = list.toArray(SelectedAttack[]::new);
+        var sel = JOptionPane.showInputDialog(parent, "¿Aque ataque quieres aplicarlo?", "Éter", JOptionPane.QUESTION_MESSAGE,
+                null, array, array[0]);
+        if(sel == null || !(sel instanceof SelectedAttack))
+            return false;
+        
+        return ether(c, ((SelectedAttack) sel).slot, full);
+    }
     
     private static boolean elixir(Creature c, boolean full)
     {
@@ -186,5 +243,20 @@ public enum ItemId
             if(!ether(c, slot, full))
                 falses++;
         return falses < 4;
+    }
+    
+    private static final class SelectedAttack
+    {
+        private final AttackModel attack;
+        private final AttackSlot slot;
+        
+        private SelectedAttack(AttackSlot slot, Attack attack)
+        {
+            this.slot = slot;
+            this.attack = attack.getModel();
+        }
+        
+        @Override
+        public final String toString() { return attack.getName(); }
     }
 }

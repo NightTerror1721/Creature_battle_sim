@@ -38,6 +38,24 @@ public final class Evolution
     public final void addCondition(EvolveCondition condition) { this.conditions.add(Objects.requireNonNull(condition)); }
     public final void removeCondition(int index) { conditions.remove(index); }
     
+    public final String getRemainingConditionsToCheck(Creature creature)
+    {
+        var sb = new StringBuilder();
+        for(var cond : conditions)
+            if(!cond.check(creature))
+            {
+                if(sb.length() > 0)
+                    sb.append("\n");
+                sb.append("- ").append(cond.toString());
+            }
+        return sb.toString();
+    }
+    
+    public final boolean check(Creature creature)
+    {
+        return conditions.stream().allMatch(c -> c.check(creature));
+    }
+    
     @Override
     public final String toString() { return raceToEvolve.getName(); }
     

@@ -60,11 +60,11 @@ public final class BattleResult
     
     private static int computeElo(Team self, Team enemy)
     {
-        float levelElo = (int) (self.getLevelAverage() / enemy.getLevelAverage() * 4f);
-        float classElo = (int) ((self.getTeamClass().ordinal() - enemy.getTeamClass().ordinal() + 10f) / 10f * 4f);
-        float aliveElo = self.getAliveCount() / (float) self.size() * 4f;
+        float levelElo = (float) enemy.getLevelAverage() / self.getLevelAverage();
+        float classElo = (enemy.getTeamClass().ordinal() - self.getTeamClass().ordinal() + 10f) / 10f;
+        float aliveElo = self.getAliveCount() / (float) self.size();
         
-        return (int) (levelElo + classElo + aliveElo);
+        return (int) (levelElo * classElo * aliveElo * 10f);
     }
     
     public final int getMoney() { return money; }
