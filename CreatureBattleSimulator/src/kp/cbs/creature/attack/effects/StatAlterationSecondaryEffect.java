@@ -283,9 +283,9 @@ public class StatAlterationSecondaryEffect extends SecondaryEffect
         ratio += computeStatAIScore(state, intel, StatId.SPEED, StatId.SPEED, speedLevels, speedRatio);
         ratio += computePrecisionAIScore(state, intel, true, precisionRatio);
         ratio += computePrecisionAIScore(state, intel, false, precisionRatio);
-        ratio = Utils.range(-1f, 1.25f, ratio);
+        ratio = Utils.range(-1f, 1f, ratio);
         
-        return AIScore.third(false).multiply(ratio);
+        return AIScore.fourth(false).multiply(ratio);
     }
 
     @Override
