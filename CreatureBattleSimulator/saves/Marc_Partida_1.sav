@@ -8,7 +8,7 @@
                 "base": 50,
                 "genetic": 17,
                 "ability": 0,
-                "current": 547
+                "current": 590
             },
             "attack": {
                 "base": 38,
@@ -38,8 +38,8 @@
         },
         "exp": {
             "growth": 3,
-            "level": 8,
-            "experience": 346
+            "level": 9,
+            "experience": 529
         },
         "nature": 0,
         "attacks": {
@@ -48,7 +48,7 @@
             "att3": 270,
             "att4": null
         },
-        "abilityPoints": 1
+        "abilityPoints": 4
     },
     "4cf1166f-c729-4be3-b8ff-02507f735abf": {
         "id": "4cf1166f-c729-4be3-b8ff-02507f735abf",
@@ -58,13 +58,13 @@
             "hp": {
                 "base": 35,
                 "genetic": 28,
-                "ability": 1,
-                "current": 438
+                "ability": 5,
+                "current": 525
             },
             "attack": {
                 "base": 58,
                 "genetic": 11,
-                "ability": 2
+                "ability": 4
             },
             "defense": {
                 "base": 40,
@@ -89,25 +89,25 @@
         },
         "exp": {
             "growth": 0,
-            "level": 6,
-            "experience": 250
+            "level": 8,
+            "experience": 589
         },
         "nature": 0,
         "attacks": {
             "att1": 1,
             "att2": 274,
-            "att3": null,
+            "att3": 134,
             "att4": null
         },
-        "abilityPoints": 2
+        "abilityPoints": 1
     }
 },
 "passedIds": ["chal_first_init"],
 "leageElos": {
-    "leage_bronce": 0
+    "leage_bronce": 18
 },
 "items": {
-    0: 5,
+    0: 2,
     17: 1
 },
 "slot1": "4cf1166f-c729-4be3-b8ff-02507f735abf",
@@ -116,6 +116,6 @@
 "slot4": null,
 "slot5": null,
 "slot6": null,
-"money": 1668,
+"money": 2915,
 "currentPlace": "Llanuras de Khalm",
 "currentLeage": "Bronce"

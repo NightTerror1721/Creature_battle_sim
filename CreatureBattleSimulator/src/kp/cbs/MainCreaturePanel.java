@@ -187,7 +187,7 @@ public class MainCreaturePanel extends JPanel
         if(sel == null)
             return;
         team.setCreature(slot, sel);
-        update();
+        parent.updateTeam();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed

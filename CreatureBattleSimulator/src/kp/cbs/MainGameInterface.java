@@ -78,7 +78,7 @@ public class MainGameInterface extends JFrame
         money.setText(Integer.toString(game.getMoney()));
     }
     
-    private void updateTeam()
+    void updateTeam()
     {
         var len = jPanel6.getComponentCount();
         for(var i = 0; i < len; i++)
@@ -583,6 +583,7 @@ public class MainGameInterface extends JFrame
         game.setMoney(money + stage.getAccumulatedMoney());
         
         updateCurrentLeage();
+        updateMoney();
         updateTeam();
     }//GEN-LAST:event_playLeageActionPerformed
 

@@ -37,10 +37,13 @@ public final class AIScore implements Comparable<AIScore>
     
     public final AIScore addRandomPart(RNG rng, int value, boolean includeNegative)
     {
+        if(value == 0)
+            return this;
+        value = Math.abs(value);
         int randValue = includeNegative
                 ? rng.d(Math.abs(value * 2)) - value
                 : rng.d(Math.abs(value));
-        return randValue >= 0 ? add(value) : subtract(-value);
+        return randValue >= 0 ? add(randValue) : subtract(-randValue);
     }
     
     public final AIScore addIntelligenceRandomVariation(RNG rng, AIIntelligence intel)
@@ -59,7 +62,7 @@ public final class AIScore implements Comparable<AIScore>
         
         int dummyRatio = AIIntelligence.GIFTED_RATIO - intel.getRatio();
         int base = dummyRatio * max / AIIntelligence.GIFTED_RATIO;
-        float ratio = rng.d(base) / 8192;
+        float ratio = rng.d(base) / 8192f;
         
         if(ratio > 0)
             addRandomPart(rng, (int) (score * ratio), true);

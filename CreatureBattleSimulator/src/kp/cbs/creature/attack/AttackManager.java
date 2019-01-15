@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Spliterator;
 import java.util.Spliterators;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import kp.cbs.battle.FighterTurnState;
@@ -145,7 +146,7 @@ public final class AttackManager implements Iterable<Attack>
             return null;
         
         if(printAIs)
-            System.out.println(scores); 
+            System.out.println(scores.stream().sorted().collect(Collectors.toList()));
         
         if(intel.isDummy())
             return scores.stream().sorted().findFirst().orElse(null);
@@ -226,7 +227,7 @@ public final class AttackManager implements Iterable<Attack>
         @Override
         public final int compareTo(SelectedAttack o)
         {
-            return score.compareTo(o.score);
+            return -score.compareTo(o.score);
         }
     }
 }

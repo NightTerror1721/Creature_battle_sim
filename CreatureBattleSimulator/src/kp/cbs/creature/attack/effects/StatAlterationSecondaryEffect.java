@@ -253,7 +253,7 @@ public class StatAlterationSecondaryEffect extends SecondaryEffect
         if(intel.isGifted())
             return 1f;
         int base = intel.getRatio() * 2048 / AIIntelligence.GIFTED_RATIO;
-        return (state.rng.d(base) - (base / 2f)) / 4096f;
+        return 1f + ((state.rng.d(base) - (base / 2f)) / 4096f);
     }
     
     static final float createRatio(SecondaryEffect effect, float base)

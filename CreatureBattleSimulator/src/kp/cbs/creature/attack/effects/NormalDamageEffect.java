@@ -252,7 +252,7 @@ public final class NormalDamageEffect extends DamageEffect
         AIScore score = AIScore.maximum();
         
         //Base
-        if(intel.isHightOrLess())
+        /*if(intel.isHightOrLess())
         {
             score.multiply(computePowerValue(attack, state) / 160f);
             
@@ -268,43 +268,51 @@ public final class NormalDamageEffect extends DamageEffect
                     return score.minimize();
                 score.multiply((80f - ratio) / 80f);
             }
-            
-            //Burned penality
-            if(!isSpecialEnabled() && intel.isNormalOrGreater() && self(state).isBurned())
-                score.multiply(5f / 8f);
         }
         else
+        {*/
+        int dam = computeDamage(attack, state, false, false);
+        if(dam <= 0)
+            return score.nullify();
+        else
         {
-            int dam = computeDamage(attack, state, false, false);
-            if(dam <= 0)
-                return score.nullify();
-            else
+            float enemyHp = enemy(state).getCurrentHealthPoints();
+            if(enemyHp > dam)
+                score.multiply(dam / enemyHp);
+
+            //Backward damage penality
+            if(intel.isNormal())
             {
-                float enemyHp = enemy(state).getCurrentHealthPoints();
-                if(enemyHp > dam)
-                    score.multiply(dam / enemyHp);
-                
-                //Backward damage penality
-                {
-                    float penality = (int) (dam * (getBackwardDamageOrAbsordb() / -256f));
-                    if(penality >= self(state).getCurrentHealthPoints())
-                        return score.minimize();
-                    
-                    int ratio = (int) (penality / self(state).getCurrentHealthPoints() * 32f);
-                    if(ratio < 1)
-                        ratio = 1;
-                    score.multiply((32 - ratio) / 32f);
-                }
-                
-                //Critical hit ratio bonus
-                if(intel.isGreaterOrEqualsThan(AIIntelligence.MIN_VERY_HIGHT_RATIO + AIIntelligence.MIN_NORMAL_RATIO / 2))
-                {
-                    int chRatio = computeCriticalHitRatio(state);
-                    if(chRatio > 1)
-                        score.multiply(chRatio >= 5 ? 1.5f : ((16f + chRatio) / 16f));
-                }
+                int ratio = getBackwardDamageOrAbsordb() / -8;
+                if(ratio >= 32)
+                    return score.minimize();
+                score.multiply((80f - ratio) / 80f);
+            }
+            else if(intel.isHightOrGreater())
+            {
+                float penality = (int) (dam * (getBackwardDamageOrAbsordb() / -256f));
+                if(penality >= self(state).getCurrentHealthPoints())
+                    return score.minimize();
+
+                int ratio = (int) (penality / self(state).getCurrentHealthPoints() * 32f);
+                if(ratio < 1)
+                    ratio = 1;
+                score.multiply((32 - ratio) / 32f);
+            }
+
+            //Critical hit ratio bonus
+            if(intel.isGreaterOrEqualsThan(AIIntelligence.MIN_VERY_HIGHT_RATIO + AIIntelligence.MIN_NORMAL_RATIO / 2))
+            {
+                int chRatio = computeCriticalHitRatio(state);
+                if(chRatio > 1)
+                    score.multiply(chRatio >= 5 ? 1.5f : ((16f + chRatio) / 16f));
             }
         }
+        //}
+        
+        //Burned penality
+        if(!isSpecialEnabled() && intel.isNormalOrGreater() && self(state).isBurned())
+            score.multiply(5f / 8f);
         
         //Absorbtion bonus
         if(intel.isGreaterOrEqualsThan(AIIntelligence.MIN_NORMAL_RATIO / 2))

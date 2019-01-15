@@ -167,6 +167,23 @@ public final class PlayerGame
         }
     }
     
+    public final void removeCreatureOfTeam(Creature creature)
+    {
+        var id = creature.getId();
+        removeIfExists(TeamSlot.SLOT_1, id);
+        removeIfExists(TeamSlot.SLOT_2, id);
+        removeIfExists(TeamSlot.SLOT_3, id);
+        removeIfExists(TeamSlot.SLOT_4, id);
+        removeIfExists(TeamSlot.SLOT_5, id);
+        removeIfExists(TeamSlot.SLOT_6, id);
+    }
+    private void removeIfExists(TeamSlot slot, UUID id)
+    {
+        var creature = getCreatureInSlot(slot);
+        if(creature != null && creature.getId().equals(id))
+            removeCreatureInSlot(slot);
+    }
+    
     public final void setMoney(int money) { this.money = Math.max(0, money); }
     public final int getMoney() { return money; }
     public final void useMoney(int amount) { setMoney(money - Math.max(0, amount)); }

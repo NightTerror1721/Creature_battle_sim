@@ -33,8 +33,11 @@ public final class TeamManager implements Iterable<Creature>
     
     public final void setCreature(TeamSlot slot, Creature creature)
     {
-        if(creature != null && stream().noneMatch(c -> c.equals(creature)))
-            game.setCreatureInSlot(slot, creature);
+        if(creature == null)
+            return;
+        if(stream().anyMatch(c -> c.equals(creature)))
+            game.removeCreatureOfTeam(creature);
+        game.setCreatureInSlot(slot, creature);
     }
     
     public final Creature getCreature(TeamSlot slot)
@@ -52,9 +55,9 @@ public final class TeamManager implements Iterable<Creature>
     
     public final Stream<Creature> streamAvailableCreatures()
     {
-        var used = stream().collect(Collectors.toSet());
+        //var used = stream().collect(Collectors.toSet());
         return game.getAllCreatures().stream()
-                .filter(c -> !used.contains(c))
+                //.filter(c -> !used.contains(c))
                 .sorted((c0, c1) -> c0.getName().compareTo(c1.getName()));
     }
     public final Creature[] getArrayAvailableCreatures()
