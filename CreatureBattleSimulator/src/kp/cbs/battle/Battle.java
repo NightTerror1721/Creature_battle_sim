@@ -797,12 +797,53 @@ public class Battle extends JDialog
         if(item == null || !item.isCatcherItem())
             return false;
         
-        if(!Formula.tryCatch(lastCatcher, state.enemy, state.rng, turn))
-            return false;
+        clearText();
+        insertMessage("Lanzas un " + item.getName() + " a " + state.enemy.getName() + "...");
+        sleep(1650);
         
+        lastCatcher = item;
         game.removeItemAmount(item, 1);
-        core.setCached(state.enemy);
-        return true;
+        var catchResult = Formula.tryCatch(lastCatcher, state.enemy, state.rng, turn);
+        if(catchResult.isFullFailed())
+        {
+            insertMessage("El " + item.getName() + " no ha acertado al objetivo...");
+            sleep(1500);
+            return false;
+        }
+        else
+        {
+            insertMessage("¡El " + item.getName() + " ha acertado a " + state.enemy.getName() + "!");
+            sleep(1400);
+            if(!catchResult.hasTwoAsserts())
+            {
+                insertMessage(state.enemy.getName() + " se ha liberado del " + item.getName() + "...");
+                sleep(1500);
+                return false;
+            }
+            
+            insertMessage("Ha bloqueado todos su movimientos. ¡No deja moverse a " + state.enemy.getName() + "!");
+            sleep(1400);
+            if(!catchResult.hasThreeAsserts())
+            {
+                insertMessage("Vaya, parece que " + state.enemy.getName() + " se ha liberado del " + item.getName() + "...");
+                sleep(1500);
+                return false;
+            }
+            
+            insertMessage("¡Está totalmente atrapado, ya casi lo has conseguido!"); 
+            sleep(1400);
+            if(!catchResult.isCatched())
+            {
+                insertMessage("¡Por que poco! " + state.enemy.getName() + " se ha liberado en el último momento.");
+                sleep(1500);
+                return false;
+            }
+            
+            core.setCached(state.enemy);
+            insertMessage("¡" + state.enemy.getName() + " ha sido capturado con éxito!");
+            sleep(1500);
+            return true;
+        }
     }
     
     private void applyChange(FighterTurnState state)

@@ -43,11 +43,11 @@ public enum ItemId
     ELIXIR("Elixir", 2500),
     MAX_ELIXIR("Elixir Máximo", 3000),
     
-    CATCHER("Capturador", 250),
-    SUPER_CATCHER("Super Capturador", 750),
-    ULTRA_CATCHER("Ultra Capturador", 1250),
-    TIMER_CATCHER("Capturador por Tiempo", 1000),
-    FAST_CATCHER("Capturador Rápido", 1000),
+    CATCHER("Capturador", 200),
+    SUPER_CATCHER("Super Capturador", 500),
+    ULTRA_CATCHER("Ultra Capturador", 1000),
+    TIMER_CATCHER("Capturador por Tiempo", 800),
+    FAST_CATCHER("Capturador Rápido", 800),
     MASTER_CATCHER("Capturador Maestro", 100_000);
     
     private final String name;

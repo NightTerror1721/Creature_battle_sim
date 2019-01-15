@@ -332,10 +332,10 @@ public final class Formula
         return mul;
     }
     
-    public static final boolean tryCatch(ItemId catcher, Creature target, RNG rng, int turn)
+    public static final CatchResult tryCatch(ItemId catcher, Creature target, RNG rng, int turn)
     {
         if(catcher == ItemId.MASTER_CATCHER)
-            return true;
+            return CatchResult.CATCHED;
         var ratio = Math.min(255, computeCatchRatio(target.getFeaturesManager().getStatSum()) * catcher.getCatchMultiplier(turn));
         var maxHp = target.getMaxHealthPoints();
         var currHp = Math.max(1, target.getCurrentHealthPoints());
@@ -348,6 +348,9 @@ public final class Formula
         var b = rng.d65536();
         var c = rng.d65536();
         
-        return a < y && b < y && c < y;
+        return    a >= y ? (rng.d2(0) ? CatchResult.FAIL_0 : CatchResult.FAIL_1)
+                : b >= y ? CatchResult.FAIL_2
+                : c >= y ? CatchResult.FAIL_3
+                : CatchResult.CATCHED;
     }
 }
