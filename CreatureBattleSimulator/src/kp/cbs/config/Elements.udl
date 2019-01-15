@@ -98,7 +98,7 @@
 	"name": "Viento",
 	"weak": 	 [7, 13],
 	"resistant": [1, 12],
-	"immune": 	 [0],
+	"immune": 	 [],
 	"color": [135, 206, 250],
 	"white_font": false
 },
