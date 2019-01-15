@@ -49,10 +49,12 @@ public final class BattleResult
         int len = team.size();
         for(int i=0;i<len;i++)
         {
-            var base = team.getCreature(i).getCreatureClass().ordinal() + 1;
-            money += 200 * base / 15 * base;
+            var base = team.getCreature(i).getLevel() * 30;
+            var randomPart = Math.max(2, base / 10);
+            base += rng.d(randomPart * 2) - randomPart;
+            money += 20 + base;
         }
-        money /= len;
+        
         var dif = Math.max(10, money / 20);
         dif = rng.d(dif * 2) - dif;
         return money + dif;

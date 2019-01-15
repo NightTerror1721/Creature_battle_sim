@@ -163,7 +163,7 @@ public final class BattleCore
         {
             selfCreature =  TeamViewer.open(battle, selfTeam, selfCreature, true);
             battle.insertMessage("¡Sacas a luchar a " + selfCreature.getName() + "!");
-            selfCreature.setFighterId(team);
+            selfCreature.setFighterId(TeamId.SELF);
         }
         else 
         {
@@ -180,7 +180,7 @@ public final class BattleCore
                 {
                     selfCreature = creature;
                     battle.insertMessage("¡Sacas a luchar a " + selfCreature.getName() + "!");
-                    selfCreature.setFighterId(team);
+                    selfCreature.setFighterId(TeamId.SELF);
                     removeAttackInProgress(TeamId.SELF);
                     battle.updateCreatureInterface(TeamId.SELF);
                     battle.sleep(1500);
@@ -190,7 +190,7 @@ public final class BattleCore
             else battle.insertMessage("¡El enemigo saca a luchar a " + enemyCreature.getName() + "!");
             
             battle.sleep(1000);
-            enemyCreature.setFighterId(team);
+            enemyCreature.setFighterId(TeamId.ENEMY);
         }
         removeAttackInProgress(team);
         

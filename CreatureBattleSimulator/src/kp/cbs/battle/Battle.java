@@ -662,7 +662,7 @@ public class Battle extends JDialog
         updateCreatureInterface(ENEMY);
         
         var currentTeam = SELF;
-        boolean catched = false;
+        boolean catched = false, run = false;
         
         var selfSpeed = Formula.computeRealSpeed(selfState.self, core.getWeatherId());
         var enemySpeed = Formula.computeRealSpeed(enemyState.self, core.getWeatherId());
@@ -688,7 +688,7 @@ public class Battle extends JDialog
                 case CONTINUE: continueAttackAction(state); break;
                 case CATCH: catched = applyCatch(state, currentTeam); break;
                 case CHANGE: applyChange(state); break;
-                case RUN: applyRun(state); break;
+                case RUN: run = applyRun(state); break;
             }
             
             core.updateCurrentCreatures();
@@ -696,7 +696,7 @@ public class Battle extends JDialog
             updateCreatureInterface(currentTeam);
             updateCreatureInterface(currentTeam.invert());
             state.setTurnToEnd();
-            if(catched || !core.isCurrentAlive(SELF) || !core.isCurrentAlive(ENEMY))
+            if(run || catched || !core.isCurrentAlive(SELF) || !core.isCurrentAlive(ENEMY))
             {
                 selfState.setTurnToEnd();
                 enemyState.setTurnToEnd();
@@ -705,7 +705,7 @@ public class Battle extends JDialog
             currentTeam = currentTeam.invert();
         }
         
-        if(catched)
+        if(catched || run)
         {
             core.forceGameOver();
         }
@@ -851,9 +851,9 @@ public class Battle extends JDialog
         core.applyChange(state.self.getFighterId());
     }
     
-    private void applyRun(FighterTurnState state)
+    private boolean applyRun(FighterTurnState state)
     {
-        
+        return true;
     }
     
 

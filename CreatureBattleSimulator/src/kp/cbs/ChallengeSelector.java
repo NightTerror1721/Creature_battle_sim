@@ -66,6 +66,7 @@ public class ChallengeSelector extends JDialog
             name.setEnabled(false);
             description.setEnabled(false);
             playChallenge.setEnabled(false);
+            return;
         }
         
         name.setText(sel.getName() + (sel.isCompleted(game) ? " (Completado)" : ""));
@@ -97,6 +98,11 @@ public class ChallengeSelector extends JDialog
         jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder("Desafios"));
 
         challenges.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        challenges.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                challengesValueChanged(evt);
+            }
+        });
         jScrollPane1.setViewportView(challenges);
 
         playChallenge.setText("Comenzar Desafio");
@@ -161,6 +167,10 @@ public class ChallengeSelector extends JDialog
         
         showChallenge();
     }//GEN-LAST:event_playChallengeActionPerformed
+
+    private void challengesValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_challengesValueChanged
+        showChallenge();
+    }//GEN-LAST:event_challengesValueChanged
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

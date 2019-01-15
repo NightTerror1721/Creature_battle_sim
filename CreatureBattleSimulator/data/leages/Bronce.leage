@@ -3,6 +3,14 @@
 "finalBattle": "",
 "stages": [{
 	"minElo": 0,
-	"maxElo": 50,
+	"maxElo": 39,
 	"battle": "leage_bronce_1"
+}, {
+	"minElo": 40,
+	"maxElo": 79,
+	"battle": "leage_bronce_2"
+}, {
+	"minElo": 80,
+	"maxElo": 120,
+	"battle": "leage_bronce_3"
 }]

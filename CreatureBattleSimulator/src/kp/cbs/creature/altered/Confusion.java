@@ -42,11 +42,11 @@ public final class Confusion extends AlteredState
             turns--;
             if(turns > 0)
             {
-                state.dissableAttack();
                 state.bcm.message(state.self.getName() + " está confuso...")
                         .waitTime(1000).playSound("confused").waitTime(500);
                 if(state.rng.d100(50))
                 {
+                    state.dissableAttack();
                     state.bcm.message("Tan confuso que se hiere a si mismo.")
                             .waitTime(500)
                             .playSound("normal_effective")

@@ -226,7 +226,7 @@ public final class BattleEditor extends JDialog
         
         public final CreatureProperties getProperties() { return props; }
         
-        public final void setProbability(int probabilty) { this.probability = Math.max(1, probability); }
+        public final void setProbability(int probability) { this.probability = Math.max(1, probability); }
         public final int getProbability() { return probability; }
         
         public final void setType(TemplateType type) { this.type = Objects.requireNonNullElse(type, TemplateType.NORMAL); }

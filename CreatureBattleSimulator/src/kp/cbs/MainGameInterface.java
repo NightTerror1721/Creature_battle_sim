@@ -536,6 +536,9 @@ public class MainGameInterface extends JFrame
         
         currentPlace.startTrainerBattle(this, game, team.getTeamCreatures());
         team.clearAll();
+        
+        updateMoney();
+        updateTeam();
     }//GEN-LAST:event_trainerBattleActionPerformed
 
     private void wildBattleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_wildBattleActionPerformed
@@ -616,8 +619,11 @@ public class MainGameInterface extends JFrame
         ChallengeSelector.open(this, list, stage -> {
             var money = game.getMoney();
             game.setMoney(money + stage.getAccumulatedMoney());
+            updateTeam();
             updateMoney();
         });
+        updateTeam();
+        updateMoney();
     }//GEN-LAST:event_challengesActionPerformed
 
 

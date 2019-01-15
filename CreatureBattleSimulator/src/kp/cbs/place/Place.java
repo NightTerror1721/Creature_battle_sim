@@ -115,11 +115,12 @@ public final class Place
                 throw new IllegalStateException();
         
         var encounter = generateTrainerEncounter();
-        encounter.setExperienceBonus(1.25f);
+        encounter.setExperienceBonus(1.5f);
         for(var creature : selfCreatures)
             encounter.getSelfTeam().addCreature(creature);
 
-        Battle.initiate(parent, game, encounter);
+        var result = Battle.initiate(parent, game, encounter);
+        game.setMoney(game.getMoney() + result.getMoney());
     }
     
     
