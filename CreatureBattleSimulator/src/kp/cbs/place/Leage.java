@@ -149,7 +149,7 @@ public class Leage extends GlobalId
                 throw new IllegalStateException();
             
             var encounter = stage.props().createEncounter(currentElo, stage.minElo, stage.maxElo);
-            encounter.setExperienceBonus(1.5f);
+            encounter.setExperienceBonus(1f);
             for(var creature : selfCreatures)
                 encounter.getSelfTeam().addCreature(creature);
             
