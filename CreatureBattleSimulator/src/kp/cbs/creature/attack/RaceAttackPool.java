@@ -110,6 +110,14 @@ public final class RaceAttackPool
         return list;
     }
     
+    public final Stream<RaceAttack> streamRaceAttacksUntilLevel(int level)
+    {
+        var stream = innate == null
+                ? streamAllAttacks()
+                : Stream.concat(Stream.of(new RaceAttack(1, innate, false, true)), streamAllAttacks());
+        return stream.filter(ra -> ra.level <= level);
+    }
+    
     public final AttackModel[] getDefaultLearnedInLevel(int level)
     {
         AttackModel[] array = normalList.stream()

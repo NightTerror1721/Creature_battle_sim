@@ -177,7 +177,7 @@ public class StatAlterationSecondaryEffect extends SecondaryEffect
             NormalStat targetStat = (NormalStat) state.enemy.getStat(contraStat);
             if(levels > 0)
             {
-                if(intel.isNormalOrGreater() && selfStat.getAlterationLevels() >= 2)
+                if(intel.isNormalOrGreater() && selfStat.getAlterationLevels() >= 1)
                     return 0f;
                 return targetStat.getValue() * mod / selfStat.getValue() * ratio;
             }
@@ -200,7 +200,7 @@ public class StatAlterationSecondaryEffect extends SecondaryEffect
             }
             else
             {
-                if(intel.isNormalOrGreater() && selfStat.getAlterationLevels() >= 2)
+                if(intel.isNormalOrGreater() && selfStat.getAlterationLevels() <= -1)
                     return 0f;
                 return targetStat.getValue() * mod / selfStat.getValue() * ratio;
             }

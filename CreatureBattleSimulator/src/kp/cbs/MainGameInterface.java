@@ -73,7 +73,7 @@ public class MainGameInterface extends JFrame
         setTitle("Creature Battle Simulator - " + game.getName());
     }
     
-    private void updateMoney()
+    final void updateMoney()
     {
         money.setText(Integer.toString(game.getMoney()));
     }
@@ -487,6 +487,7 @@ public class MainGameInterface extends JFrame
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
         CreatureSelector.viewer(this, game);
         updateTeam();
+        updateMoney();
     }//GEN-LAST:event_jButton10ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed

@@ -179,11 +179,12 @@ public class MainCreaturePanel extends JPanel
         if(creature == null)
             return;
         CreatureViewer.open(parent, creature, true);
+        parent.updateMoney();
         update();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        var sel = CreatureSelector.selection(parent, team.getAvailableCreatures());
+        var sel = CreatureSelector.selection(parent, parent.getPlayerGame(), team.getAvailableCreatures());
         if(sel == null)
             return;
         team.setCreature(slot, sel);

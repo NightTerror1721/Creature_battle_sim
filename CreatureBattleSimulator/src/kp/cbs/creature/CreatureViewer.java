@@ -1031,11 +1031,11 @@ public class CreatureViewer extends JDialog
     }//GEN-LAST:event_defense_addActionPerformed
 
     private void defenseSp_addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_defenseSp_addActionPerformed
-        addAbilityPoint(StatId.SPECIAL_ATTACK);
+        addAbilityPoint(StatId.SPECIAL_DEFENSE);
     }//GEN-LAST:event_defenseSp_addActionPerformed
 
     private void attackSp_addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_attackSp_addActionPerformed
-        addAbilityPoint(StatId.SPECIAL_DEFENSE);
+        addAbilityPoint(StatId.SPECIAL_ATTACK);
     }//GEN-LAST:event_attackSp_addActionPerformed
 
     private void speed_addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_speed_addActionPerformed

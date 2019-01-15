@@ -7,6 +7,7 @@ package kp.cbs;
 
 import java.awt.Window;
 import java.util.List;
+import java.util.Objects;
 import javax.swing.DefaultListModel;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -20,40 +21,43 @@ import kp.cbs.utils.Utils;
  */
 public class CreatureSelector extends JDialog
 {
+    private final PlayerGame game;
     private final boolean selection;
     private Creature option;
     
-    private CreatureSelector(JFrame parent, List<Creature> creatures, boolean selection)
+    private CreatureSelector(JFrame parent, PlayerGame game, List<Creature> creatures, boolean selection)
     {
         super(parent, true);
+        this.game = Objects.requireNonNull(game);
         this.selection = selection;
         initComponents();
         init(creatures);
     }
     
-    private CreatureSelector(JDialog parent, List<Creature> creatures, boolean selection)
+    private CreatureSelector(JDialog parent, PlayerGame game, List<Creature> creatures, boolean selection)
     {
         super(parent, true);
+        this.game = Objects.requireNonNull(game);
         this.selection = selection;
         initComponents();
         init(creatures);
     }
     
-    private static CreatureSelector selector(Window parent, List<Creature> creatures, boolean selection)
+    private static CreatureSelector selector(Window parent, PlayerGame game, List<Creature> creatures, boolean selection)
     {
         if(parent instanceof JFrame)
-            return new CreatureSelector((JFrame) parent, creatures, selection);
+            return new CreatureSelector((JFrame) parent, game, creatures, selection);
         else if(parent instanceof JDialog)
-            return new CreatureSelector((JDialog) parent, creatures, selection);
-        else return new CreatureSelector((JFrame) null, creatures, selection);
+            return new CreatureSelector((JDialog) parent, game, creatures, selection);
+        else return new CreatureSelector((JFrame) null, game, creatures, selection);
     }
     
-    public static final Creature selection(Window parent, List<Creature> creatures)
+    public static final Creature selection(Window parent, PlayerGame game, List<Creature> creatures)
     {
         if(creatures == null || creatures.isEmpty())
             return null;
         
-        var selector = selector(parent, creatures, true);
+        var selector = selector(parent, game, creatures, true);
         selector.setVisible(true);
         return selector.option;
     }
@@ -63,7 +67,7 @@ public class CreatureSelector extends JDialog
         if(creatures == null || creatures.isEmpty())
             return;
         
-        var selector = selector(parent, game.getAllCreatures(), false);
+        var selector = selector(parent, game, game.getAllCreatures(), false);
         selector.setVisible(true);
     }
     
@@ -122,6 +126,7 @@ public class CreatureSelector extends JDialog
         level = new javax.swing.JTextField();
         see = new javax.swing.JButton();
         select = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(new java.awt.GridLayout(1, 2));
@@ -129,6 +134,11 @@ public class CreatureSelector extends JDialog
         jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder("Luchadores"));
 
         all.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        all.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                allMouseClicked(evt);
+            }
+        });
         all.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
                 allValueChanged(evt);
@@ -170,7 +180,7 @@ public class CreatureSelector extends JDialog
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 2.1;
+        gridBagConstraints.weightx = 0.1;
         gridBagConstraints.weighty = 0.1;
         jPanel1.add(clazz, gridBagConstraints);
 
@@ -194,6 +204,7 @@ public class CreatureSelector extends JDialog
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 0.1;
         gridBagConstraints.weighty = 0.1;
@@ -206,12 +217,28 @@ public class CreatureSelector extends JDialog
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 0.1;
         gridBagConstraints.weighty = 0.1;
         jPanel1.add(select, gridBagConstraints);
+
+        jButton1.setText("Aprender Ataques");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.weighty = 0.1;
+        jPanel1.add(jButton1, gridBagConstraints);
 
         getContentPane().add(jPanel1);
 
@@ -237,10 +264,29 @@ public class CreatureSelector extends JDialog
         dispose();
     }//GEN-LAST:event_selectActionPerformed
 
+    private void allMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_allMouseClicked
+        if(evt.getClickCount() != 2)
+            return;
+        
+        var sel = all.getSelectedValue();
+        if(sel == null || !selection)
+            return;
+        option = sel;
+        dispose();
+    }//GEN-LAST:event_allMouseClicked
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        var sel = all.getSelectedValue();
+        if(sel == null)
+            return;
+        ArtificialAttackLearn.open(this, game, sel);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList<Creature> all;
     private javax.swing.JTextField clazz;
+    private javax.swing.JButton jButton1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField level;
