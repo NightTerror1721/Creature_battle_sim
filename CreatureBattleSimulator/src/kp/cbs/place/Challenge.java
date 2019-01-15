@@ -55,6 +55,7 @@ public final class Challenge extends GlobalId
     public final class ChallengeStage implements Stage
     {
         private final LinkedList<Encounter> encounters;
+        private final int all;
         private int wins;
         private int accumulatedMoney;
         
@@ -67,6 +68,7 @@ public final class Challenge extends GlobalId
                 if(enc != null)
                     encounters.add(enc);
             }
+            this.all = encounters.size();
         }
         
         @Override
@@ -74,6 +76,8 @@ public final class Challenge extends GlobalId
 
         @Override
         public final int getWins() { return wins; }
+        
+        public final boolean allWinned() { return wins > 0 && wins >= all; }
 
         @Override
         public final int getAccumulatedElo() { return 0; }

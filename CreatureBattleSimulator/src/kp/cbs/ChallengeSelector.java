@@ -156,6 +156,9 @@ public class ChallengeSelector extends JDialog
         team.clearAll();
         
         action.accept(stage);
+        if(stage.allWinned())
+            game.addPassedId(sel.getId());
+        
         showChallenge();
     }//GEN-LAST:event_playChallengeActionPerformed
 
