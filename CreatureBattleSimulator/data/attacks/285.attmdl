@@ -1,0 +1,27 @@
+"pp": 35,
+"precision": 100,
+"name": "Picotazo",
+"id": 285,
+"power": 35,
+"priority": 0,
+"type": 12,
+"turns": [{
+    "min_hits": 1,
+    "secondary_effects": [],
+    "max_hits": 1,
+    "damage_effect": {
+        "effect": {
+            "powerValue": 0,
+            "attackValue": 0,
+            "defenseValue": 0,
+            "backwardOrAbsorbDamage": 0,
+            "special": false,
+            "selfTarget": false,
+            "selfElementalTypeUsed": false,
+            "probCriticalHit": false
+        },
+        "id": 1
+    },
+    "id": 285,
+    "message": ""
+}]

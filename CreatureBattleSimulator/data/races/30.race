@@ -1,0 +1,67 @@
+"id": 30,
+"name": "Duende Plantófiro",
+"hp_base": 37,
+"attack_base": 46,
+"defense_base": 38,
+"spAttack_base": 45,
+"spDefense_base": 55,
+"speed_base": 51,
+"primary_type": 11,
+"secondary_type": 3,
+"growth": 0,
+"attack_pool": {
+    "normalList": [{
+        "attack": 283,
+        "level": 3,
+        "hidden": false
+    }, {
+        "attack": 70,
+        "level": 6,
+        "hidden": false
+    }, {
+        "attack": 160,
+        "level": 9,
+        "hidden": false
+    }, {
+        "attack": 168,
+        "level": 11,
+        "hidden": false
+    }, {
+        "attack": 161,
+        "level": 14,
+        "hidden": false
+    }, {
+        "attack": 255,
+        "level": 17,
+        "hidden": false
+    }],
+    "hiddenList": [{
+        "attack": 48,
+        "level": 10,
+        "hidden": true
+    }, {
+        "attack": 82,
+        "level": 15,
+        "hidden": true
+    }, {
+        "attack": 43,
+        "level": 20,
+        "hidden": true
+    }, {
+        "attack": 64,
+        "level": 25,
+        "hidden": true
+    }],
+    "innate": 0
+},
+"evolutions": {
+    "evolutions": [{
+        "raceToEvolve": 31,
+        "conditions": [{
+            "condition": {
+                "level": 20
+            },
+            "type": 0
+        }]
+    }]
+}

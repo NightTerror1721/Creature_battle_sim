@@ -1,0 +1,147 @@
+"id": 32,
+"name": "Duende Plantófiro Anciano",
+"hp_base": 77,
+"attack_base": 95,
+"defense_base": 78,
+"spAttack_base": 95,
+"spDefense_base": 85,
+"speed_base": 106,
+"primary_type": 11,
+"secondary_type": 3,
+"growth": 0,
+"attack_pool": {
+    "normalList": [{
+        "attack": 0,
+        "level": 1,
+        "hidden": false
+    }, {
+        "attack": 283,
+        "level": 3,
+        "hidden": false
+    }, {
+        "attack": 70,
+        "level": 6,
+        "hidden": false
+    }, {
+        "attack": 160,
+        "level": 9,
+        "hidden": false
+    }, {
+        "attack": 168,
+        "level": 11,
+        "hidden": false
+    }, {
+        "attack": 161,
+        "level": 14,
+        "hidden": false
+    }, {
+        "attack": 255,
+        "level": 17,
+        "hidden": false
+    }, {
+        "attack": 264,
+        "level": 20,
+        "hidden": false
+    }, {
+        "attack": 64,
+        "level": 22,
+        "hidden": false
+    }, {
+        "attack": 82,
+        "level": 24,
+        "hidden": false
+    }, {
+        "attack": 72,
+        "level": 27,
+        "hidden": false
+    }, {
+        "attack": 73,
+        "level": 27,
+        "hidden": false
+    }, {
+        "attack": 169,
+        "level": 30,
+        "hidden": false
+    }, {
+        "attack": 172,
+        "level": 33,
+        "hidden": false
+    }, {
+        "attack": 74,
+        "level": 37,
+        "hidden": false
+    }, {
+        "attack": 244,
+        "level": 40,
+        "hidden": false
+    }, {
+        "attack": 78,
+        "level": 43,
+        "hidden": false
+    }, {
+        "attack": 45,
+        "level": 47,
+        "hidden": false
+    }, {
+        "attack": 272,
+        "level": 52,
+        "hidden": false
+    }, {
+        "attack": 171,
+        "level": 56,
+        "hidden": false
+    }, {
+        "attack": 170,
+        "level": 64,
+        "hidden": false
+    }],
+    "hiddenList": [{
+        "attack": 48,
+        "level": 10,
+        "hidden": true
+    }, {
+        "attack": 43,
+        "level": 20,
+        "hidden": true
+    }, {
+        "attack": 71,
+        "level": 25,
+        "hidden": true
+    }, {
+        "attack": 62,
+        "level": 30,
+        "hidden": true
+    }, {
+        "attack": 162,
+        "level": 35,
+        "hidden": true
+    }, {
+        "attack": 51,
+        "level": 40,
+        "hidden": true
+    }, {
+        "attack": 163,
+        "level": 45,
+        "hidden": true
+    }, {
+        "attack": 284,
+        "level": 45,
+        "hidden": true
+    }, {
+        "attack": 11,
+        "level": 50,
+        "hidden": true
+    }, {
+        "attack": 79,
+        "level": 50,
+        "hidden": true
+    }, {
+        "attack": 265,
+        "level": 50,
+        "hidden": true
+    }],
+    "innate": 244
+},
+"evolutions": {
+    "evolutions": []
+}

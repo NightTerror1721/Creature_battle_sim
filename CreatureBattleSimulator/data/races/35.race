@@ -1,0 +1,107 @@
+"id": 35,
+"name": "Águila Joven",
+"hp_base": 40,
+"attack_base": 50,
+"defense_base": 45,
+"spAttack_base": 45,
+"spDefense_base": 40,
+"speed_base": 55,
+"primary_type": 0,
+"secondary_type": 12,
+"growth": 0,
+"attack_pool": {
+    "normalList": [{
+        "attack": 134,
+        "level": 5,
+        "hidden": false
+    }, {
+        "attack": 176,
+        "level": 9,
+        "hidden": false
+    }, {
+        "attack": 3,
+        "level": 13,
+        "hidden": false
+    }, {
+        "attack": 287,
+        "level": 17,
+        "hidden": false
+    }, {
+        "attack": 182,
+        "level": 21,
+        "hidden": false
+    }, {
+        "attack": 53,
+        "level": 25,
+        "hidden": false
+    }, {
+        "attack": 7,
+        "level": 29,
+        "hidden": false
+    }, {
+        "attack": 185,
+        "level": 33,
+        "hidden": false
+    }, {
+        "attack": 184,
+        "level": 37,
+        "hidden": false
+    }, {
+        "attack": 183,
+        "level": 41,
+        "hidden": false
+    }, {
+        "attack": 181,
+        "level": 49,
+        "hidden": false
+    }, {
+        "attack": 180,
+        "level": 53,
+        "hidden": false
+    }],
+    "hiddenList": [{
+        "attack": 247,
+        "level": 10,
+        "hidden": true
+    }, {
+        "attack": 28,
+        "level": 20,
+        "hidden": true
+    }, {
+        "attack": 23,
+        "level": 25,
+        "hidden": true
+    }, {
+        "attack": 82,
+        "level": 30,
+        "hidden": true
+    }, {
+        "attack": 6,
+        "level": 40,
+        "hidden": true
+    }, {
+        "attack": 230,
+        "level": 50,
+        "hidden": true
+    }, {
+        "attack": 13,
+        "level": 60,
+        "hidden": true
+    }, {
+        "attack": 12,
+        "level": 70,
+        "hidden": true
+    }],
+    "innate": 1
+},
+"evolutions": {
+    "evolutions": [{
+        "raceToEvolve": 36,
+        "conditions": [{
+            "condition": {
+                "level": 18
+            },
+            "type": 0
+        }]
+    }]
+}

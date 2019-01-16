@@ -1,0 +1,107 @@
+"id": 34,
+"name": "Alcón Cacique",
+"hp_base": 65,
+"attack_base": 90,
+"defense_base": 65,
+"spAttack_base": 60,
+"spDefense_base": 60,
+"speed_base": 100,
+"primary_type": 0,
+"secondary_type": 12,
+"growth": 0,
+"attack_pool": {
+    "normalList": [{
+        "attack": 19,
+        "level": 1,
+        "hidden": false
+    }, {
+        "attack": 21,
+        "level": 4,
+        "hidden": false
+    }, {
+        "attack": 134,
+        "level": 8,
+        "hidden": false
+    }, {
+        "attack": 289,
+        "level": 11,
+        "hidden": false
+    }, {
+        "attack": 179,
+        "level": 15,
+        "hidden": false
+    }, {
+        "attack": 82,
+        "level": 18,
+        "hidden": false
+    }, {
+        "attack": 53,
+        "level": 23,
+        "hidden": false
+    }, {
+        "attack": 177,
+        "level": 27,
+        "hidden": false
+    }, {
+        "attack": 7,
+        "level": 32,
+        "hidden": false
+    }, {
+        "attack": 184,
+        "level": 36,
+        "hidden": false
+    }, {
+        "attack": 286,
+        "level": 41,
+        "hidden": false
+    }, {
+        "attack": 290,
+        "level": 45,
+        "hidden": false
+    }],
+    "hiddenList": [{
+        "attack": 3,
+        "level": 10,
+        "hidden": true
+    }, {
+        "attack": 287,
+        "level": 15,
+        "hidden": true
+    }, {
+        "attack": 24,
+        "level": 20,
+        "hidden": true
+    }, {
+        "attack": 185,
+        "level": 25,
+        "hidden": true
+    }, {
+        "attack": 275,
+        "level": 30,
+        "hidden": true
+    }, {
+        "attack": 5,
+        "level": 35,
+        "hidden": true
+    }, {
+        "attack": 279,
+        "level": 35,
+        "hidden": true
+    }, {
+        "attack": 12,
+        "level": 40,
+        "hidden": true
+    }, {
+        "attack": 84,
+        "level": 45,
+        "hidden": true
+    }, {
+        "attack": 178,
+        "level": 50,
+        "hidden": true
+    }],
+    "innate": 285
+},
+"evolutions": {
+    "evolutions": []
+}

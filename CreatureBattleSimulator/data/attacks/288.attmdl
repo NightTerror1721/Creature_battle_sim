@@ -1,0 +1,40 @@
+"pp": 20,
+"precision": 90,
+"name": "Ala de Acero",
+"id": 288,
+"power": 70,
+"priority": 0,
+"type": 14,
+"turns": [{
+    "min_hits": 1,
+    "secondary_effects": [{
+        "effect": {
+            "probability": 10,
+            "attackLevels": 0,
+            "defenseLevels": 1,
+            "spAttackLevels": 0,
+            "spDefenseLevels": 0,
+            "speedLevels": 0,
+            "accuracyLevels": 0,
+            "evasionLevels": 0,
+            "selfTarget": true
+        },
+        "id": 1
+    }],
+    "max_hits": 1,
+    "damage_effect": {
+        "effect": {
+            "powerValue": 0,
+            "attackValue": 0,
+            "defenseValue": 0,
+            "backwardOrAbsorbDamage": 0,
+            "special": false,
+            "selfTarget": false,
+            "selfElementalTypeUsed": false,
+            "probCriticalHit": false
+        },
+        "id": 1
+    },
+    "id": 288,
+    "message": ""
+}]

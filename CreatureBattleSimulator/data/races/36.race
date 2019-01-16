@@ -1,0 +1,119 @@
+"id": 36,
+"name": "Águila",
+"hp_base": 66,
+"attack_base": 69,
+"defense_base": 65,
+"spAttack_base": 69,
+"spDefense_base": 60,
+"speed_base": 81,
+"primary_type": 0,
+"secondary_type": 12,
+"growth": 0,
+"attack_pool": {
+    "normalList": [{
+        "attack": 134,
+        "level": 5,
+        "hidden": false
+    }, {
+        "attack": 176,
+        "level": 9,
+        "hidden": false
+    }, {
+        "attack": 3,
+        "level": 13,
+        "hidden": false
+    }, {
+        "attack": 287,
+        "level": 17,
+        "hidden": false
+    }, {
+        "attack": 182,
+        "level": 22,
+        "hidden": false
+    }, {
+        "attack": 53,
+        "level": 27,
+        "hidden": false
+    }, {
+        "attack": 7,
+        "level": 32,
+        "hidden": false
+    }, {
+        "attack": 185,
+        "level": 37,
+        "hidden": false
+    }, {
+        "attack": 184,
+        "level": 42,
+        "hidden": false
+    }, {
+        "attack": 183,
+        "level": 47,
+        "hidden": false
+    }, {
+        "attack": 108,
+        "level": 52,
+        "hidden": false
+    }, {
+        "attack": 181,
+        "level": 57,
+        "hidden": false
+    }, {
+        "attack": 180,
+        "level": 62,
+        "hidden": false
+    }],
+    "hiddenList": [{
+        "attack": 247,
+        "level": 10,
+        "hidden": true
+    }, {
+        "attack": 28,
+        "level": 20,
+        "hidden": true
+    }, {
+        "attack": 23,
+        "level": 25,
+        "hidden": true
+    }, {
+        "attack": 121,
+        "level": 25,
+        "hidden": true
+    }, {
+        "attack": 82,
+        "level": 30,
+        "hidden": true
+    }, {
+        "attack": 288,
+        "level": 30,
+        "hidden": true
+    }, {
+        "attack": 6,
+        "level": 35,
+        "hidden": true
+    }, {
+        "attack": 230,
+        "level": 40,
+        "hidden": true
+    }, {
+        "attack": 13,
+        "level": 50,
+        "hidden": true
+    }, {
+        "attack": 12,
+        "level": 60,
+        "hidden": true
+    }],
+    "innate": 1
+},
+"evolutions": {
+    "evolutions": [{
+        "raceToEvolve": 37,
+        "conditions": [{
+            "condition": {
+                "level": 36
+            },
+            "type": 0
+        }]
+    }]
+}

@@ -1,0 +1,132 @@
+"id": 31,
+"name": "Duende Plantófiro Desarrollado",
+"hp_base": 67,
+"attack_base": 75,
+"defense_base": 58,
+"spAttack_base": 76,
+"spDefense_base": 75,
+"speed_base": 81,
+"primary_type": 11,
+"secondary_type": 3,
+"growth": 0,
+"attack_pool": {
+    "normalList": [{
+        "attack": 0,
+        "level": 1,
+        "hidden": false
+    }, {
+        "attack": 283,
+        "level": 3,
+        "hidden": false
+    }, {
+        "attack": 70,
+        "level": 6,
+        "hidden": false
+    }, {
+        "attack": 160,
+        "level": 9,
+        "hidden": false
+    }, {
+        "attack": 168,
+        "level": 11,
+        "hidden": false
+    }, {
+        "attack": 161,
+        "level": 14,
+        "hidden": false
+    }, {
+        "attack": 255,
+        "level": 17,
+        "hidden": false
+    }, {
+        "attack": 264,
+        "level": 20,
+        "hidden": false
+    }, {
+        "attack": 64,
+        "level": 22,
+        "hidden": false
+    }, {
+        "attack": 82,
+        "level": 24,
+        "hidden": false
+    }, {
+        "attack": 72,
+        "level": 27,
+        "hidden": false
+    }, {
+        "attack": 73,
+        "level": 27,
+        "hidden": false
+    }, {
+        "attack": 169,
+        "level": 30,
+        "hidden": false
+    }, {
+        "attack": 172,
+        "level": 33,
+        "hidden": false
+    }, {
+        "attack": 74,
+        "level": 37,
+        "hidden": false
+    }, {
+        "attack": 45,
+        "level": 42,
+        "hidden": false
+    }, {
+        "attack": 170,
+        "level": 50,
+        "hidden": false
+    }],
+    "hiddenList": [{
+        "attack": 48,
+        "level": 10,
+        "hidden": true
+    }, {
+        "attack": 43,
+        "level": 20,
+        "hidden": true
+    }, {
+        "attack": 71,
+        "level": 25,
+        "hidden": true
+    }, {
+        "attack": 244,
+        "level": 30,
+        "hidden": true
+    }, {
+        "attack": 162,
+        "level": 35,
+        "hidden": true
+    }, {
+        "attack": 284,
+        "level": 50,
+        "hidden": true
+    }, {
+        "attack": 11,
+        "level": 60,
+        "hidden": true
+    }, {
+        "attack": 265,
+        "level": 60,
+        "hidden": true
+    }],
+    "innate": 264
+},
+"evolutions": {
+    "evolutions": [{
+        "raceToEvolve": 32,
+        "conditions": [{
+            "condition": {
+                "level": 40
+            },
+            "type": 0
+        }, {
+            "condition": {
+                "attack": 244
+            },
+            "type": 3
+        }]
+    }]
+}

@@ -1,0 +1,95 @@
+"id": 33,
+"name": "Alcón",
+"hp_base": 40,
+"attack_base": 60,
+"defense_base": 30,
+"spAttack_base": 30,
+"spDefense_base": 30,
+"speed_base": 70,
+"primary_type": 0,
+"secondary_type": 12,
+"growth": 0,
+"attack_pool": {
+    "normalList": [{
+        "attack": 19,
+        "level": 1,
+        "hidden": false
+    }, {
+        "attack": 21,
+        "level": 4,
+        "hidden": false
+    }, {
+        "attack": 134,
+        "level": 8,
+        "hidden": false
+    }, {
+        "attack": 289,
+        "level": 11,
+        "hidden": false
+    }, {
+        "attack": 179,
+        "level": 15,
+        "hidden": false
+    }, {
+        "attack": 82,
+        "level": 18,
+        "hidden": false
+    }, {
+        "attack": 53,
+        "level": 22,
+        "hidden": false
+    }, {
+        "attack": 177,
+        "level": 25,
+        "hidden": false
+    }, {
+        "attack": 7,
+        "level": 28,
+        "hidden": false
+    }, {
+        "attack": 184,
+        "level": 32,
+        "hidden": false
+    }, {
+        "attack": 286,
+        "level": 36,
+        "hidden": false
+    }],
+    "hiddenList": [{
+        "attack": 3,
+        "level": 10,
+        "hidden": true
+    }, {
+        "attack": 287,
+        "level": 15,
+        "hidden": true
+    }, {
+        "attack": 24,
+        "level": 20,
+        "hidden": true
+    }, {
+        "attack": 185,
+        "level": 30,
+        "hidden": true
+    }, {
+        "attack": 12,
+        "level": 50,
+        "hidden": true
+    }, {
+        "attack": 178,
+        "level": 60,
+        "hidden": true
+    }],
+    "innate": 285
+},
+"evolutions": {
+    "evolutions": [{
+        "raceToEvolve": 34,
+        "conditions": [{
+            "condition": {
+                "level": 20
+            },
+            "type": 0
+        }]
+    }]
+}

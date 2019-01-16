@@ -1,0 +1,123 @@
+"id": 37,
+"name": "Águila Real",
+"hp_base": 92,
+"attack_base": 86,
+"defense_base": 75,
+"spAttack_base": 86,
+"spDefense_base": 70,
+"speed_base": 111,
+"primary_type": 0,
+"secondary_type": 12,
+"growth": 0,
+"attack_pool": {
+    "normalList": [{
+        "attack": 134,
+        "level": 5,
+        "hidden": false
+    }, {
+        "attack": 176,
+        "level": 9,
+        "hidden": false
+    }, {
+        "attack": 3,
+        "level": 13,
+        "hidden": false
+    }, {
+        "attack": 287,
+        "level": 17,
+        "hidden": false
+    }, {
+        "attack": 182,
+        "level": 22,
+        "hidden": false
+    }, {
+        "attack": 53,
+        "level": 27,
+        "hidden": false
+    }, {
+        "attack": 7,
+        "level": 32,
+        "hidden": false
+    }, {
+        "attack": 185,
+        "level": 38,
+        "hidden": false
+    }, {
+        "attack": 184,
+        "level": 44,
+        "hidden": false
+    }, {
+        "attack": 183,
+        "level": 50,
+        "hidden": false
+    }, {
+        "attack": 108,
+        "level": 56,
+        "hidden": false
+    }, {
+        "attack": 181,
+        "level": 62,
+        "hidden": false
+    }, {
+        "attack": 180,
+        "level": 68,
+        "hidden": false
+    }],
+    "hiddenList": [{
+        "attack": 247,
+        "level": 10,
+        "hidden": true
+    }, {
+        "attack": 28,
+        "level": 20,
+        "hidden": true
+    }, {
+        "attack": 23,
+        "level": 25,
+        "hidden": true
+    }, {
+        "attack": 121,
+        "level": 25,
+        "hidden": true
+    }, {
+        "attack": 179,
+        "level": 25,
+        "hidden": true
+    }, {
+        "attack": 82,
+        "level": 30,
+        "hidden": true
+    }, {
+        "attack": 177,
+        "level": 30,
+        "hidden": true
+    }, {
+        "attack": 288,
+        "level": 30,
+        "hidden": true
+    }, {
+        "attack": 6,
+        "level": 35,
+        "hidden": true
+    }, {
+        "attack": 230,
+        "level": 40,
+        "hidden": true
+    }, {
+        "attack": 13,
+        "level": 45,
+        "hidden": true
+    }, {
+        "attack": 11,
+        "level": 50,
+        "hidden": true
+    }, {
+        "attack": 12,
+        "level": 50,
+        "hidden": true
+    }],
+    "innate": 1
+},
+"evolutions": {
+    "evolutions": []
+}
