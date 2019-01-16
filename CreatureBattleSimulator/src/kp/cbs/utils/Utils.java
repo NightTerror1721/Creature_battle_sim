@@ -11,6 +11,11 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.io.InputStream;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+import javax.swing.DefaultListModel;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 
@@ -117,5 +122,12 @@ public final class Utils
         p.y += (screen.height - window.height) / 2;
         
         dialog.setLocation(p);
+    }
+    
+    public static final <T> Stream<T> listModelToStream(DefaultListModel<T> model)
+    {
+        var len = model.size();
+        var it = model.elements().asIterator();
+        return StreamSupport.stream(Spliterators.spliterator(it, len, Spliterator.ORDERED), false);
     }
 }

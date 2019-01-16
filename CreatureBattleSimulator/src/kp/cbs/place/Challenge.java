@@ -7,6 +7,7 @@ package kp.cbs.place;
 
 import java.awt.Window;
 import java.util.LinkedList;
+import java.util.Objects;
 import kp.cbs.PlayerGame;
 import kp.cbs.battle.Battle;
 import kp.cbs.battle.Encounter;
@@ -26,7 +27,10 @@ public final class Challenge extends GlobalId
     @Property private boolean unique;
     @Property private String[] battles = {};
     
+    public final void setName(String name) { this.name = Objects.requireNonNullElse(name, ""); }
     public final String getName() { return name; }
+    
+    public final void setDescription(String desc) { this.description = Objects.requireNonNullElse(desc, ""); }
     public final String getDescription() { return description; }
     
     public final boolean isEnabled(PlayerGame game)
@@ -36,7 +40,14 @@ public final class Challenge extends GlobalId
     
     public final boolean isCompleted(PlayerGame game) { return game.isIdPassed(getId()); }
     
+    public final void setUnique(boolean flag) { this.unique = flag; }
     public final boolean isUnique() { return unique; }
+    
+    public final void setBattles(String[] battles)
+    {
+        this.battles = Objects.requireNonNullElse(battles, new String[] {});
+    }
+    public final String[] getBattles() { return battles; }
     
     private Encounter generateEncounter(int index)
     {
@@ -49,7 +60,7 @@ public final class Challenge extends GlobalId
     public final ChallengeStage createStage() { return new ChallengeStage(); }
     
     @Override
-    public final String toString() { return getName(); }
+    public final String toString() { return name == null || name.isBlank() ? "<unnamed_challenge>" : name; }
     
     
     public final class ChallengeStage implements Stage

@@ -1,12 +1,12 @@
 "wildBattle": "khalm_wild",
 "trainerBattle": "",
 "challenges": [{
-	"id": "chal_first_init",
-	"name": "Estreno como Entrenador",
-	"description": "Es tu primer combate fuera, antes de avanzar deberás derrotar a tu adversario.",
-	"unique": true,
-	"battles": ["first_test_combat"]
+    "id": "chal_first_init",
+    "name": "Estreno como Entrenador",
+    "description": "Es tu primer combate fuera, antes de avanzar deberás derrotar a tu adversario.",
+    "unique": true,
+    "battles": ["first_test_combat"]
 }],
 "travels": {
-	"Llanuras de Khalm": []
+    "Llanuras de Khalm": []
 }

@@ -97,6 +97,7 @@ public class CreatureSelector extends JDialog
         clazz.setEnabled(valid);
         level.setEnabled(valid);
         see.setEnabled(valid);
+        learnAtts.setEnabled(valid);
         select.setEnabled(valid && selection);
         
         name.setText(valid ? sel.getName() : "");
@@ -126,7 +127,7 @@ public class CreatureSelector extends JDialog
         level = new javax.swing.JTextField();
         see = new javax.swing.JButton();
         select = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        learnAtts = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(new java.awt.GridLayout(1, 2));
@@ -225,10 +226,10 @@ public class CreatureSelector extends JDialog
         gridBagConstraints.weighty = 0.1;
         jPanel1.add(select, gridBagConstraints);
 
-        jButton1.setText("Aprender Ataques");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        learnAtts.setText("Aprender Ataques");
+        learnAtts.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                learnAttsActionPerformed(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -238,7 +239,7 @@ public class CreatureSelector extends JDialog
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 0.1;
         gridBagConstraints.weighty = 0.1;
-        jPanel1.add(jButton1, gridBagConstraints);
+        jPanel1.add(learnAtts, gridBagConstraints);
 
         getContentPane().add(jPanel1);
 
@@ -275,20 +276,20 @@ public class CreatureSelector extends JDialog
         dispose();
     }//GEN-LAST:event_allMouseClicked
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void learnAttsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_learnAttsActionPerformed
         var sel = all.getSelectedValue();
         if(sel == null)
             return;
         ArtificialAttackLearn.open(this, game, sel);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_learnAttsActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList<Creature> all;
     private javax.swing.JTextField clazz;
-    private javax.swing.JButton jButton1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton learnAtts;
     private javax.swing.JTextField level;
     private javax.swing.JTextField name;
     private javax.swing.JTextField race;

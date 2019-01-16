@@ -15,7 +15,7 @@ import kp.udl.autowired.Property;
 public class GlobalId implements Comparable<GlobalId>
 {
     @Property(set = "setId", get = "getId")
-    private String id;
+    private String id = "";
     
     public final void setId(String id)
     {

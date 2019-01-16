@@ -13,6 +13,8 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import kp.cbs.PlayerGame;
 import kp.cbs.battle.Battle;
@@ -20,6 +22,7 @@ import kp.cbs.battle.Encounter;
 import kp.cbs.battle.prop.BattleProperties;
 import kp.cbs.battle.prop.BattlePropertiesPool;
 import kp.cbs.creature.Creature;
+import kp.cbs.utils.Pair;
 import kp.cbs.utils.Paths;
 import kp.cbs.utils.Serializer;
 import kp.udl.autowired.Property;
@@ -36,15 +39,43 @@ public final class Place
     @Property private String wildBattle = "";
     @Property private String trainerBattle = "";
     @Property private LinkedList<Challenge> challenges = new LinkedList<>();
-    @Property private LinkedHashMap<String, String[]> travels;
+    @Property private LinkedHashMap<String, String[]> travels = new LinkedHashMap<>();
     
     private BattleProperties wildCache;
     private BattleProperties trainerCache;
     
+    public final void setName(String name) { this.name = Objects.requireNonNullElse(name, ""); }
     public final String getName() { return name; }
     
     public final int getChallengeCount() { return challenges.size(); }
     public final List<Challenge> getAllChallenges() { return Collections.unmodifiableList(challenges); }
+    public final void setChallenges(List<Challenge> challenges) { this.challenges = new LinkedList<>(challenges == null ? List.of() : challenges); }
+    
+    public final void setWildBattle(String name) { this.wildBattle = Objects.requireNonNullElse(name, ""); }
+    public final void setTrainerBattle(String name) { this.trainerBattle = Objects.requireNonNullElse(name, ""); }
+    
+    public final String getWildBattle() { return wildBattle; }
+    public final String getTrainerBattle() { return trainerBattle; }
+    
+    public final void setTravels(Pair<String, String[]>[] travels)
+    {
+        this.travels = new LinkedHashMap<>(Stream.of(travels).collect(Collectors.toMap(
+                p -> p.left,
+                p -> p.right
+        )));
+    }
+    public final void addTravel(String name)
+    {
+        if(travels.containsKey(name))
+            return;
+        
+        travels.put(name, new String[] {});
+    }
+    
+    public final List<Pair<String, String[]>> getAllTravels()
+    {
+        return travels.entrySet().stream().map(e -> new Pair<>(e.getKey(), e.getValue())).collect(Collectors.toList());
+    }
     
     public final boolean hasTrainerBattle() { return trainerBattle != null && !trainerBattle.isBlank(); }
     public final boolean hasWildBattle() { return wildBattle != null && !wildBattle.isBlank(); }
@@ -127,17 +158,19 @@ public final class Place
     
     
     
-    public static final void save(Place place)
+    public static final boolean save(Place place)
     {
         var path = Paths.concat(Paths.PLACES, place.name + ".place");
         try
         {
             var base = Serializer.extract(place);
             Serializer.write(base, path);
+            return true;
         }
         catch(IOException | UDLException ex)
         {
             ex.printStackTrace(System.err);
+            return false;
         }
     }
     
