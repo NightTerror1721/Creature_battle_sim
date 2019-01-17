@@ -47,4 +47,6 @@ public enum StatId
             case 5: return SPEED;
         }
     }
+    
+    public static final int count() { return 6; };
 }

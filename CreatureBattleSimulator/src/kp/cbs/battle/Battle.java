@@ -29,6 +29,7 @@ import kp.cbs.creature.attack.AttackPool;
 import kp.cbs.creature.attack.AttackSlot;
 import kp.cbs.creature.elements.ElementalType;
 import kp.cbs.creature.feat.StatId;
+import kp.cbs.creature.feat.StatsComparison;
 import kp.cbs.utils.Formula;
 import kp.cbs.utils.LifebarUtils;
 import kp.cbs.utils.Semaphore;
@@ -574,19 +575,11 @@ public class Battle extends JDialog
             cexp.addExperience(exp);
             SoundManager.playSound("exp_max");
             sleep(650);
-            var stats = new int[12];
-            for(int i=0;i<6;i++)
-                stats[i] = creature.getStat(StatId.decode(i)).getValue();
-            creature.updateAll();
-            for(int i=6;i<12;i++)
-            {
-                stats[i] = creature.getStat(StatId.decode(i - 6)).getValue();
-                stats[i - 6] = stats[i] - stats[i - 6];
-            }
-            creature.getHealthPoints().heal(stats[StatId.HEALTH_POINTS.ordinal()]);
+            var stats = new StatsComparison(creature, creature.getLevel());
+            creature.getHealthPoints().heal(stats.getStatAddition(StatId.HEALTH_POINTS));
             updateCreatureInterface(SELF);
             SoundManager.playSound("level_up");
-            LevelUpStatComparison.open(this,stats);
+            LevelUpStatComparison.open(this, stats);
             checkLevelAttacksToLearn(creature);
         }
     }

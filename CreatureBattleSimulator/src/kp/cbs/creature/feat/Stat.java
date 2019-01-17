@@ -46,6 +46,8 @@ public abstract class Stat extends BaseFeature
     final void setValue(int value) { this.value = Math.max(0, value); }
     public final int getValue() { return value; }
     
+    public abstract int getPureValue(int level, Nature nature);
+    
     final void fillRandom(RNG rng)
     {
         setGeneticPoints(rng.d(33));

@@ -28,6 +28,12 @@ public abstract class NormalStat extends Stat
         setValue(Formula.statValue(getStatId(), level, base, gen, ab, nature, modifLevel));
     }
     
+    @Override
+    public final int getPureValue(int level, Nature nature)
+    {
+        return Formula.statValue(getStatId(), level, base, gen, ab, nature, 0);
+    }
+    
     public final boolean modifyStat(int levels)
     {
         levels = Utils.range(-6, 6, levels);

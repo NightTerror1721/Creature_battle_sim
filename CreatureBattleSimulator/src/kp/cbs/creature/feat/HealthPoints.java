@@ -43,4 +43,7 @@ public final class HealthPoints extends Stat
             current = getValue();
     }
     
+    @Override
+    public final int getPureValue(int level, Nature nature) { return Formula.hpValue(level, base, gen, ab); }
+    
 }

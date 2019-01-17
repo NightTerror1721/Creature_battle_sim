@@ -7,6 +7,8 @@ package kp.cbs.battle;
 
 import java.util.Objects;
 import javax.swing.JDialog;
+import kp.cbs.creature.feat.StatId;
+import kp.cbs.creature.feat.StatsComparison;
 import kp.cbs.utils.Utils;
 
 /**
@@ -15,14 +17,14 @@ import kp.cbs.utils.Utils;
  */
 public class LevelUpStatComparison extends JDialog
 {
-    private final int[] stats;
+    private final StatsComparison stats;
     private boolean pressed;
     
-    private LevelUpStatComparison(Battle parent, int[] stats)
+    private LevelUpStatComparison(Battle parent, StatsComparison comparison)
     {
         super(parent,true);
         initComponents();
-        this.stats = Objects.requireNonNull(stats);
+        this.stats = Objects.requireNonNull(comparison);
         pressed = false;
         init();
     }
@@ -34,22 +36,21 @@ public class LevelUpStatComparison extends JDialog
         showStats(true);
     }
     
-    private void showStats(boolean old)
+    private void showStats(boolean addition)
     {
-        int base = old ? 0 : 6;
-        String prefix = old ? "+" : "";
+        String prefix = addition ? "+" : "";
         
-        ps.setText(prefix + stats[base]);
-        attack.setText(prefix + stats[base + 1]);
-        defense.setText(prefix + stats[base + 2]);
-        attackSp.setText(prefix + stats[base + 3]);
-        defenseSp.setText(prefix + stats[base + 4]);
-        speed.setText(prefix + stats[base + 5]);
+        ps.setText(prefix + stats.getStatValue(StatId.HEALTH_POINTS, addition));
+        attack.setText(prefix + stats.getStatValue(StatId.ATTACK, addition));
+        defense.setText(prefix + stats.getStatValue(StatId.DEFENSE, addition));
+        attackSp.setText(prefix + stats.getStatValue(StatId.SPECIAL_ATTACK, addition));
+        defenseSp.setText(prefix + stats.getStatValue(StatId.SPECIAL_DEFENSE, addition));
+        speed.setText(prefix + stats.getStatValue(StatId.SPEED, addition));
     }
     
-    public static final void open(Battle parent, int[] stats)
+    public static final void open(Battle parent, StatsComparison comparison)
     {
-        LevelUpStatComparison lusc = new LevelUpStatComparison(parent, stats);
+        LevelUpStatComparison lusc = new LevelUpStatComparison(parent, comparison);
         lusc.setVisible(true);
     }
 
