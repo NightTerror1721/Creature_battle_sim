@@ -1,0 +1,139 @@
+"id": 40,
+"name": "Cobra",
+"hp_base": 70,
+"attack_base": 115,
+"defense_base": 79,
+"spAttack_base": 80,
+"spDefense_base": 89,
+"speed_base": 92,
+"primary_type": 15,
+"secondary_type": 5,
+"growth": 0,
+"attack_pool": {
+    "normalList": [{
+        "attack": 19,
+        "level": 1,
+        "hidden": false
+    }, {
+        "attack": 291,
+        "level": 1,
+        "hidden": false
+    }, {
+        "attack": 292,
+        "level": 4,
+        "hidden": false
+    }, {
+        "attack": 80,
+        "level": 9,
+        "hidden": false
+    }, {
+        "attack": 92,
+        "level": 12,
+        "hidden": false
+    }, {
+        "attack": 293,
+        "level": 17,
+        "hidden": false
+    }, {
+        "attack": 212,
+        "level": 20,
+        "hidden": false
+    }, {
+        "attack": 294,
+        "level": 23,
+        "hidden": false
+    }, {
+        "attack": 81,
+        "level": 28,
+        "hidden": false
+    }, {
+        "attack": 7,
+        "level": 32,
+        "hidden": false
+    }, {
+        "attack": 220,
+        "level": 37,
+        "hidden": false
+    }, {
+        "attack": 272,
+        "level": 41,
+        "hidden": false
+    }, {
+        "attack": 215,
+        "level": 46,
+        "hidden": false
+    }, {
+        "attack": 91,
+        "level": 53,
+        "hidden": false
+    }, {
+        "attack": 221,
+        "level": 65,
+        "hidden": false
+    }],
+    "hiddenList": [{
+        "attack": 3,
+        "level": 10,
+        "hidden": true
+    }, {
+        "attack": 275,
+        "level": 20,
+        "hidden": true
+    }, {
+        "attack": 214,
+        "level": 25,
+        "hidden": true
+    }, {
+        "attack": 216,
+        "level": 30,
+        "hidden": true
+    }, {
+        "attack": 271,
+        "level": 30,
+        "hidden": true
+    }, {
+        "attack": 6,
+        "level": 35,
+        "hidden": true
+    }, {
+        "attack": 276,
+        "level": 35,
+        "hidden": true
+    }, {
+        "attack": 277,
+        "level": 35,
+        "hidden": true
+    }, {
+        "attack": 278,
+        "level": 35,
+        "hidden": true
+    }, {
+        "attack": 90,
+        "level": 40,
+        "hidden": true
+    }, {
+        "attack": 279,
+        "level": 40,
+        "hidden": true
+    }, {
+        "attack": 12,
+        "level": 45,
+        "hidden": true
+    }, {
+        "attack": 11,
+        "level": 50,
+        "hidden": true
+    }],
+    "innate": 81
+},
+"evolutions": {
+    "evolutions": [{
+        "raceToEvolve": 39,
+        "conditions": [{
+            "condition": {
+                "level": 22
+            },
+            "type": 0
+        }]
+    }]
+}

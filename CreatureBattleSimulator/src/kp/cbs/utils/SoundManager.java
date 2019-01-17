@@ -25,6 +25,7 @@ public final class SoundManager
     public static final void loadSounds(boolean autoClose)
     {
         TinySound.init();
+        TinySound.setGlobalVolume(0.4);
         if(autoClose)
             Runtime.getRuntime().addShutdownHook(new Thread(TinySound::shutdown));
         try

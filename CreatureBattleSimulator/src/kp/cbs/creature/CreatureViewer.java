@@ -185,7 +185,9 @@ public class CreatureViewer extends JDialog
     private void addAbilityPoint(StatId stat)
     {
         creature.useAbilityPoint(stat);
-        fillAbilityPoints();
+        creature.clearAll();
+        restart();
+        //fillAbilityPoints();
     }
     
     private void fillRaceBases()

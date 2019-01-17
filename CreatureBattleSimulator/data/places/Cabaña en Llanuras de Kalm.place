@@ -1,0 +1,12 @@
+"wildBattle": "kalm_wild_2",
+"trainerBattle": "kalm_trainers_01",
+"challenges": [{
+    "id": "kalm_cabaña_ch_01",
+    "name": "Guardabosques del bosque Azul",
+    "description": "Si quieres entrar al bosque azu, ¡tendrás que derrotarme!",
+    "unique": true,
+    "battles": ["kalm_ch_02"]
+}],
+"travels": {
+    "Llanuras de Kalm": []
+}

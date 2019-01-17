@@ -1,0 +1,83 @@
+"id": 41,
+"name": "Roca Chomp",
+"hp_base": 40,
+"attack_base": 80,
+"defense_base": 100,
+"spAttack_base": 30,
+"spDefense_base": 30,
+"speed_base": 20,
+"primary_type": 10,
+"secondary_type": 9,
+"growth": 0,
+"attack_pool": {
+    "normalList": [{
+        "attack": 20,
+        "level": 6,
+        "hidden": false
+    }, {
+        "attack": 248,
+        "level": 11,
+        "hidden": false
+    }, {
+        "attack": 146,
+        "level": 16,
+        "hidden": false
+    }, {
+        "attack": 159,
+        "level": 19,
+        "hidden": false
+    }, {
+        "attack": 139,
+        "level": 22,
+        "hidden": false
+    }, {
+        "attack": 155,
+        "level": 26,
+        "hidden": false
+    }, {
+        "attack": 149,
+        "level": 30,
+        "hidden": false
+    }, {
+        "attack": 135,
+        "level": 34,
+        "hidden": false
+    }, {
+        "attack": 151,
+        "level": 42,
+        "hidden": false
+    }],
+    "hiddenList": [{
+        "attack": 158,
+        "level": 10,
+        "hidden": true
+    }, {
+        "attack": 293,
+        "level": 20,
+        "hidden": true
+    }, {
+        "attack": 23,
+        "level": 25,
+        "hidden": true
+    }, {
+        "attack": 7,
+        "level": 40,
+        "hidden": true
+    }, {
+        "attack": 205,
+        "level": 40,
+        "hidden": true
+    }],
+    "innate": 1
+},
+"evolutions": {
+    "evolutions": [{
+        "raceToEvolve": 42,
+        "conditions": [{
+            "condition": {
+                "level": 25
+            },
+            "type": 0
+        }]
+    }]
+}

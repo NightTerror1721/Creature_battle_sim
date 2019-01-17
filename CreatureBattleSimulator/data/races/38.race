@@ -1,0 +1,107 @@
+"id": 38,
+"name": "Serpiente Joven",
+"hp_base": 35,
+"attack_base": 60,
+"defense_base": 44,
+"spAttack_base": 40,
+"spDefense_base": 54,
+"speed_base": 55,
+"primary_type": 15,
+"secondary_type": 15,
+"growth": 0,
+"attack_pool": {
+    "normalList": [{
+        "attack": 19,
+        "level": 1,
+        "hidden": false
+    }, {
+        "attack": 292,
+        "level": 4,
+        "hidden": false
+    }, {
+        "attack": 80,
+        "level": 9,
+        "hidden": false
+    }, {
+        "attack": 92,
+        "level": 12,
+        "hidden": false
+    }, {
+        "attack": 293,
+        "level": 17,
+        "hidden": false
+    }, {
+        "attack": 212,
+        "level": 20,
+        "hidden": false
+    }, {
+        "attack": 294,
+        "level": 23,
+        "hidden": false
+    }, {
+        "attack": 81,
+        "level": 28,
+        "hidden": false
+    }, {
+        "attack": 220,
+        "level": 32,
+        "hidden": false
+    }, {
+        "attack": 215,
+        "level": 38,
+        "hidden": false
+    }],
+    "hiddenList": [{
+        "attack": 3,
+        "level": 10,
+        "hidden": true
+    }, {
+        "attack": 275,
+        "level": 20,
+        "hidden": true
+    }, {
+        "attack": 214,
+        "level": 30,
+        "hidden": true
+    }, {
+        "attack": 271,
+        "level": 35,
+        "hidden": true
+    }, {
+        "attack": 216,
+        "level": 40,
+        "hidden": true
+    }, {
+        "attack": 6,
+        "level": 45,
+        "hidden": true
+    }, {
+        "attack": 90,
+        "level": 50,
+        "hidden": true
+    }, {
+        "attack": 12,
+        "level": 60,
+        "hidden": true
+    }],
+    "innate": 291
+},
+"evolutions": {
+    "evolutions": [{
+        "raceToEvolve": 39,
+        "conditions": [{
+            "condition": {
+                "level": 22
+            },
+            "type": 0
+        }]
+    }, {
+        "raceToEvolve": 40,
+        "conditions": [{
+            "condition": {
+                "level": 30
+            },
+            "type": 0
+        }]
+    }]
+}

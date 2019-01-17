@@ -1,0 +1,118 @@
+"creatures": {
+    "94af4193-4f85-4308-8085-2d3f3a25f4b1": {
+        "id": "94af4193-4f85-4308-8085-2d3f3a25f4b1",
+        "name": "Orco Joven",
+        "race": 6,
+        "features": {
+            "hp": {
+                "base": 62,
+                "genetic": 27,
+                "ability": 2,
+                "current": 706
+            },
+            "attack": {
+                "base": 49,
+                "genetic": 9,
+                "ability": 0
+            },
+            "defense": {
+                "base": 54,
+                "genetic": 15,
+                "ability": 0
+            },
+            "specialAttack": {
+                "base": 37,
+                "genetic": 25,
+                "ability": 0
+            },
+            "specialDefense": {
+                "base": 43,
+                "genetic": 28,
+                "ability": 0
+            },
+            "speed": {
+                "base": 35,
+                "genetic": 8,
+                "ability": 0
+            }
+        },
+        "exp": {
+            "growth": 3,
+            "level": 10,
+            "experience": 660
+        },
+        "nature": 0,
+        "attacks": {
+            "att1": 1,
+            "att2": 18,
+            "att3": 20,
+            "att4": 248
+        },
+        "abilityPoints": 3
+    },
+    "9243c6b1-6965-4c76-a8a8-ddd2dbe732ce": {
+        "id": "9243c6b1-6965-4c76-a8a8-ddd2dbe732ce",
+        "name": "Hierbajo",
+        "race": 27,
+        "features": {
+            "hp": {
+                "base": 50,
+                "genetic": 22,
+                "ability": 0,
+                "current": 599
+            },
+            "attack": {
+                "base": 50,
+                "genetic": 24,
+                "ability": 0
+            },
+            "defense": {
+                "base": 55,
+                "genetic": 31,
+                "ability": 0
+            },
+            "specialAttack": {
+                "base": 75,
+                "genetic": 14,
+                "ability": 3
+            },
+            "specialDefense": {
+                "base": 65,
+                "genetic": 9,
+                "ability": 0
+            },
+            "speed": {
+                "base": 35,
+                "genetic": 11,
+                "ability": 0
+            }
+        },
+        "exp": {
+            "growth": 0,
+            "level": 9,
+            "experience": 740
+        },
+        "nature": 0,
+        "attacks": {
+            "att1": 161,
+            "att2": 283,
+            "att3": 247,
+            "att4": 212
+        },
+        "abilityPoints": 4
+    }
+},
+"passedIds": ["kalm_first_start"],
+"leageElos": {},
+"items": {
+    17: 3
+},
+"slot1": "9243c6b1-6965-4c76-a8a8-ddd2dbe732ce",
+"slot2": "94af4193-4f85-4308-8085-2d3f3a25f4b1",
+"slot3": null,
+"slot4": null,
+"slot5": null,
+"slot6": null,
+"money": 3275,
+"currentPlace": "Cabaña en Llanuras de Kalm",
+"currentLeage": ""

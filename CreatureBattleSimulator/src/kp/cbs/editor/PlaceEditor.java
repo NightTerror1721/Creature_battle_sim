@@ -8,6 +8,7 @@ package kp.cbs.editor;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.swing.DefaultListModel;
+import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import kp.cbs.editor.utils.BattleSelector;
@@ -95,6 +96,7 @@ public class PlaceEditor extends JDialog
             c_id.setText("");
             c_name.setText("");
             c_desc.setText("");
+            c_unique.setSelected(false);
             challengeBattles.clear();
             
             c_up.setEnabled(false);
@@ -103,6 +105,7 @@ public class PlaceEditor extends JDialog
             c_id.setEnabled(false);
             c_name.setEnabled(false);
             c_desc.setEnabled(false);
+            c_unique.setEnabled(false);
             challengeBattles.setVisible(false);
         }
         else
@@ -110,6 +113,7 @@ public class PlaceEditor extends JDialog
             c_id.setText(sel.getId());
             c_name.setText(sel.getName());
             c_desc.setText(sel.getDescription());
+            c_unique.setSelected(sel.isUnique());
             challengeBattles.fillBattles(sel.getBattles());
 
             var index = challenges.getSelectedIndex();
@@ -121,6 +125,7 @@ public class PlaceEditor extends JDialog
             c_id.setEnabled(true);
             c_name.setEnabled(true);
             c_desc.setEnabled(true);
+            c_unique.setEnabled(true);
             challengeBattles.setVisible(true);
         }
     }
@@ -251,6 +256,12 @@ public class PlaceEditor extends JDialog
         pModel.addAll(place.getAllTravels().stream().map(PlaceEntry::new).collect(Collectors.toList()));
     }
     
+    private static void setCheckBoxState(JCheckBox box, boolean state)
+    {
+        box.setSelected(!state);
+        box.doClick();
+    }
+    
     
     
     
@@ -360,6 +371,11 @@ public class PlaceEditor extends JDialog
         jPanel5.add(c_id, gridBagConstraints);
 
         c_unique.setText("Único");
+        c_unique.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                c_uniqueActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 0;
@@ -586,7 +602,7 @@ public class PlaceEditor extends JDialog
             }
         });
 
-        jPanel9.setLayout(new java.awt.GridLayout());
+        jPanel9.setLayout(new java.awt.GridLayout(1, 0));
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -824,6 +840,10 @@ public class PlaceEditor extends JDialog
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         store();
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void c_uniqueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_c_uniqueActionPerformed
+        modChallenge((index, sel) -> sel.setUnique(c_unique.isSelected()));
+    }//GEN-LAST:event_c_uniqueActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

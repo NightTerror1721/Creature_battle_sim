@@ -1,0 +1,107 @@
+"id": 39,
+"name": "Serpiente Cascabel",
+"hp_base": 60,
+"attack_base": 95,
+"defense_base": 69,
+"spAttack_base": 65,
+"spDefense_base": 79,
+"speed_base": 80,
+"primary_type": 15,
+"secondary_type": 15,
+"growth": 0,
+"attack_pool": {
+    "normalList": [{
+        "attack": 19,
+        "level": 1,
+        "hidden": false
+    }, {
+        "attack": 291,
+        "level": 1,
+        "hidden": false
+    }, {
+        "attack": 292,
+        "level": 4,
+        "hidden": false
+    }, {
+        "attack": 80,
+        "level": 9,
+        "hidden": false
+    }, {
+        "attack": 92,
+        "level": 12,
+        "hidden": false
+    }, {
+        "attack": 293,
+        "level": 17,
+        "hidden": false
+    }, {
+        "attack": 212,
+        "level": 20,
+        "hidden": false
+    }, {
+        "attack": 81,
+        "level": 22,
+        "hidden": false
+    }, {
+        "attack": 294,
+        "level": 28,
+        "hidden": false
+    }, {
+        "attack": 220,
+        "level": 37,
+        "hidden": false
+    }, {
+        "attack": 7,
+        "level": 41,
+        "hidden": false
+    }, {
+        "attack": 141,
+        "level": 44,
+        "hidden": false
+    }, {
+        "attack": 215,
+        "level": 49,
+        "hidden": false
+    }, {
+        "attack": 13,
+        "level": 56,
+        "hidden": false
+    }],
+    "hiddenList": [{
+        "attack": 3,
+        "level": 10,
+        "hidden": true
+    }, {
+        "attack": 275,
+        "level": 20,
+        "hidden": true
+    }, {
+        "attack": 214,
+        "level": 25,
+        "hidden": true
+    }, {
+        "attack": 271,
+        "level": 30,
+        "hidden": true
+    }, {
+        "attack": 216,
+        "level": 35,
+        "hidden": true
+    }, {
+        "attack": 6,
+        "level": 40,
+        "hidden": true
+    }, {
+        "attack": 90,
+        "level": 45,
+        "hidden": true
+    }, {
+        "attack": 12,
+        "level": 50,
+        "hidden": true
+    }],
+    "innate": 81
+},
+"evolutions": {
+    "evolutions": []
+}

@@ -626,6 +626,7 @@ public class MainGameInterface extends JFrame
         });
         updateTeam();
         updateMoney();
+        updateCurrentPlace();
     }//GEN-LAST:event_challengesActionPerformed
 
 

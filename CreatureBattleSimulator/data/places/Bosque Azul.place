@@ -1,0 +1,12 @@
+"wildBattle": "blue_woods_wild",
+"trainerBattle": "blue_woods_trainer",
+"challenges": [{
+    "id": "blue_woods_ch_01",
+    "name": "Guardabosques del Bosque Azul",
+    "description": "De nuevo nos encontramos, pero esta vez, no te dejaré salir si no me derrotas. ¡No pienso contenerme!",
+    "unique": true,
+    "battles": ["blue_woods_ch_01"]
+}],
+"travels": {
+    "Llanuras de Kalm": []
+}

@@ -76,6 +76,8 @@ public final class Team
                     if(c.isAlive())
                         return c;
             case RANDOM_WITHOUT_LAST:
+                if(creatures.size() < 2)
+                    return creatures.get(0);
                 return creatures.get(rng.d(creatures.size() - 1));
             case RANDOM:
                 return creatures.get(rng.d(creatures.size()));
@@ -94,12 +96,13 @@ public final class Team
                 for(Creature c : creatures)
                     if(c.isAlive())
                         return c;
-            case SEARCH_WITHOUT_LAST:
-                return creatures.subList(0, creatures.size() - 1).stream()
+            case SEARCH_WITHOUT_LAST: {
+                var opt = creatures.subList(0, creatures.size() - 1).stream()
                         .filter(Creature::isAlive)
                         .map(c -> new CreatureSelected(c, enemy, rng, weather))
-                        .reduce(Team::selectCreature)
-                        .get().creature;
+                        .reduce(Team::selectCreature);
+                return opt.isPresent() ? opt.get().creature : creatures.get(creatures.size() - 1);
+            }
             case SEARCH:
                 return creatures.stream()
                         .filter(Creature::isAlive)
