@@ -45,7 +45,6 @@ public class MainMenuEditor extends JFrame
         jButton2 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
-        jSeparator1 = new javax.swing.JSeparator();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
 
@@ -53,7 +52,7 @@ public class MainMenuEditor extends JFrame
         setTitle("Editor - Menú Principal");
 
         jPanel1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
-        jPanel1.setLayout(new java.awt.GridLayout(7, 1));
+        jPanel1.setLayout(new java.awt.GridLayout(3, 2));
 
         jButton1.setText("Editor de Ataques");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -87,9 +86,6 @@ public class MainMenuEditor extends JFrame
         });
         jPanel1.add(jButton6);
 
-        jSeparator1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jPanel1.add(jSeparator1);
-
         jButton3.setText("Calculadora de Stats");
         jPanel1.add(jButton3);
 
@@ -105,17 +101,11 @@ public class MainMenuEditor extends JFrame
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 388, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 415, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE)
         );
 
         pack();
@@ -138,7 +128,7 @@ public class MainMenuEditor extends JFrame
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        PlaceEditor.open(this);
+        PlaceEditor.open();
     }//GEN-LAST:event_jButton6ActionPerformed
 
 
@@ -150,6 +140,5 @@ public class MainMenuEditor extends JFrame
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JSeparator jSeparator1;
     // End of variables declaration//GEN-END:variables
 }

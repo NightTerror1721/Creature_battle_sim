@@ -5,290 +5,557 @@
  */
 package kp.cbs.editor;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JCheckBox;
-import javax.swing.JDialog;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
-import kp.cbs.editor.utils.BattleSelector;
-import kp.cbs.editor.utils.ListBattleSelector;
-import kp.cbs.editor.utils.ListRequireds;
+import javax.swing.text.JTextComponent;
+import kp.cbs.battle.prop.BattlePropertiesPool;
+import kp.cbs.editor.utils.EditorUtils;
+import kp.cbs.editor.utils.FlagManager;
+import kp.cbs.editor.utils.RequiredPanel;
 import kp.cbs.place.Challenge;
 import kp.cbs.place.Place;
-import kp.cbs.utils.Pair;
 import kp.cbs.utils.Utils;
 
 /**
  *
- * @author Asus
+ * @author Marc
  */
-public class PlaceEditor extends JDialog
+public class PlaceEditor extends JFrame
 {
-    private BattleSelector wildBattle;
-    private BattleSelector trainerBattle;
-    private ListBattleSelector challengeBattles;
-    private ListRequireds requireds;
+    private final RequiredPanel challengeRequireds = new RequiredPanel();
+    private final RequiredPanel travelRequireds = new RequiredPanel();
     
-    public PlaceEditor(MainMenuEditor parent)
+    private final BattleComboBoxModel cb_wildBattleModel;
+    private final BattleComboBoxModel cb_trainerBattleModel;
+    
+    private final DefaultListModel<Challenge> l_challengeModel;
+    private final DefaultListModel<String> l_challengeBattlesModel;
+    private final DefaultListModel<TravelEntry> l_travelsModel;
+    
+    private BattleEntry[] battlesCache;
+    
+    private final FlagManager<Object> locker = new FlagManager<>();
+    
+    /**
+     * Creates new form PlaceCreator
+     */
+    private PlaceEditor()
     {
-        super(parent, false);
         initComponents();
+        
+        cb_wildBattleModel = new BattleComboBoxModel(cb_wildBattle);
+        cb_trainerBattleModel = new BattleComboBoxModel(cb_trainerBattle);
+        
+        challengeRequireds.setCallback(this::callengeRequiredsCallback);
+        travelRequireds.setCallback(this::travelRequiredsCallback);
+        
+        l_challenge.setModel(l_challengeModel = new DefaultListModel<>());
+        l_challengeBattles.setModel(l_challengeBattlesModel = new DefaultListModel<>());
+        l_travels.setModel(l_travelsModel = new DefaultListModel<>());
+        
         init();
+        pack();
     }
     
-    public static final void open(MainMenuEditor parent)
-    {
-        var editor = new PlaceEditor(parent);
-        editor.setVisible(true);
-    }
+    public static final void open() { new PlaceEditor().setVisible(true); }
+    
     
     private void init()
     {
         setResizable(false);
         Utils.focus(this);
         
-        wildBattle = new BattleSelector(this, "Batalla Salvajes");
-        jPanel1.add(wildBattle);
+        updateBattles();
         
-        trainerBattle = new BattleSelector(this, "Batalla Entrenadores");
-        jPanel1.add(trainerBattle);
+        jPanel8.add(challengeRequireds);
+        jPanel13.add(travelRequireds);
         
-        challengeBattles = new ListBattleSelector(this, this::updateChallengeBattles);
-        jPanel6.add(challengeBattles);
+        installChallengeCallback(challengeId, (cmp, c) -> c.setId(cmp.getText()), false);
+        installChallengeCallback(challengeName, (cmp, c) -> c.setName(cmp.getText()), true);
+        installChallengeCallback(challengeDesc, (cmp, c) -> c.setDescription(cmp.getText()), false);
+        installChallengeCallback(challengeUnique, (cmp, c) -> c.setUnique(cmp.isSelected()));
         
-        challenges.setModel(new DefaultListModel<>());
-        links.setModel(new DefaultListModel<>());
-        
-        requireds = new ListRequireds(this, this::updateRequireds);
-        jPanel9.add(requireds);
-        
-        showChallenge();
-        showPlace();
+        newPlace();
     }
     
-    private void updateChallengeBattles(String[] battles)
+    private void updateBattles()
     {
-        var sel = challenges.getSelectedValue();
-        if(sel == null)
-            return;
+        battlesCache = Stream.concat(Stream.of(BattleEntry.INVALID), 
+                Stream.of(BattlePropertiesPool.getAllNames()).map(BattleEntry::new))
+                .toArray(BattleEntry[]::new);
         
-        sel.setBattles(battles);
+        cb_wildBattleModel.updateValues();
+        cb_trainerBattleModel.updateValues();
     }
     
-    private void updateRequireds(String[] reqs)
-    {
-        var sel = links.getSelectedValue();
-        if(sel == null)
-            return;
-        
-        sel.setRequireds(reqs);
-    }
-    
-    private DefaultListModel<Challenge> challengeModel() { return (DefaultListModel<Challenge>) challenges.getModel(); }
-    private DefaultListModel<PlaceEntry> placeModel() { return (DefaultListModel<PlaceEntry>) links.getModel(); }
     
     private void showChallenge()
     {
-        var sel = challenges.getSelectedValue();
+        if(isLocked(l_challenge))
+            return;
+        
+        lock(l_challenge);
+        
+        final var sel = getSelectedValue(l_challenge);
         if(sel == null)
         {
-            c_id.setText("");
-            c_name.setText("");
-            c_desc.setText("");
-            c_unique.setSelected(false);
-            challengeBattles.clear();
+            challengeId.setEnabled(false);
+            challengeName.setEnabled(false);
+            challengeUnique.setEnabled(false);
+            challengeDesc.setEnabled(false);
+            l_challengeBattles.setEnabled(false);
+            b_addChallengeBattle.setEnabled(false);
+            b_removeChallengeBattle.setEnabled(false);
+            b_upChallengeBattle.setEnabled(false);
+            b_downChallengeBattle.setEnabled(false);
+            jButton7.setEnabled(false);
+            b_removeChallenge.setEnabled(false);
+            b_upChallenge.setEnabled(false);
+            b_downChallenge.setEnabled(false);
             
-            c_up.setEnabled(false);
-            c_down.setEnabled(false);
-            c_remove.setEnabled(false);
-            c_id.setEnabled(false);
-            c_name.setEnabled(false);
-            c_desc.setEnabled(false);
-            c_unique.setEnabled(false);
-            challengeBattles.setVisible(false);
+            challengeId.setText("");
+            challengeName.setText("");
+            challengeDesc.setText("");
+            challengeUnique.setSelected(false);
+            l_challengeBattlesModel.removeAllElements();
+            l_travelsModel.removeAllElements();
+            
+            challengeRequireds.deactivateAndRestart();
         }
         else
         {
-            c_id.setText(sel.getId());
-            c_name.setText(sel.getName());
-            c_desc.setText(sel.getDescription());
-            c_unique.setSelected(sel.isUnique());
-            challengeBattles.fillBattles(sel.getBattles());
-
-            var index = challenges.getSelectedIndex();
-            var model = challengeModel();
-
-            c_up.setEnabled(index > 0 && model.size() > 1);
-            c_down.setEnabled(index < model.size() - 1 && model.size() > 1);
-            c_remove.setEnabled(true);
-            c_id.setEnabled(true);
-            c_name.setEnabled(true);
-            c_desc.setEnabled(true);
-            c_unique.setEnabled(true);
-            challengeBattles.setVisible(true);
+            challengeId.setEnabled(true);
+            challengeName.setEnabled(true);
+            challengeUnique.setEnabled(true);
+            challengeDesc.setEnabled(true);
+            
+            final var bidxsel = l_challengeBattles.getSelectedIndex();
+            l_challengeBattles.setEnabled(true);
+            b_addChallengeBattle.setEnabled(true);
+            b_removeChallengeBattle.setEnabled(bidxsel >= 0);
+            b_upChallengeBattle.setEnabled(bidxsel > 0);
+            b_downChallengeBattle.setEnabled(bidxsel + 1 < l_challengeBattlesModel.size());
+            jButton7.setEnabled(true);
+            
+            b_removeChallenge.setEnabled(false);
+            b_upChallenge.setEnabled(l_challenge.getSelectedIndex() > 0);
+            b_downChallenge.setEnabled(l_challenge.getSelectedIndex() + 1 < l_challengeModel.getSize());
+            
+            challengeRequireds.clear();
+            challengeRequireds.activate();
+            travelRequireds.clear();
+            travelRequireds.activate();
+            
+            challengeId.setText(sel.getId());
+            challengeName.setText(sel.getName());
+            challengeDesc.setText(sel.getDescription());
+            challengeUnique.setSelected(sel.isUnique());
+            
+            lock(l_challengeModel);
+            var bsel = getSelectedValue(l_challengeBattles);
+            l_challengeBattlesModel.removeAllElements();
+            l_challengeBattlesModel.addAll(sel.streamBattles()
+                    .filter(BattleEntry::isValid)
+                    .collect(Collectors.toList()));
+            if(bsel != null)
+                l_challengeBattles.setSelectedValue(bsel, true);
+            unlock(l_challengeModel);
+            
+            challengeRequireds.setRequiredIds(sel.getAllRequired());
         }
+        l_challenge.repaint();
+        
+        unlock(l_challenge);
     }
     
-    private void showPlace()
+    private void showTravel()
     {
-        var sel = links.getSelectedValue();
+        if(isLocked(l_travels))
+            return;
+        
+        lock(l_travels);
+        
+        final var sel = getSelectedValue(l_travels);
         if(sel == null)
         {
-            l_name.setText("");
-            requireds.clear();
-            
-            l_up.setEnabled(false);
-            l_down.setEnabled(false);
-            l_remove.setEnabled(false);
-            l_name.setEnabled(false);
-            requireds.setVisible(false);
+            b_removeTravel.setEnabled(false);
+            travelRequireds.deactivateAndRestart();
         }
         else
         {
-            l_name.setText(sel.getText());
-
-            var index = links.getSelectedIndex();
-            var model = placeModel();
-
-            l_up.setEnabled(index > 0 && model.size() > 1);
-            l_down.setEnabled(index < model.size() - 1 && model.size() > 1);
-            l_remove.setEnabled(true);
-            l_name.setEnabled(true);
-            requireds.setVisible(true);
-        }
-    }
-    
-    private void modChallenge(BiAction<Challenge> action)
-    {
-        var sel = challenges.getSelectedValue();
-        if(sel == null)
-            return;
-        action.accept(challenges.getSelectedIndex(), sel);
-    }
-    private void modPlace(BiAction<PlaceEntry> action)
-    {
-        var sel = links.getSelectedValue();
-        if(sel == null)
-            return;
-        action.accept(links.getSelectedIndex(), sel);
-    }
-    
-    private void load()
-    {
-        var allPlaces = Place.getAllSavedNames();
-        if(allPlaces.length < 1)
-            return;
-        var sel = JOptionPane.showInputDialog(this, "¿Que lugar quieres cargar?",
-                "Cargar Lugar", JOptionPane.QUESTION_MESSAGE, null,
-                allPlaces, allPlaces[0]);
-        if(sel == null)
-            return;
-        
-        var place = Place.load((String) sel);
-        if(place == null)
-            return;
-        createNew();
-        expandPlace(place);
-    }
-    
-    private void store()
-    {
-        if(name.getText().isBlank())
-        {
-            JOptionPane.showMessageDialog(this, "El nombre del lugar no puede estar vacío.",
-                "Guardar Lugar", JOptionPane.ERROR_MESSAGE);
-            return;
+            b_removeTravel.setEnabled(l_travels.getSelectedIndex() >= 0);
+            
+            travelRequireds.clear();
+            travelRequireds.activate();
+            travelRequireds.setRequiredIds(sel.getRequiredIds());
         }
         
-        var place = generatePlace();
-        if(Place.save(place))
-        {
-            JOptionPane.showMessageDialog(this, "¡El lugar ha sido guardada con éxito!",
-                    "Guardar Lugar", JOptionPane.INFORMATION_MESSAGE);
-        }
-        else JOptionPane.showMessageDialog(this, "Ha habido un fallo al guardar el lugar.",
-                "Guardar Lugar", JOptionPane.ERROR_MESSAGE);
+        unlock(l_travels);
     }
     
-    private void createNew()
+    
+    private void updateTitle()
+    {
+        final var base = "Editor de Lugares - ";
+        final var pname = name.getText();
+        if(pname == null || pname.isBlank())
+            setTitle(base + "???");
+        else setTitle(base + pname);
+    }
+    
+    
+    private static <T> T getSelectedValue(JList<T> list)
+    {
+        var sel = list.getSelectedValue();
+        return sel == null ? null : (T) sel;
+    }
+    
+    private void lock(Object obj)
+    {
+        locker.enable(obj);
+    }
+    
+    private void unlock(Object obj)
+    {
+        locker.disable(obj);
+    }
+    
+    private boolean isLocked(Object obj)
+    {
+        return locker.isEnabled(obj);
+    }
+    
+    private void unlockAll()
+    {
+        locker.disableAll();
+    }
+    
+    private void openBattleEditor()
+    {
+        BattleEditor.open(this);
+        updateBattles();
+    }
+    
+    private String generateChallengeName()
+    {
+        if(l_challengeModel.isEmpty())
+            return "new_challenge";
+        
+        final var len = l_challengeModel.size();
+        var count = 0;
+        for(int i = 0; i < len; ++i)
+        {
+            var c = l_challengeModel.getElementAt(i);
+            if(c.getId().contains("new_challenge"))
+                ++count;
+        }
+        return count < 1 ? "new_challenge" : ("new_challenge" + count);
+    }
+    
+    private void callengeRequiredsCallback(String[] requireds)
+    {
+        if(!isLocked(l_challenge))
+        {
+            var sel = getSelectedValue(l_challenge);
+            if(sel != null)
+                sel.setRequired(requireds);
+        }
+    }
+    
+    private void travelRequiredsCallback(String[] requireds)
+    {
+        if(!isLocked(l_travels))
+        {
+            var sel = getSelectedValue(l_travels);
+            if(sel != null)
+                sel.setRequiredIds(requireds);
+        }
+    }
+    
+    private String selectBattle()
+    {
+        var entry = EditorUtils.selectItem(this, "Batallas", "¿Qué batalla quieres añadir?", battlesCache, null);
+        return entry == null || !entry.isValid() ? null : entry.toString();
+    }
+    
+    private String selectTravel()
+    {
+        return EditorUtils.selectItem(this,
+                "Lugares para enlazar",
+                "¿Con que lugar quieres enlazarte?",
+                Place.getAllSavedNames(), null);
+    }
+    
+    private <T extends JTextComponent> void installChallengeCallback(T component, BiConsumer<T, Challenge> action, boolean repaint)
+    {
+        EditorUtils.installActionCallback(component, c -> {
+            if(!isLocked(l_challenge))
+            {
+                final var sel = getSelectedValue(l_challenge);
+                if(sel != null)
+                {
+                    action.accept(c, sel);
+                    if(repaint)
+                        l_challenge.repaint();
+                }
+            }
+        });
+    }
+    
+    private void installChallengeCallback(JCheckBox component, BiConsumer<JCheckBox, Challenge> action)
+    {
+        EditorUtils.installActionCallback(component, c -> {
+            if(!isLocked(l_challenge))
+            {
+                final var sel = getSelectedValue(l_challenge);
+                if(sel != null)
+                    action.accept(c, sel);
+            }
+        });
+    }
+    
+    
+    private void newPlace()
     {
         name.setText("");
-        wildBattle.setText("");
-        trainerBattle.setText("");
+        cb_wildBattle.setSelectedIndex(0);
+        cb_trainerBattle.setSelectedIndex(0);
         
-        challengeModel().clear();
-        placeModel().clear();
+        lock(l_challenge);
+        l_challengeModel.removeAllElements();
+        unlock(l_challenge);
+        
+        lock(l_travels);
+        l_travelsModel.removeAllElements();
+        unlock(l_travels);
         
         showChallenge();
-        showPlace();
+        showTravel();
+        updateTitle();
     }
     
-    private Place generatePlace()
+    private Place buildPlace()
     {
-        var place = new Place();
+        final var place = new Place();
         
-        place.setName(name.getText());
-        place.setWildBattle(wildBattle.getText());
-        place.setTrainerBattle(trainerBattle.getText());
+        place.setWildBattle(Objects.requireNonNullElse(cb_wildBattle.getSelectedItem(), BattleEntry.INVALID).toString());
+        place.setTrainerBattle(Objects.requireNonNullElse(cb_trainerBattle.getSelectedItem(), BattleEntry.INVALID).toString());
         
-        var cModel = challengeModel();
-        place.setChallenges(Utils.listModelToStream(cModel).collect(Collectors.toList()));
+        place.setChallenges(EditorUtils.listModelStream(l_challengeModel).collect(Collectors.toList()));
         
-        var pModel = placeModel();
-        place.setTravels(Utils.listModelToStream(pModel).map(p -> new Pair<>(p.place, p.requireds)).toArray(Pair[]::new));
+        place.setTravels(EditorUtils.listModelStream(l_travelsModel).collect(Collectors.toMap(
+                TravelEntry::toString,
+                TravelEntry::getRequiredIds
+        )));
         
         return place;
     }
     
-    private void expandPlace(Place place)
+    private void installPlace(Place place)
     {
         name.setText(place.getName());
-        wildBattle.setText(place.getWildBattle());
-        trainerBattle.setText(place.getTrainerBattle());
         
-        var cModel = challengeModel();
-        cModel.clear();
-        cModel.addAll(place.getAllChallenges());
+        cb_wildBattleModel.setSelectedBattle(place.getWildBattle());
+        cb_trainerBattleModel.setSelectedBattle(place.getTrainerBattle());
         
-        var pModel = placeModel();
-        pModel.clear();
-        pModel.addAll(place.getAllTravels().stream().map(PlaceEntry::new).collect(Collectors.toList()));
+        lock(l_challenge);
+        l_challengeModel.removeAllElements();
+        l_challengeModel.addAll(place.getAllChallenges());
+        if(!l_challengeModel.isEmpty())
+            l_challenge.setSelectedIndex(0);
+        unlock(l_challenge);
+        
+        lock(l_travels);
+        l_travelsModel.removeAllElements();
+        l_travelsModel.addAll(place.getAllTravels().entrySet().stream()
+                .filter(e -> TravelEntry.isValid(e.getKey()))
+                .map(TravelEntry::new)
+                .collect(Collectors.toList()));
+        unlock(l_travels);
+        
+        showChallenge();
+        showTravel();
     }
     
-    private static void setCheckBoxState(JCheckBox box, boolean state)
+    private void store()
     {
-        box.setSelected(!state);
-        box.doClick();
-    }
-    
-    
-    
-    
-    @FunctionalInterface
-    private static interface BiAction<T> { void accept(int index, T object); }
-    
-    private static final class PlaceEntry
-    {
-        private String place = "";
-        private String[] requireds = {};
-        
-        private PlaceEntry() {}
-        private PlaceEntry(String place) { setText(place); }
-        private PlaceEntry(Pair<String, String[]> pair)
+        final var placeName = name.getText();
+        if(placeName == null || placeName.isBlank())
         {
-            setText(pair.left);
-            setRequireds(pair.right);
+            JOptionPane.showMessageDialog(this,
+                    "Debe haber un nombre válido para el lugar, no vacío.",
+                    "Error de guardado",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
         }
         
-        public final void setText(String battle) { this.place = battle == null ? "" : battle; }
-        public final String getText() { return place; }
+        final var place = buildPlace();
+        Place.save(place, placeName);
+        updateTitle();
+        JOptionPane.showMessageDialog(this,
+                    "¡El lugar \"" + placeName + "\" ha sido guardado con éxito!",
+                    "Lugar guardado",
+                    JOptionPane.INFORMATION_MESSAGE);
+    }
+    
+    private void load()
+    {
+        final var places = Place.getAllSavedNames();
+        if(places == null || places.length < 1)
+            return;
         
-        public final void setRequireds(String[] requireds) { this.requireds = Objects.requireNonNullElse(requireds, new String[]{}); }
-        public final String[] getRequireds() { return requireds; }
+        final var placeName = JOptionPane.showInputDialog(this,
+                "¿Qué lugar deseas cargar?",
+                "Cargar lugar",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                places,
+                places[0]);
+        if(placeName == null || placeName.toString().isBlank())
+            return;
+        
+        final var place = Place.load(placeName.toString());
+        if(place == null)
+            return;
+        
+        installPlace(place);
+        updateTitle();
+        JOptionPane.showMessageDialog(this,
+                    "¡El lugar \"" + placeName + "\" ha sido cargado con éxito!",
+                    "Lugar cargado",
+                    JOptionPane.INFORMATION_MESSAGE);
+    }
+    
+    
+    
+    private final class BattleComboBoxModel extends DefaultComboBoxModel<BattleEntry>
+    {
+        private final JComboBox<BattleEntry> box;
+        
+        private BattleComboBoxModel(JComboBox<BattleEntry> box)
+        {
+            this.box = box;
+            init();
+        }
+        
+        private void init()
+        {
+            box.setModel(this);
+        }
+        
+        private void updateValues()
+        {
+            var sel = box.getSelectedItem();
+            
+            removeAllElements();
+            addAll(List.of(battlesCache));
+            
+            if(sel == null)
+                box.setSelectedIndex(0);
+            else box.setSelectedItem((BattleEntry) sel);
+        }
+        
+        private void setSelectedBattle(String battleId)
+        {
+            box.setSelectedItem(new BattleEntry(battleId));
+        }
+    }
+    
+    private static class AbstractEntry<E extends AbstractEntry<E>> implements Comparable<E>
+    {
+        protected final String id;
+        
+        private AbstractEntry(String id)
+        {
+            this.id = id == null || id.isBlank() ? null : id;
+        }
+        
+        public final boolean isValid() { return id != null; }
+        
+        public final boolean equals(E e)
+        {
+            return e != null && (id == null ? e.id == null : id.equals(e.id));
+        }
         
         @Override
-        public final String toString() { return place == null || place.isBlank() ? "<Unnamed Place>" : place; }
+        public final boolean equals(Object o)
+        {
+            if(o == this)
+                return true;
+            if(o == null)
+                return false;
+            
+            if(getClass().isInstance(o))
+            {
+                return id == null
+                        ? ((AbstractEntry) o).id == null
+                        : id.equals(((AbstractEntry) o).id);
+            }
+            return false;
+        }
+
+        @Override
+        public final int hashCode()
+        {
+            int hash = 7;
+            hash = 47 * hash + Objects.hashCode(this.id);
+            return hash;
+        }
+        
+        @Override
+        public final String toString() { return id == null ? "[No Battle]" : id; }
+
+        @Override
+        public int compareTo(E o)
+        {
+            return id == null ? o.id == null ? 0 : 1 : id.compareTo(o.id);
+        }
+        
+        public static final boolean isValid(String battleId)
+        {
+            return battleId != null && !battleId.isBlank();
+        }
+    }
+    
+    private static final class BattleEntry extends AbstractEntry<BattleEntry>
+    {
+        public static final BattleEntry INVALID = new BattleEntry(null);
+        
+        private BattleEntry(String battleId) { super(battleId); }
+    }
+    
+    private static final class TravelEntry extends AbstractEntry<TravelEntry>
+    {
+        private String[] required = {};
+        
+        private TravelEntry(String travelId) { super(travelId); }
+        
+        private TravelEntry(Map.Entry<String, String[]> entry)
+        {
+            this(entry.getKey());
+            required = Arrays.copyOf(entry.getValue(), entry.getValue().length);
+        }
+        
+        public final void setRequiredIds(String[] ids)
+        {
+            if(ids == null || ids.length < 1)
+                required = new String[]{};
+            else required = Arrays.copyOf(ids, ids.length);
+        }
+        
+        public final String[] getRequiredIds() { return required; }
     }
 
     /**
@@ -302,133 +569,95 @@ public class PlaceEditor extends JDialog
         java.awt.GridBagConstraints gridBagConstraints;
 
         jTabbedPane1 = new javax.swing.JTabbedPane();
+        jPanel10 = new javax.swing.JPanel();
+        jPanel4 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        challengeDesc = new javax.swing.JTextPane();
+        jPanel5 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        l_challengeBattles = new javax.swing.JList<>();
+        jPanel7 = new javax.swing.JPanel();
+        b_addChallengeBattle = new javax.swing.JButton();
+        b_removeChallengeBattle = new javax.swing.JButton();
+        b_upChallengeBattle = new javax.swing.JButton();
+        b_downChallengeBattle = new javax.swing.JButton();
+        jButton7 = new javax.swing.JButton();
+        jPanel6 = new javax.swing.JPanel();
+        challengeId = new javax.swing.JTextField();
+        challengeName = new javax.swing.JTextField();
+        challengeUnique = new javax.swing.JCheckBox();
+        jPanel8 = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        l_challenge = new javax.swing.JList<>();
+        jPanel11 = new javax.swing.JPanel();
+        b_createChallenge = new javax.swing.JButton();
+        b_removeChallenge = new javax.swing.JButton();
+        b_upChallenge = new javax.swing.JButton();
+        b_downChallenge = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
+        jPanel12 = new javax.swing.JPanel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        l_travels = new javax.swing.JList<>();
+        jPanel14 = new javax.swing.JPanel();
+        b_addTravel = new javax.swing.JButton();
+        b_removeTravel = new javax.swing.JButton();
+        jPanel13 = new javax.swing.JPanel();
+        jPanel9 = new javax.swing.JPanel();
         name = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        challenges = new javax.swing.JList<>();
-        jTabbedPane2 = new javax.swing.JTabbedPane();
-        jPanel5 = new javax.swing.JPanel();
-        c_id = new javax.swing.JTextField();
-        c_unique = new javax.swing.JCheckBox();
-        c_name = new javax.swing.JTextField();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        c_desc = new javax.swing.JTextPane();
-        jPanel6 = new javax.swing.JPanel();
-        jPanel4 = new javax.swing.JPanel();
-        c_add = new javax.swing.JButton();
-        c_up = new javax.swing.JButton();
-        c_down = new javax.swing.JButton();
-        c_remove = new javax.swing.JButton();
-        jPanel3 = new javax.swing.JPanel();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        links = new javax.swing.JList<>();
-        jPanel8 = new javax.swing.JPanel();
-        l_add = new javax.swing.JButton();
-        l_up = new javax.swing.JButton();
-        l_link = new javax.swing.JButton();
-        l_down = new javax.swing.JButton();
-        l_remove = new javax.swing.JButton();
-        jPanel7 = new javax.swing.JPanel();
-        l_name = new javax.swing.JTextField();
-        jPanel9 = new javax.swing.JPanel();
+        cb_wildBattle = new javax.swing.JComboBox<>();
         jButton1 = new javax.swing.JButton();
+        jPanel3 = new javax.swing.JPanel();
+        cb_trainerBattle = new javax.swing.JComboBox<>();
         jButton2 = new javax.swing.JButton();
+        jPanel15 = new javax.swing.JPanel();
         jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jPanel1.setLayout(new java.awt.GridLayout(4, 1));
+        jPanel10.setLayout(new java.awt.GridBagLayout());
 
-        name.setBorder(javax.swing.BorderFactory.createTitledBorder("Nombre"));
-        jPanel1.add(name);
+        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Desafios"));
+        jPanel4.setLayout(new java.awt.GridBagLayout());
 
-        jTabbedPane1.addTab("Básico", jPanel1);
+        challengeDesc.setBorder(javax.swing.BorderFactory.createTitledBorder("Descripción"));
+        jScrollPane1.setViewportView(challengeDesc);
 
-        challenges.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        challenges.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
-            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
-                challengesValueChanged(evt);
-            }
-        });
-        jScrollPane1.setViewportView(challenges);
-
-        jPanel5.setLayout(new java.awt.GridBagLayout());
-
-        c_id.setBorder(javax.swing.BorderFactory.createTitledBorder("Id"));
-        c_id.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                c_idKeyReleased(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = 3;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.1;
-        gridBagConstraints.weighty = 0.1;
-        jPanel5.add(c_id, gridBagConstraints);
-
-        c_unique.setText("Único");
-        c_unique.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                c_uniqueActionPerformed(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 0.1;
-        gridBagConstraints.weighty = 0.1;
-        jPanel5.add(c_unique, gridBagConstraints);
-
-        c_name.setBorder(javax.swing.BorderFactory.createTitledBorder("Nombre"));
-        c_name.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                c_nameKeyReleased(evt);
-            }
-        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LAST_LINE_START;
         gridBagConstraints.weightx = 0.1;
-        gridBagConstraints.weighty = 0.1;
-        jPanel5.add(c_name, gridBagConstraints);
+        gridBagConstraints.weighty = 2.5;
+        jPanel4.add(jScrollPane1, gridBagConstraints);
 
-        jScrollPane2.setBorder(javax.swing.BorderFactory.createTitledBorder("Descripción"));
+        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Batallas"));
+        jPanel5.setLayout(new java.awt.GridBagLayout());
 
-        c_desc.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                c_descKeyReleased(evt);
+        l_challengeBattles.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        l_challengeBattles.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                l_challengeBattlesValueChanged(evt);
             }
         });
-        jScrollPane2.setViewportView(c_desc);
+        jScrollPane2.setViewportView(l_challengeBattles);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.gridwidth = 4;
-        gridBagConstraints.gridheight = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 0.1;
-        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 0.1;
         jPanel5.add(jScrollPane2, gridBagConstraints);
 
-        jTabbedPane2.addTab("Básico", jPanel5);
+        jPanel7.setLayout(new java.awt.GridBagLayout());
 
-        jPanel6.setLayout(new java.awt.GridLayout(1, 1));
-        jTabbedPane2.addTab("Batallas", jPanel6);
-
-        jPanel4.setLayout(new java.awt.GridBagLayout());
-
-        c_add.setText("Añadir");
-        c_add.addActionListener(new java.awt.event.ActionListener() {
+        b_addChallengeBattle.setText("Añadir");
+        b_addChallengeBattle.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                c_addActionPerformed(evt);
+                b_addChallengeBattleActionPerformed(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -438,241 +667,361 @@ public class PlaceEditor extends JDialog
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 0.1;
         gridBagConstraints.weighty = 0.1;
-        jPanel4.add(c_add, gridBagConstraints);
+        jPanel7.add(b_addChallengeBattle, gridBagConstraints);
 
-        c_up.setText("^");
-        c_up.addActionListener(new java.awt.event.ActionListener() {
+        b_removeChallengeBattle.setText("Quitar");
+        b_removeChallengeBattle.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                c_upActionPerformed(evt);
+                b_removeChallengeBattleActionPerformed(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 0.1;
         gridBagConstraints.weighty = 0.1;
-        jPanel4.add(c_up, gridBagConstraints);
+        jPanel7.add(b_removeChallengeBattle, gridBagConstraints);
 
-        c_down.setText("v");
-        c_down.addActionListener(new java.awt.event.ActionListener() {
+        b_upChallengeBattle.setText("^");
+        b_upChallengeBattle.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                c_downActionPerformed(evt);
+                b_upChallengeBattleActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.weighty = 0.1;
+        jPanel7.add(b_upChallengeBattle, gridBagConstraints);
+
+        b_downChallengeBattle.setText("v");
+        b_downChallengeBattle.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_downChallengeBattleActionPerformed(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 0.1;
         gridBagConstraints.weighty = 0.1;
-        jPanel4.add(c_down, gridBagConstraints);
+        jPanel7.add(b_downChallengeBattle, gridBagConstraints);
 
-        c_remove.setText("Quitar");
-        c_remove.addActionListener(new java.awt.event.ActionListener() {
+        jButton7.setText("...");
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                c_removeActionPerformed(evt);
+                jButton7ActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.weighty = 0.1;
+        jPanel7.add(jButton7, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.weighty = 0.1;
+        jPanel5.add(jPanel7, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LAST_LINE_END;
+        gridBagConstraints.weightx = 0.4;
+        gridBagConstraints.weighty = 0.1;
+        jPanel4.add(jPanel5, gridBagConstraints);
+
+        jPanel6.setLayout(new java.awt.GridLayout(1, 3));
+
+        challengeId.setBorder(javax.swing.BorderFactory.createTitledBorder("ID"));
+        jPanel6.add(challengeId);
+
+        challengeName.setBorder(javax.swing.BorderFactory.createTitledBorder("Nombre"));
+        jPanel6.add(challengeName);
+
+        challengeUnique.setText("Único");
+        challengeUnique.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jPanel6.add(challengeUnique);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.weighty = 0.1;
+        jPanel4.add(jPanel6, gridBagConstraints);
+
+        jPanel8.setLayout(new java.awt.GridLayout(1, 1));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.3;
+        gridBagConstraints.weighty = 0.1;
+        jPanel4.add(jPanel8, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridheight = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.3;
+        gridBagConstraints.weighty = 0.1;
+        jPanel10.add(jPanel4, gridBagConstraints);
+
+        l_challenge.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        l_challenge.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                l_challengeValueChanged(evt);
+            }
+        });
+        jScrollPane3.setViewportView(l_challenge);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.weighty = 1.0;
+        jPanel10.add(jScrollPane3, gridBagConstraints);
+
+        jPanel11.setLayout(new java.awt.GridBagLayout());
+
+        b_createChallenge.setText("Crear Desafio");
+        b_createChallenge.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_createChallengeActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.weighty = 0.1;
+        jPanel11.add(b_createChallenge, gridBagConstraints);
+
+        b_removeChallenge.setText("Eliminar Desafio");
+        b_removeChallenge.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_removeChallengeActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.weighty = 0.1;
+        jPanel11.add(b_removeChallenge, gridBagConstraints);
+
+        b_upChallenge.setText("^");
+        b_upChallenge.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_upChallengeActionPerformed(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
-        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 0.1;
         gridBagConstraints.weighty = 0.1;
-        jPanel4.add(c_remove, gridBagConstraints);
+        jPanel11.add(b_upChallenge, gridBagConstraints);
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTabbedPane2)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 178, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
-        );
+        b_downChallenge.setText("v");
+        b_downChallenge.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_downChallengeActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.weighty = 0.1;
+        jPanel11.add(b_downChallenge, gridBagConstraints);
 
-        jTabbedPane1.addTab("Desafios", jPanel2);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.weighty = 0.1;
+        jPanel10.add(jPanel11, gridBagConstraints);
 
-        links.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        links.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+        jTabbedPane1.addTab("Desafios", jPanel10);
+
+        jPanel1.setLayout(new java.awt.GridLayout(1, 2));
+
+        jPanel12.setLayout(new java.awt.GridBagLayout());
+
+        l_travels.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        l_travels.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
-                linksValueChanged(evt);
+                l_travelsValueChanged(evt);
             }
         });
-        jScrollPane3.setViewportView(links);
+        jScrollPane4.setViewportView(l_travels);
 
-        jPanel8.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
-        jPanel8.setLayout(new java.awt.GridBagLayout());
-
-        l_add.setText("Añadir");
-        l_add.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                l_addActionPerformed(evt);
-            }
-        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 0.4;
-        gridBagConstraints.weighty = 0.1;
-        jPanel8.add(l_add, gridBagConstraints);
-
-        l_up.setText("^");
-        l_up.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                l_upActionPerformed(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 0.1;
-        gridBagConstraints.weighty = 0.1;
-        jPanel8.add(l_up, gridBagConstraints);
+        gridBagConstraints.weighty = 0.5;
+        jPanel12.add(jScrollPane4, gridBagConstraints);
 
-        l_link.setText("Enlazar");
-        l_link.addActionListener(new java.awt.event.ActionListener() {
+        jPanel14.setLayout(new java.awt.GridLayout(2, 1));
+
+        b_addTravel.setText("Añadir enlace");
+        b_addTravel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                l_linkActionPerformed(evt);
+                b_addTravelActionPerformed(evt);
             }
         });
+        jPanel14.add(b_addTravel);
+
+        b_removeTravel.setText("Quitar Enlace");
+        b_removeTravel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                b_removeTravelActionPerformed(evt);
+            }
+        });
+        jPanel14.add(b_removeTravel);
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 0.4;
-        gridBagConstraints.weighty = 0.1;
-        jPanel8.add(l_link, gridBagConstraints);
-
-        l_down.setText("v");
-        l_down.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                l_downActionPerformed(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
-        gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 0.1;
         gridBagConstraints.weighty = 0.1;
-        jPanel8.add(l_down, gridBagConstraints);
+        jPanel12.add(jPanel14, gridBagConstraints);
 
-        l_remove.setText("Quitar");
-        l_remove.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                l_removeActionPerformed(evt);
+        jPanel1.add(jPanel12);
+
+        jPanel13.setLayout(new java.awt.GridLayout(1, 1));
+        jPanel1.add(jPanel13);
+
+        jTabbedPane1.addTab("Enlaces", jPanel1);
+
+        jPanel9.setLayout(new java.awt.GridLayout(1, 3));
+
+        name.setBorder(javax.swing.BorderFactory.createTitledBorder("Nombre"));
+        name.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                nameFocusLost(evt);
             }
         });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 0.1;
-        gridBagConstraints.weighty = 0.1;
-        jPanel8.add(l_remove, gridBagConstraints);
-
-        l_name.setBorder(javax.swing.BorderFactory.createTitledBorder("Nombre"));
-        l_name.addKeyListener(new java.awt.event.KeyAdapter() {
+        name.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                l_nameKeyReleased(evt);
+                nameKeyReleased(evt);
             }
         });
+        jPanel9.add(name);
 
-        jPanel9.setLayout(new java.awt.GridLayout(1, 0));
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Batalla Salvaje"));
+        jPanel2.setLayout(new java.awt.GridBagLayout());
 
-        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
-        jPanel7.setLayout(jPanel7Layout);
-        jPanel7Layout.setHorizontalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(l_name, javax.swing.GroupLayout.DEFAULT_SIZE, 229, Short.MAX_VALUE)
-                    .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        jPanel7Layout.setVerticalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(l_name, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipadx = 50;
+        gridBagConstraints.weightx = 2.0;
+        gridBagConstraints.weighty = 0.1;
+        jPanel2.add(cb_wildBattle, gridBagConstraints);
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 188, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
-        );
-
-        jTabbedPane1.addTab("Enlaces", jPanel3);
-
-        jButton1.setText("Nuevo");
+        jButton1.setText("...");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.weighty = 0.1;
+        jPanel2.add(jButton1, gridBagConstraints);
 
-        jButton2.setText("Guardar");
+        jPanel9.add(jPanel2);
+
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Batalla Entrenadores"));
+        jPanel3.setLayout(new java.awt.GridBagLayout());
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipadx = 50;
+        gridBagConstraints.weightx = 2.0;
+        gridBagConstraints.weighty = 0.1;
+        jPanel3.add(cb_trainerBattle, gridBagConstraints);
+
+        jButton2.setText("...");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
             }
         });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.weighty = 0.1;
+        jPanel3.add(jButton2, gridBagConstraints);
 
-        jButton3.setText("Cargar");
+        jPanel9.add(jPanel3);
+
+        jPanel15.setLayout(new java.awt.GridLayout(1, 3));
+
+        jButton3.setText("Cargar Lugar");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
             }
         });
+        jPanel15.add(jButton3);
+
+        jButton4.setText("Crear Lugar nuevo");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+        jPanel15.add(jButton4);
+
+        jButton5.setText("Guardar Lugar");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+        jPanel15.add(jButton5);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -681,185 +1030,283 @@ public class PlaceEditor extends JDialog
             .addComponent(jTabbedPane1)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton2)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3))
+                .addContainerGap()
+                .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 362, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel15, javax.swing.GroupLayout.DEFAULT_SIZE, 42, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void challengesValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_challengesValueChanged
+    private void l_challengeValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_l_challengeValueChanged
         showChallenge();
-    }//GEN-LAST:event_challengesValueChanged
+    }//GEN-LAST:event_l_challengeValueChanged
 
-    private void c_idKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_c_idKeyReleased
-        modChallenge((index, sel) -> sel.setId(c_id.getText()));
-    }//GEN-LAST:event_c_idKeyReleased
-
-    private void c_nameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_c_nameKeyReleased
-        modChallenge((index, sel) -> { sel.setName(c_name.getText()); challenges.repaint(); });
-    }//GEN-LAST:event_c_nameKeyReleased
-
-    private void c_descKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_c_descKeyReleased
-        modChallenge((index, sel) -> sel.setDescription(c_desc.getText()));
-    }//GEN-LAST:event_c_descKeyReleased
-
-    private void c_addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_c_addActionPerformed
-        var model = challengeModel();
-        var sel = new Challenge();
+    private void b_createChallengeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_createChallengeActionPerformed
+        lock(l_challenge);
         
-        model.addElement(sel);
-        challenges.setSelectedValue(sel, true);
-    }//GEN-LAST:event_c_addActionPerformed
+        var c = new Challenge();
+        c.setId(generateChallengeName());
+        c.setName(c.getId());
+        l_challengeModel.addElement(c);
+        l_challenge.setSelectedValue(c, true);
+        
+        unlock(l_challenge);
+        showChallenge();
+    }//GEN-LAST:event_b_createChallengeActionPerformed
 
-    private void c_upActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_c_upActionPerformed
-        modChallenge((index, sel) -> {
-            var model = challengeModel();
-            
-            if(index > 0 && model.size() > 1)
+    private void b_removeChallengeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_removeChallengeActionPerformed
+        lock(l_challenge);
+        
+        var sel = getSelectedValue(l_challenge);
+        if(sel != null && JOptionPane.showConfirmDialog(this,
+                "¿Seguro que quieres eliminar el desafío \"" + sel.getName() + "\"?",
+                "Eliminar desafío",
+                JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
+        {
+            l_challengeModel.removeElement(sel);
+            if(!l_challengeModel.isEmpty())
+                l_challenge.setSelectedIndex(0);
+        }
+        
+        unlock(l_challenge);
+        showChallenge();
+    }//GEN-LAST:event_b_removeChallengeActionPerformed
+
+    private void b_addChallengeBattleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_addChallengeBattleActionPerformed
+        lock(l_challenge);
+        
+        var sel = getSelectedValue(l_challenge);
+        
+        if(sel != null)
+        {
+            var battle = selectBattle();
+            if(battle != null)
             {
-                var old = model.remove(index);
-                model.add(index - 1, old);
-                challenges.setSelectedValue(old, true);
+                sel.setBattles(Stream.concat(sel.streamBattles(), Stream.of(battle))
+                        .toArray(String[]::new));
+                l_challengeBattles.setSelectedValue(battle, true);
             }
-        });
-    }//GEN-LAST:event_c_upActionPerformed
+        }
+        
+        unlock(l_challenge);
+        showChallenge();
+    }//GEN-LAST:event_b_addChallengeBattleActionPerformed
 
-    private void c_downActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_c_downActionPerformed
-        modChallenge((index, sel) -> {
-            var model = challengeModel();
-            
-            if(index < model.size() - 1 && model.size() > 1)
+    private void b_upChallengeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_upChallengeActionPerformed
+        lock(l_challenge);
+        
+        var sel = getSelectedValue(l_challenge);
+        var idx = l_challenge.getSelectedIndex();
+        
+        if(sel != null && idx > 0)
+        {
+            l_challengeModel.removeElementAt(idx);
+            l_challengeModel.add(idx - 1, sel);
+            l_challenge.setSelectedValue(sel, true);
+        }
+        
+        unlock(l_challenge);
+        showChallenge();
+    }//GEN-LAST:event_b_upChallengeActionPerformed
+
+    private void b_downChallengeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_downChallengeActionPerformed
+        lock(l_challenge);
+        
+        var sel = getSelectedValue(l_challenge);
+        var idx = l_challenge.getSelectedIndex();
+        
+        if(sel != null && idx + 1 < l_challengeModel.size())
+        {
+            l_challengeModel.removeElementAt(idx);
+            l_challengeModel.add(idx + 1, sel);
+            l_challenge.setSelectedValue(sel, true);
+        }
+        
+        unlock(l_challenge);
+        showChallenge();
+    }//GEN-LAST:event_b_downChallengeActionPerformed
+
+    private void b_removeChallengeBattleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_removeChallengeBattleActionPerformed
+        lock(l_challenge);
+        
+        var sel = getSelectedValue(l_challenge);
+        
+        if(sel != null)
+        {
+            var battle = getSelectedValue(l_challengeBattles);
+            if(battle != null)
             {
-                var old = model.remove(index);
-                model.add(index + 1, old);
-                challenges.setSelectedValue(old, true);
+                sel.setBattles(sel.streamBattles()
+                        .filter(b -> !b.equals(battle))
+                        .toArray(String[]::new));
+                l_challengeBattles.setSelectedValue(battle, true);
             }
-        });
-    }//GEN-LAST:event_c_downActionPerformed
-
-    private void c_removeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_c_removeActionPerformed
-        modChallenge((index, sel) -> {
-            challengeModel().remove(index);
-            showChallenge();
-        });
-    }//GEN-LAST:event_c_removeActionPerformed
-
-    private void linksValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_linksValueChanged
-        showPlace();
-    }//GEN-LAST:event_linksValueChanged
-
-    private void l_addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_l_addActionPerformed
-        var model = placeModel();
-        var sel = new PlaceEntry();
+        }
         
-        model.addElement(sel);
-        links.setSelectedValue(sel, true);
-    }//GEN-LAST:event_l_addActionPerformed
+        unlock(l_challenge);
+        showChallenge();
+    }//GEN-LAST:event_b_removeChallengeBattleActionPerformed
 
-    private void l_upActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_l_upActionPerformed
-        modPlace((index, sel) -> {
-            var model = placeModel();
-            
-            if(index > 0 && model.size() > 1)
+    private void b_upChallengeBattleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_upChallengeBattleActionPerformed
+        lock(l_challenge);
+        
+        var sel = getSelectedValue(l_challenge);
+        
+        if(sel != null)
+        {
+            var battle = getSelectedValue(l_challengeBattles);
+            var idx = l_challengeBattles.getSelectedIndex();
+            if(battle != null && idx > 0)
             {
-                var old = model.remove(index);
-                model.add(index - 1, old);
-                links.setSelectedValue(old, true);
+                sel.setBattles(Utils.arraySwap(sel.getAllBattles(), idx, idx - 1));
+                l_challengeBattles.setSelectedValue(battle, true);
             }
-        });
-    }//GEN-LAST:event_l_upActionPerformed
+        }
+        
+        unlock(l_challenge);
+        showChallenge();
+    }//GEN-LAST:event_b_upChallengeBattleActionPerformed
 
-    private void l_downActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_l_downActionPerformed
-        modPlace((index, sel) -> {
-            var model = placeModel();
-            
-            if(index < model.size() - 1 && model.size() > 1)
+    private void b_downChallengeBattleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_downChallengeBattleActionPerformed
+        lock(l_challenge);
+        
+        var sel = getSelectedValue(l_challenge);
+        
+        if(sel != null)
+        {
+            var battle = getSelectedValue(l_challengeBattles);
+            var idx = l_challengeBattles.getSelectedIndex();
+            if(battle != null && idx + 1 < l_challengeBattlesModel.size())
             {
-                var old = model.remove(index);
-                model.add(index + 1, old);
-                links.setSelectedValue(old, true);
+                sel.setBattles(Utils.arraySwap(sel.getAllBattles(), idx, idx + 1));
+                l_challengeBattles.setSelectedValue(battle, true);
             }
-        });
-    }//GEN-LAST:event_l_downActionPerformed
-
-    private void l_nameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_l_nameKeyReleased
-        modPlace((index, sel) -> { sel.setText(l_name.getText()); links.repaint(); });
-    }//GEN-LAST:event_l_nameKeyReleased
-
-    private void l_removeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_l_removeActionPerformed
-        modPlace((index, sel) -> {
-            placeModel().remove(index);
-            showPlace();
-        });
-    }//GEN-LAST:event_l_removeActionPerformed
-
-    private void l_linkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_l_linkActionPerformed
-        var model = placeModel();
-        var sel = new PlaceEntry();
+        }
         
-        var all = Place.getAllSavedNames();
-        var obj = JOptionPane.showInputDialog(this, "¿Que lugar quieres enlazar?", "Enlazar lugares", JOptionPane.QUESTION_MESSAGE, null, all, all[0]);
-        if(obj == null || !(obj instanceof String))
-            return;
-        
-        var place = Place.load(obj.toString());
-        if(place == null)
-            return;
-        
-        place.addTravel(name.getText());
-        
-        sel.place = place.getName();
-        model.addElement(sel);
-        links.setSelectedValue(sel, true);
-    }//GEN-LAST:event_l_linkActionPerformed
+        unlock(l_challenge);
+        showChallenge();
+    }//GEN-LAST:event_b_downChallengeBattleActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        createNew();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void l_challengeBattlesValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_l_challengeBattlesValueChanged
+        var sel = getSelectedValue(l_challenge);
+        if(sel != null)
+        {
+            final var bidxsel = l_challengeBattles.getSelectedIndex();
+            b_removeChallengeBattle.setEnabled(bidxsel >= 0);
+            b_upChallengeBattle.setEnabled(bidxsel > 0);
+            b_downChallengeBattle.setEnabled(bidxsel + 1 < l_challengeBattlesModel.size());
+        }
+    }//GEN-LAST:event_l_challengeBattlesValueChanged
+
+    private void b_addTravelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_addTravelActionPerformed
+        lock(l_travels);
+        
+        var place = selectTravel();
+        var travel = new TravelEntry(place);
+        if(!EditorUtils.containsInListModel(l_travelsModel, travel))
+        {
+            l_travelsModel.addElement(travel);
+            l_travels.setSelectedValue(travel, true);
+        }
+        
+        unlock(l_travels);
+        showTravel();
+    }//GEN-LAST:event_b_addTravelActionPerformed
+
+    private void b_removeTravelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_removeTravelActionPerformed
+        lock(l_travels);
+        
+        var sel = getSelectedValue(l_travels);
+        if(sel != null)
+        {
+            l_travelsModel.removeElement(sel);
+            if(!l_travelsModel.isEmpty())
+                l_travels.setSelectedIndex(0);
+        }
+        
+        unlock(l_travels);
+        showTravel();
+    }//GEN-LAST:event_b_removeTravelActionPerformed
+
+    private void l_travelsValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_l_travelsValueChanged
+        showTravel();
+    }//GEN-LAST:event_l_travelsValueChanged
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        newPlace();
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        store();
+    }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         load();
     }//GEN-LAST:event_jButton3ActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        openBattleEditor();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        store();
+        openBattleEditor();
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    private void c_uniqueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_c_uniqueActionPerformed
-        modChallenge((index, sel) -> sel.setUnique(c_unique.isSelected()));
-    }//GEN-LAST:event_c_uniqueActionPerformed
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        openBattleEditor();
+    }//GEN-LAST:event_jButton7ActionPerformed
 
+    private void nameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nameKeyReleased
+        updateTitle();
+    }//GEN-LAST:event_nameKeyReleased
+
+    private void nameFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_nameFocusLost
+        updateTitle();
+    }//GEN-LAST:event_nameFocusLost
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton c_add;
-    private javax.swing.JTextPane c_desc;
-    private javax.swing.JButton c_down;
-    private javax.swing.JTextField c_id;
-    private javax.swing.JTextField c_name;
-    private javax.swing.JButton c_remove;
-    private javax.swing.JCheckBox c_unique;
-    private javax.swing.JButton c_up;
-    private javax.swing.JList<Challenge> challenges;
+    private javax.swing.JButton b_addChallengeBattle;
+    private javax.swing.JButton b_addTravel;
+    private javax.swing.JButton b_createChallenge;
+    private javax.swing.JButton b_downChallenge;
+    private javax.swing.JButton b_downChallengeBattle;
+    private javax.swing.JButton b_removeChallenge;
+    private javax.swing.JButton b_removeChallengeBattle;
+    private javax.swing.JButton b_removeTravel;
+    private javax.swing.JButton b_upChallenge;
+    private javax.swing.JButton b_upChallengeBattle;
+    private javax.swing.JComboBox<BattleEntry> cb_trainerBattle;
+    private javax.swing.JComboBox<BattleEntry> cb_wildBattle;
+    private javax.swing.JTextPane challengeDesc;
+    private javax.swing.JTextField challengeId;
+    private javax.swing.JTextField challengeName;
+    private javax.swing.JCheckBox challengeUnique;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton7;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel10;
+    private javax.swing.JPanel jPanel11;
+    private javax.swing.JPanel jPanel12;
+    private javax.swing.JPanel jPanel13;
+    private javax.swing.JPanel jPanel14;
+    private javax.swing.JPanel jPanel15;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -871,15 +1318,11 @@ public class PlaceEditor extends JDialog
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTabbedPane jTabbedPane2;
-    private javax.swing.JButton l_add;
-    private javax.swing.JButton l_down;
-    private javax.swing.JButton l_link;
-    private javax.swing.JTextField l_name;
-    private javax.swing.JButton l_remove;
-    private javax.swing.JButton l_up;
-    private javax.swing.JList<PlaceEntry> links;
+    private javax.swing.JList<Challenge> l_challenge;
+    private javax.swing.JList<String> l_challengeBattles;
+    private javax.swing.JList<TravelEntry> l_travels;
     private javax.swing.JTextField name;
     // End of variables declaration//GEN-END:variables
 }

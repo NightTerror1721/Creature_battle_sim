@@ -7,6 +7,7 @@ package kp.cbs.battle.prop;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.stream.Stream;
 import kp.cbs.utils.Paths;
 import kp.cbs.utils.Serializer;
 import kp.udl.exception.UDLException;
@@ -36,7 +37,7 @@ public final class BattlePropertiesPool
         }
     }
     
-    public static final String[] getAllNames()
+    public static final Stream<String> streamAllNames()
     {
         try
         {
@@ -44,14 +45,18 @@ public final class BattlePropertiesPool
                 .map(p -> p.getFileName().toString())
                 .filter(p -> p.endsWith(".bprops"))
                 .map(n -> n.substring(0, n.length() - 7))
-                .sorted(String::compareTo)
-                .toArray(String[]::new);
+                .sorted(String::compareTo);
         }
         catch(IOException ex)
         {
             ex.printStackTrace(System.err);
-            return new String[] {};
+            return Stream.of();
         }
+    }
+    
+    public static final String[] getAllNames()
+    {
+        return streamAllNames().toArray(String[]::new);
     }
     
     public static final boolean store(String name, BattleProperties props)

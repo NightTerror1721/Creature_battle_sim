@@ -261,6 +261,7 @@ public final class Creature implements Comparable<Creature>
         feats.clearAllAlterations();
         state.clearAllStates();
         altered.clearAllAlterations();
+        attacks.restoreAllPPs();
         types.restore(race);
         updateAll();
         feats.getHealthPoints().fullHeal();

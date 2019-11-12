@@ -79,6 +79,15 @@ public final class Utils
     }
     
     
+    public static final <T> T[] arraySwap(T[] array, int source, int target)
+    {
+        final var aux = array[target];
+        array[target] = array[source];
+        array[source] = aux;
+        return array;
+    }
+    
+    
     public static final int setbit(int base, int index, boolean flag)
     {
         return flag ? base | (0x1 >> index) : base & ~(0x1 >> index);

@@ -1,0 +1,24 @@
+"wildBattle": "khalm_huerto_wild",
+"trainerBattle": "trainers_huertos_khalm",
+"challenges": [{
+	"id": "cha_huertos_khalm_cha_1",
+	"name": "Tierra y plantas",
+	"description": "Un pequeño vistazo a lo que puedes encontrar por la zona",
+	"unique": true,
+	"battles": ["huertos_khalm_cha_1"]
+}, {
+	"id": "cha_huertos_khalm_cha_2",
+	"name": "Cae la noche",
+	"description": "¿Qué puedes encontrarte cuando se hace de noche?",
+	"unique": true,
+	"battles": ["huertos_khalm_cha_2"]
+}, {
+	"id": "cha_huertos_khalm_cha_3",
+	"name": "El bloque final",
+	"description": "Si quieres continuar, me tendrás que derrotar.",
+	"unique": true,
+	"battles": ["huertos_khalm_cha_3"]
+}],
+"travels": {
+	"Llanuras de Khalm": []
+}

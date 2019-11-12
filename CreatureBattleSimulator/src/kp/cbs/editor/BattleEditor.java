@@ -9,6 +9,7 @@ import java.util.Objects;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import kp.cbs.battle.Team.SearchFirstBehabior;
 import kp.cbs.battle.Team.SearchNextBehabior;
@@ -31,7 +32,7 @@ public final class BattleEditor extends JDialog
 {
     private final CreatureEditor creatureEditor = new CreatureEditor(this);
     
-    public BattleEditor(MainMenuEditor parent)
+    public BattleEditor(JFrame parent)
     {
         super(parent, false);
         initComponents();
@@ -41,6 +42,13 @@ public final class BattleEditor extends JDialog
     public static final void open(MainMenuEditor parent)
     {
         var editor = new BattleEditor(parent);
+        editor.setVisible(true);
+    }
+    
+    public static final void open(PlaceEditor parent)
+    {
+        var editor = new BattleEditor(parent);
+        editor.setModal(true);
         editor.setVisible(true);
     }
     

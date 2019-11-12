@@ -6,8 +6,9 @@
 package kp.cbs.place;
 
 import java.awt.Window;
+import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.Objects;
+import java.util.stream.Stream;
 import kp.cbs.PlayerGame;
 import kp.cbs.battle.Battle;
 import kp.cbs.battle.Encounter;
@@ -26,11 +27,12 @@ public final class Challenge extends GlobalId
     @Property private String description = "";
     @Property private boolean unique;
     @Property private String[] battles = {};
+    @Property private String[] required = {};
     
-    public final void setName(String name) { this.name = Objects.requireNonNullElse(name, ""); }
+    public final void setName(String name) { this.name = name == null ? "" : name; }
+    public final void setDescription(String description) { this.description = description == null ? "" : description; }
+    
     public final String getName() { return name; }
-    
-    public final void setDescription(String desc) { this.description = Objects.requireNonNullElse(desc, ""); }
     public final String getDescription() { return description; }
     
     public final boolean isEnabled(PlayerGame game)
@@ -38,16 +40,27 @@ public final class Challenge extends GlobalId
         return !unique || !isCompleted(game);
     }
     
+    public final void setUnique(boolean flag) { this.unique = flag; }
+    
+    public final boolean isBloqued(PlayerGame game) { return required.length > 0 && !game.isIdsPassed(required); }
+    
     public final boolean isCompleted(PlayerGame game) { return game.isIdPassed(getId()); }
     
-    public final void setUnique(boolean flag) { this.unique = flag; }
     public final boolean isUnique() { return unique; }
     
     public final void setBattles(String[] battles)
     {
-        this.battles = Objects.requireNonNullElse(battles, new String[] {});
+        this.battles = battles == null
+                ? new String[] {}
+                : Arrays.copyOf(battles, battles.length);
     }
-    public final String[] getBattles() { return battles; }
+    
+    public final void setRequired(String[] required)
+    {
+        this.required = required == null
+                ? new String[] {}
+                : Arrays.copyOf(required, required.length);
+    }
     
     private Encounter generateEncounter(int index)
     {
@@ -59,8 +72,22 @@ public final class Challenge extends GlobalId
     
     public final ChallengeStage createStage() { return new ChallengeStage(); }
     
+    public final String[] getAllBattles() { return Arrays.copyOf(battles, battles.length); }
+    
+    public final Stream<String> streamBattles()
+    {
+        return Stream.of(battles);
+    }
+    
+    public final String[] getAllRequired() { return Arrays.copyOf(required, required.length); }
+    
+    public final Stream<String> streamRequired()
+    {
+        return Stream.of(required);
+    }
+    
     @Override
-    public final String toString() { return name == null || name.isBlank() ? "<unnamed_challenge>" : name; }
+    public final String toString() { return getName(); }
     
     
     public final class ChallengeStage implements Stage
