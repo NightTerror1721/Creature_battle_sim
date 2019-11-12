@@ -90,7 +90,7 @@
         "exp": {
             "growth": 0,
             "level": 10,
-            "experience": 1190
+            "experience": 1221
         },
         "nature": 0,
         "attacks": {
@@ -99,7 +99,7 @@
             "att3": 134,
             "att4": 80
         },
-        "abilityPoints": 9
+        "abilityPoints": 10
     }
 },
 "passedIds": ["chal_first_init"],
@@ -116,6 +116,6 @@
 "slot4": null,
 "slot5": null,
 "slot6": null,
-"money": 606,
+"money": 720,
 "currentPlace": "Llanuras de Khalm",
 "currentLeage": "Bronce"

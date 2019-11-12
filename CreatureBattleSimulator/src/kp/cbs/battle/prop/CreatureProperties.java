@@ -6,6 +6,7 @@
 package kp.cbs.battle.prop;
 
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.Objects;
 import kp.cbs.creature.Creature;
 import kp.cbs.creature.Nature;
@@ -272,11 +273,11 @@ public final class CreatureProperties
         if(elo <= minElo)
             return min + rng.d2();
         if(elo >= maxElo)
-            return max - rng.d2();
+            return max;
         
         int mid = min + ((int) ((max - min) * ((float) (elo - minElo) / (maxElo - minElo))));
         
-        return Utils.range(min, max, mid + (rng.d5() - 2));
+        return Utils.range(min, max, mid + (rng.d3()));
     }
     public final Creature generateCreature(RNG rng, int currentElo, int minElo, int maxElo)
     {
@@ -355,7 +356,7 @@ public final class CreatureProperties
         if(hidden > 0 && hidden <= 4)
         {
             var hiddenAtts = race.getAttackPool().getAttacksUntilLevel(true, creature.getLevel());
-            var normalAtts = Arrays.asList(race.getAttackPool().getDefaultLearnedInLevel(creature.getLevel()));
+            var normalAtts = new LinkedList<>(Arrays.asList(race.getAttackPool().getDefaultLearnedInLevel(creature.getLevel())));
             var slot = AttackSlot.SLOT_1;
             
             while(slot != null && hidden > 0 && !hiddenAtts.isEmpty())
@@ -367,7 +368,7 @@ public final class CreatureProperties
             
             while(slot != null && !normalAtts.isEmpty())
             {
-                creature.getAttackManager().setAttack(slot, normalAtts.remove(normalAtts.size()));
+                creature.getAttackManager().setAttack(slot, normalAtts.removeLast());
                 slot = slot.next();
             }
         }

@@ -126,7 +126,10 @@ public class Battle extends JDialog
         });
         mainThread.start();
         if(music != null)
-                music.play(true);
+        {
+            music.setVolume(0.4);
+            music.play(true);
+        }
         setVisible(true);
     }
     

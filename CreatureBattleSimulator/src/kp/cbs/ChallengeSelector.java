@@ -69,6 +69,17 @@ public class ChallengeSelector extends JDialog
             return;
         }
         
+        if(sel.isBloqued(game))
+        {
+            name.setText("[Bloqueado] " + sel.getName());
+            description.setText("???");
+            
+            name.setEnabled(true);
+            description.setEnabled(true);
+            playChallenge.setEnabled(false);
+            return;
+        }
+        
         name.setText(sel.getName() + (sel.isCompleted(game) ? " (Completado)" : ""));
         description.setText(sel.getDescription() + (sel.isUnique() ? " (Solo se puede completar una vez)." : ""));
         

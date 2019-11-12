@@ -8,11 +8,13 @@ package kp.cbs.place;
 import java.awt.Window;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Stream;
 import kp.cbs.PlayerGame;
 import kp.cbs.battle.Battle;
@@ -41,7 +43,27 @@ public final class Place
     private BattleProperties wildCache;
     private BattleProperties trainerCache;
     
+    public final void setWildBattle(String battle) { this.wildBattle = Objects.requireNonNullElse(battle, ""); }
+    public final void setTrainerBattle(String battle) { this.trainerBattle = Objects.requireNonNullElse(battle, ""); }
+    
+    public final void setChallenges(Collection<Challenge> challenges)
+    {
+        this.challenges.clear();
+        if(challenges != null && !challenges.isEmpty())
+            this.challenges.addAll(challenges);
+    }
+    
+    public final void setTravels(Map<String, String[]> travels)
+    {
+        this.travels.clear();
+        if(travels != null && !travels.isEmpty())
+            this.travels.putAll(travels);
+    }
+    
     public final String getName() { return name; }
+    
+    public final String getWildBattle() { return wildBattle; }
+    public final String getTrainerBattle() { return trainerBattle; }
     
     public final int getChallengeCount() { return challenges.size(); }
     public final List<Challenge> getAllChallenges() { return Collections.unmodifiableList(challenges); }
@@ -62,6 +84,10 @@ public final class Place
     public final int getAvailableTravelsCount(PlayerGame game)
     {
         return (int) streamAvailableTravels(game).count();
+    }
+    public final Map<String, String[]> getAllTravels()
+    {
+        return Map.copyOf(travels);
     }
     
     private Encounter generateWildEncounter()
@@ -127,9 +153,9 @@ public final class Place
     
     
     
-    public static final void save(Place place)
+    public static final void save(Place place, String name)
     {
-        var path = Paths.concat(Paths.PLACES, place.name + ".place");
+        var path = Paths.concat(Paths.PLACES, Objects.requireNonNull(name) + ".place");
         try
         {
             var base = Serializer.extract(place);
@@ -151,9 +177,9 @@ public final class Place
             if(!Files.isReadable(path))
                 return null;
             var base = Serializer.read(path);
-            var game = Serializer.inject(base, Place.class);
-            game.name = name;
-            return game;
+            var place = Serializer.inject(base, Place.class);
+            place.name = name;
+            return place;
         }
         catch(IOException | UDLException ex)
         {
