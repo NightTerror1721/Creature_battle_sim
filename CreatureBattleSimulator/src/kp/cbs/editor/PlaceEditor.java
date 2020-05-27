@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.swing.DefaultComboBoxModel;
@@ -82,7 +83,10 @@ public class PlaceEditor extends JFrame
         jPanel8.add(challengeRequireds);
         jPanel13.add(travelRequireds);
         
-        installChallengeCallback(challengeId, (cmp, c) -> c.setId(cmp.getText()), false);
+        installChallengeCallback(challengeId, (cmp, c) -> {
+            if(!cmp.getText().isBlank())
+                c.setId(cmp.getText());
+        }, false);
         installChallengeCallback(challengeName, (cmp, c) -> c.setName(cmp.getText()), true);
         installChallengeCallback(challengeDesc, (cmp, c) -> c.setDescription(cmp.getText()), false);
         installChallengeCallback(challengeUnique, (cmp, c) -> c.setUnique(cmp.isSelected()));
@@ -130,7 +134,6 @@ public class PlaceEditor extends JFrame
             challengeDesc.setText("");
             challengeUnique.setSelected(false);
             l_challengeBattlesModel.removeAllElements();
-            l_travelsModel.removeAllElements();
             
             challengeRequireds.deactivateAndRestart();
         }
@@ -326,6 +329,16 @@ public class PlaceEditor extends JFrame
         });
     }
     
+    private static <T> void extractFromComboBox(JComboBox<T> box, T defaultValue, Consumer<T> action)
+    {
+        var value = box.getSelectedItem();
+        if(value == null)
+            value = Objects.requireNonNull(defaultValue);
+        
+        try { action.accept((T) value); }
+        catch(ClassCastException ex) { action.accept(Objects.requireNonNull(defaultValue)); }
+    }
+    
     
     private void newPlace()
     {
@@ -350,8 +363,8 @@ public class PlaceEditor extends JFrame
     {
         final var place = new Place();
         
-        place.setWildBattle(Objects.requireNonNullElse(cb_wildBattle.getSelectedItem(), BattleEntry.INVALID).toString());
-        place.setTrainerBattle(Objects.requireNonNullElse(cb_trainerBattle.getSelectedItem(), BattleEntry.INVALID).toString());
+        extractFromComboBox(cb_wildBattle, BattleEntry.INVALID, e -> place.setWildBattle(e.getBattleId()));
+        extractFromComboBox(cb_trainerBattle, BattleEntry.INVALID, e -> place.setTrainerBattle(e.getBattleId()));
         
         place.setChallenges(EditorUtils.listModelStream(l_challengeModel).collect(Collectors.toList()));
         
@@ -515,7 +528,7 @@ public class PlaceEditor extends JFrame
         }
         
         @Override
-        public final String toString() { return id == null ? "[No Battle]" : id; }
+        public final String toString() { return id == null ? "[Invalid]" : id; }
 
         @Override
         public int compareTo(E o)
@@ -534,6 +547,8 @@ public class PlaceEditor extends JFrame
         public static final BattleEntry INVALID = new BattleEntry(null);
         
         private BattleEntry(String battleId) { super(battleId); }
+        
+        public final String getBattleId() { return isValid() ? id : ""; }
     }
     
     private static final class TravelEntry extends AbstractEntry<TravelEntry>
@@ -547,6 +562,8 @@ public class PlaceEditor extends JFrame
             this(entry.getKey());
             required = Arrays.copyOf(entry.getValue(), entry.getValue().length);
         }
+        
+        public final String getPlaceName() { return isValid() ? id : ""; }
         
         public final void setRequiredIds(String[] ids)
         {

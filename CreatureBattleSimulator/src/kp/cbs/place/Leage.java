@@ -77,7 +77,7 @@ public class Leage extends GlobalId
         for(var creature : selfCreatures)
             encounter.getSelfTeam().addCreature(creature);
 
-        return Battle.initiate(parent, game, encounter);
+        return Battle.initiate(parent, game, encounter, false, false);
     }
     
     
@@ -153,7 +153,7 @@ public class Leage extends GlobalId
             for(var creature : selfCreatures)
                 encounter.getSelfTeam().addCreature(creature);
             
-            var result = Battle.initiate(parent, game, encounter);
+            var result = Battle.initiate(parent, game, encounter, true, true);
             if(!result.isSelfWinner() && accumulatedElo > 0)
                 accumulatedElo = 0;
             accumulatedElo += result.getElo();

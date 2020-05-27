@@ -58,6 +58,10 @@ public class Battle extends JDialog
     
     private boolean wildBattle;
     
+    private boolean showMoney;
+    
+    private boolean showElo;
+    
     private ItemId lastCatcher;
     
     private ButtonsMenuState butState = ButtonsMenuState.DISABLED;
@@ -96,7 +100,7 @@ public class Battle extends JDialog
         core.setBattle(this);
     }
     
-    public static final BattleResult initiate(Window parent, PlayerGame game, Encounter encounter)
+    public static final BattleResult initiate(Window parent, PlayerGame game, Encounter encounter, boolean showMoney, boolean showElo)
     {
         var bcore = new BattleCore(encounter.getSelfTeam(), encounter.getEnemyTeam());
         
@@ -112,6 +116,10 @@ public class Battle extends JDialog
         battle.music = SoundManager.loadMusic(encounter.getMusic());
         
         battle.wildBattle = encounter.isWildBattle();
+        
+        battle.showMoney = showMoney;
+        
+        battle.showElo = showElo;
         
         battle.start();
         
@@ -579,6 +587,7 @@ public class Battle extends JDialog
             SoundManager.playSound("exp_max");
             sleep(650);
             var stats = new StatsComparison(creature, creature.getLevel());
+            creature.updateAll();
             creature.getHealthPoints().heal(stats.getStatAddition(StatId.HEALTH_POINTS));
             updateCreatureInterface(SELF);
             SoundManager.playSound("level_up");
@@ -863,18 +872,30 @@ public class Battle extends JDialog
         if(win)
         {
             insertMessage("¡Has ganado el combate!");
-            sleep(1000);
-            insertMessage("¡Has ganado " + result.getMoney() + " de dinero!");
-            sleep(1000);
-            insertMessage("¡Tu elo se ha incrementado " + result.getElo() + " puntos!");
+            if(showMoney)
+            {
+                sleep(1000);
+                insertMessage("¡Has ganado " + result.getMoney() + " de dinero!");
+            }
+            if(showElo)
+            {
+                sleep(1000);
+                insertMessage("¡Tu elo se ha incrementado " + result.getElo() + " puntos!");
+            }
         }
         else
         {
             insertMessage("Pierdes el combate...");
-            sleep(1000);
-            insertMessage("Has perdido " + result.getMoney() + " de dinero.");
-            sleep(1000);
-            insertMessage("Tu elo ha descendido " + result.getElo() + " puntos");
+            if(showMoney)
+            {
+                sleep(1000);
+                insertMessage("Has perdido " + result.getMoney() + " de dinero.");
+            }
+            if(showElo)
+            {
+                sleep(1000);
+                insertMessage("Tu elo ha descendido " + result.getElo() + " puntos");
+            }
         }
         sleep(2000);
         dispose();

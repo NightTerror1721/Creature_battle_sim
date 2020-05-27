@@ -1,12 +1,13 @@
 "wildBattle": "",
 "trainerBattle": "",
 "challenges": [{
-    "id": "kalm_first_start",
-    "name": "Primer Contacto",
-    "description": "Este es tu primer contacto en batallas. ¡Debes derrotarme si quieres poder iniciar tu viaje!",
+    "id": "kalm_initial_battle",
+    "name": "Batalla Inicial",
+    "description": "Esta es la batalla inicial. Debes enfrentarla y ganarla si quieres comenzar tu viaje de verdad.",
     "unique": true,
-    "battles": ["kalm_ch_01"]
+    "battles": ["bat_initial_battle"],
+    "required": []
 }],
 "travels": {
-    "Llanuras de Kalm": ["kalm_first_start"]
+    "Llanuras cercanas a Kalm": []
 }

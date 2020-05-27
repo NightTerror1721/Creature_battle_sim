@@ -38,7 +38,7 @@ public final class Place
     @Property private String wildBattle = "";
     @Property private String trainerBattle = "";
     @Property private LinkedList<Challenge> challenges = new LinkedList<>();
-    @Property private LinkedHashMap<String, String[]> travels;
+    @Property private LinkedHashMap<String, String[]> travels = new LinkedHashMap<>();
     
     private BattleProperties wildCache;
     private BattleProperties trainerCache;
@@ -126,7 +126,7 @@ public final class Place
         for(var creature : selfCreatures)
             encounter.getSelfTeam().addCreature(creature);
 
-        var result = Battle.initiate(parent, game, encounter);
+        var result = Battle.initiate(parent, game, encounter, false, false);
         if(!result.hasCached())
             return null;
         return result.getCached();
@@ -145,7 +145,7 @@ public final class Place
         for(var creature : selfCreatures)
             encounter.getSelfTeam().addCreature(creature);
 
-        var result = Battle.initiate(parent, game, encounter);
+        var result = Battle.initiate(parent, game, encounter, true, false);
         game.setMoney(game.getMoney() + result.getMoney());
     }
     

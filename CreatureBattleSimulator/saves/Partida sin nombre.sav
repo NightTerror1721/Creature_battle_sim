@@ -1,0 +1,118 @@
+"creatures": {
+    "cd3a4fe0-5ab7-46b1-9161-5b2c337a3d60": {
+        "id": "cd3a4fe0-5ab7-46b1-9161-5b2c337a3d60",
+        "name": "Águila Joven",
+        "race": 35,
+        "features": {
+            "hp": {
+                "base": 40,
+                "genetic": 32,
+                "ability": 0,
+                "current": 624
+            },
+            "attack": {
+                "base": 50,
+                "genetic": 32,
+                "ability": 7
+            },
+            "defense": {
+                "base": 45,
+                "genetic": 32,
+                "ability": 0
+            },
+            "specialAttack": {
+                "base": 45,
+                "genetic": 32,
+                "ability": 0
+            },
+            "specialDefense": {
+                "base": 40,
+                "genetic": 32,
+                "ability": 0
+            },
+            "speed": {
+                "base": 55,
+                "genetic": 32,
+                "ability": 0
+            }
+        },
+        "exp": {
+            "growth": 0,
+            "level": 10,
+            "experience": 1287
+        },
+        "nature": 3,
+        "attacks": {
+            "att1": 1,
+            "att2": 134,
+            "att3": 176,
+            "att4": null
+        },
+        "abilityPoints": 5
+    },
+    "f4674571-9681-4225-bcc9-8213add3f7c9": {
+        "id": "f4674571-9681-4225-bcc9-8213add3f7c9",
+        "name": "Marc",
+        "race": 3,
+        "features": {
+            "hp": {
+                "base": 50,
+                "genetic": 32,
+                "ability": 5,
+                "current": 914
+            },
+            "attack": {
+                "base": 38,
+                "genetic": 24,
+                "ability": 0
+            },
+            "defense": {
+                "base": 40,
+                "genetic": 32,
+                "ability": 0
+            },
+            "specialAttack": {
+                "base": 53,
+                "genetic": 32,
+                "ability": 10
+            },
+            "specialDefense": {
+                "base": 47,
+                "genetic": 32,
+                "ability": 0
+            },
+            "speed": {
+                "base": 52,
+                "genetic": 32,
+                "ability": 0
+            }
+        },
+        "exp": {
+            "growth": 3,
+            "level": 15,
+            "experience": 2293
+        },
+        "nature": 0,
+        "attacks": {
+            "att1": 0,
+            "att2": 19,
+            "att3": 270,
+            "att4": 95
+        },
+        "abilityPoints": 3
+    }
+},
+"passedIds": ["kalm_initial_battle", "cha_granja_kalm_02", "cha_granja_kalm_01"],
+"leageElos": {},
+"items": {
+    17: 4
+},
+"slot1": "cd3a4fe0-5ab7-46b1-9161-5b2c337a3d60",
+"slot2": "f4674571-9681-4225-bcc9-8213add3f7c9",
+"slot3": null,
+"slot4": null,
+"slot5": null,
+"slot6": null,
+"money": 6276,
+"currentPlace": "Granja cercana a Kalm",
+"currentLeage": "Bronce"

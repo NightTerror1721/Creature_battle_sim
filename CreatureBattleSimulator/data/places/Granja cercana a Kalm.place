@@ -1,0 +1,13 @@
+"wildBattle": "",
+"trainerBattle": "",
+"challenges": [{
+    "id": "cha_granja_kalm_02",
+    "name": "Dueño de la granja",
+    "description": "Soy el dueño de esta grajna. Ya que has derrotado a mis hijos, podemos enfrentarnos si es lo que deseas.",
+    "unique": true,
+    "battles": ["cha_granja_kalm_02_bat01"],
+    "required": []
+}],
+"travels": {
+    "Granja cercana a Kalm - Huertos": []
+}

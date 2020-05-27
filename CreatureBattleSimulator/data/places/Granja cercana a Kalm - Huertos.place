@@ -1,0 +1,14 @@
+"wildBattle": "bat_granja_kalm_huertos_wild",
+"trainerBattle": "",
+"challenges": [{
+    "id": "cha_granja_kalm_01",
+    "name": "Hijos del granjero",
+    "description": "Si quieres entrar a la granja de nuestra familia para desafiar a nuestro padre, ¡vas a tener que derrotarnos al menos una vez!",
+    "unique": false,
+    "battles": ["cha_granja_kalm_01_bat01", "cha_granja_kalm_01_bat02"],
+    "required": []
+}],
+"travels": {
+    "Llanuras cercanas a Kalm": [],
+    "Granja cercana a Kalm": ["cha_granja_kalm_01"]
+}

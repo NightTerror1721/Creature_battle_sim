@@ -145,7 +145,7 @@ public final class Challenge extends GlobalId
             for(var creature : selfCreatures)
                 encounter.getSelfTeam().addCreature(creature);
 
-            var result = Battle.initiate(parent, game, encounter);
+            var result = Battle.initiate(parent, game, encounter, true, false);
             accumulatedMoney += result.getMoney();
             if(result.isSelfWinner())
                 wins++;
