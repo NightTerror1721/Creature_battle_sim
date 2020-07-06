@@ -8,7 +8,7 @@
                 "base": 40,
                 "genetic": 32,
                 "ability": 0,
-                "current": 624
+                "current": 708
             },
             "attack": {
                 "base": 50,
@@ -38,8 +38,8 @@
         },
         "exp": {
             "growth": 0,
-            "level": 10,
-            "experience": 1287
+            "level": 12,
+            "experience": 1916
         },
         "nature": 3,
         "attacks": {
@@ -48,7 +48,7 @@
             "att3": 176,
             "att4": null
         },
-        "abilityPoints": 5
+        "abilityPoints": 9
     },
     "f4674571-9681-4225-bcc9-8213add3f7c9": {
         "id": "f4674571-9681-4225-bcc9-8213add3f7c9",
@@ -113,6 +113,6 @@
 "slot4": null,
 "slot5": null,
 "slot6": null,
-"money": 6276,
-"currentPlace": "Granja cercana a Kalm",
+"money": 7247,
+"currentPlace": "Granja cercana a Kalm - Huertos",
 "currentLeage": "Bronce"
